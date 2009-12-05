@@ -1,4 +1,4 @@
-package interprete;
+package pila;
 
 /**
  * De esta clase deberian heredar todas las instrucciones del lenguaje a pila

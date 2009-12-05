@@ -9,10 +9,10 @@
  * Created on 04-dic-2009, 20:51:58
  */
 
-package interfaz.interprete;
+package interfaz.pila;
 
-import interprete.InstruccionPila;
-import interprete.LectorBytecode;
+import pila.InstruccionPila;
+import pila.LectorBytecode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
