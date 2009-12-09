@@ -11,10 +11,11 @@
 
 package interfaz.pila;
 
-import pila.InstruccionPila;
+import pila.interprete.instrucciones.InstruccionInterprete;
 import pila.LectorBytecode;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -33,9 +34,9 @@ public class InterpretePanel extends javax.swing.JPanel {
         if(f == null || !f.canRead())
             throw new IOException("Archivo inválido o ilegible");
 
-        ArrayList<InstruccionPila> programa = lb.leerFuente(f);
-        for(Iterator<InstruccionPila> it = programa.iterator(); it.hasNext();) {
-            InstruccionPila ins = it.next();
+        ArrayDeque<InstruccionInterprete> programa = lb.leerFuente(f);
+        for(Iterator<InstruccionInterprete> it = programa.iterator(); it.hasNext();) {
+            InstruccionInterprete ins = it.next();
             textArea.append(ins.toString());
             if(ins.getDato() != null)
                 textArea.append(" "+ins.getDato().toString());
