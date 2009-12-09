@@ -14,6 +14,7 @@ import pila.interprete.datos.Caracter;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
+import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.Apilar;
 import pila.interprete.instrucciones.ApilarDir;
 import pila.interprete.instrucciones.CastChar;
@@ -41,25 +42,48 @@ import pila.interprete.instrucciones.Y;
 
 public class LectorPila implements LectorBytecode {
 
-    private DatoPila leerDato(DataInputStream dis) throws IOException {
-        byte tipo = dis.readByte();
-        switch(tipo) {
-            case DatoPila.BOOL_T:
-                return new Booleano(dis.readBoolean());
-            case DatoPila.CHAR_T:
-                return new Caracter(dis.readChar());
-            case DatoPila.NAT_T:
-                return new Natural(dis.readLong());
-            case DatoPila.INT_T:
-                return new Entero(dis.readInt());
-            case DatoPila.FLOAT_T:
-                return new Real(dis.readFloat());
-            default:
-                throw new IOException("Dato inválido");
+    /**
+     * Este método lee un dato de un DataInputStream
+     * @param dis
+     * @return el dato leido
+     * @throws LectorExc en el caso de que ocurra algún error
+     * al leer el dato
+     */
+    private DatoPila leerDato(DataInputStream dis) throws LectorExc {
+        try {
+            byte tipo = dis.readByte(); //se lee el tipo
+            switch(tipo) { //segun el tipo se crea un DatoPila distinto
+                case DatoPila.BOOL_T:
+                    return new Booleano(dis.readBoolean());
+                case DatoPila.CHAR_T:
+                    return new Caracter(dis.readChar());
+                case DatoPila.NAT_T:
+                    return new Natural(dis.readLong());
+                case DatoPila.INT_T:
+                    return new Entero(dis.readInt());
+                case DatoPila.FLOAT_T:
+                    return new Real(dis.readFloat());
+                default:
+                    throw new LectorExc("Tipo de dato "+
+                            Byte.toString(tipo)+"inválido");
+            }
+        }
+        catch (IOException e) {
+            throw new LectorExc(e.getMessage());
         }
     }
 
-    private InstruccionInterprete leerInstruccion(DataInputStream dis) throws IOException {
+    /**
+     * Este método lee una instrucción de un DataInputStream
+     * @param dis
+     * @return la InstruccionInterprete leida
+     * @throws IOException En el caso de que ocurra un error
+     * del stream
+     * @throws LectorExc En el caso de que ocurra un error
+     * de formato del programa fuente (por ejemplo, apilar
+     * sin argumento)
+     */
+    private InstruccionInterprete leerInstruccion(DataInputStream dis) throws IOException, LectorExc {
         byte tipoIns = dis.readByte();
         InstruccionInterprete inst;
         switch(tipoIns) {
@@ -146,10 +170,10 @@ public class LectorPila implements LectorBytecode {
         return inst;
     }
 
-    public ArrayList<InstruccionInterprete> leerFuente(File f) throws FileNotFoundException, IOException {
+    public ArrayList<InstruccionInterprete> leerFuente(File f) throws FileNotFoundException, IOException, LectorExc{
         ArrayList<InstruccionInterprete> ad = new ArrayList<InstruccionInterprete>();
         DataInputStream dis = new DataInputStream(new FileInputStream(f));
-        while (dis.available() > 0) {
+        while (dis.available() > 0) {//mientras haya bytes disponibles sigo leyendo
             ad.add(leerInstruccion(dis));
         }
         return ad;

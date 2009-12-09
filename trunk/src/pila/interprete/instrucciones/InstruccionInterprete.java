@@ -6,7 +6,9 @@ import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
- * De esta clase deberian heredar todas las instrucciones del lenguaje a pila
+ * De esta clase heredan todas las instrucciones del lenguaje a pila
+ * Contiene las constantes de todos los tipos de instrucción y la
+ * interfaz del método ejecutar, el más importante de las instrucciones
  */
 public abstract class InstruccionInterprete extends Instruccion {
 
@@ -49,29 +51,27 @@ public abstract class InstruccionInterprete extends Instruccion {
     }
 
     /**
-     * Ha de enmascararse para darle una implementación a la instrucción
+     *
+     * Ha de enmascararse para darle una implementación a la instrucción.
+     * Lo normal será que al final de la ejecución aumente el cp del
+     * interprete en uno.
+     * @param interprete el interprete que ejecuta la instrucción
+     * @throws InstruccionExc Si ocurre un error al ejecutar la instrucción
      */
     public abstract void ejecutate(Interprete interprete) throws InstruccionExc;
 
     /**
-     * @return the dato
+     * @return El dato asociado a esta instrucción en el caso de tenerlo
      */
     public Dato getDato() {
         return dato;
     }
 
     /**
-     * @return the tipoIns
+     * @return el byate que identifica el tipo de instrucción
      */
     public byte getTipoIns() {
         return tipoIns;
-    }
-
-    /**
-     * @param tipoIns the tipoIns to set
-     */
-    public void setTipoIns(byte tipoIns) {
-        this.tipoIns = tipoIns;
     }
 
 }

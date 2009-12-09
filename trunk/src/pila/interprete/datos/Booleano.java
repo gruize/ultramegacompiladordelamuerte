@@ -4,8 +4,7 @@ package pila.interprete.datos;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- *
- * @author Gonzalo Ortiz Jaureguizar
+ * Este DatoPila representa a un booleano
  */
 public class Booleano extends DatoPila {
 
@@ -19,30 +18,6 @@ public class Booleano extends DatoPila {
     @Override
     public Object getValor() {
         return valor;
-    }
-
-    @Override
-    public int toInt() {
-        throw new ClassCastException("No puede transformarse "
-                +"un booleano en un entero");
-    }
-
-    @Override
-    public long toNatural() {
-        throw new ClassCastException("No puede transformarse "
-                +"un booleano en un natural");
-    }
-
-    @Override
-    public float toFloat() {
-        throw new ClassCastException("No puede transformarse "
-                +"un booleano en un float");
-    }
-
-    @Override
-    public char toChar() {
-        throw new ClassCastException("No puede transformarse "
-                +"un booleano en un char");
     }
 
     @Override

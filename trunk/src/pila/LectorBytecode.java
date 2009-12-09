@@ -12,5 +12,5 @@ import java.util.ArrayList;
  * compilado del flujo de bytes.
  */
 public interface LectorBytecode {
-    public ArrayList<InstruccionInterprete> leerFuente(File f) throws IOException, FileNotFoundException ;
+    public ArrayList<InstruccionInterprete> leerFuente(File f) throws Exception;
 }

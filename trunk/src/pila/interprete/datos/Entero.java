@@ -4,8 +4,7 @@ package pila.interprete.datos;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- *
- * @author Gonzalo Ortiz Jaureguizar
+ * Este DatoPila representa a un Entero
  */
 public class Entero extends DatoPila {
 
@@ -34,18 +33,6 @@ public class Entero extends DatoPila {
     @Override
     public float toFloat() {
         return (float)valor;
-    }
-
-    @Override
-    public char toChar() {
-        throw new ClassCastException("No puede transformarse "
-                +"un entero en un char");
-    }
-
-    @Override
-    public boolean toBoolean() {
-        throw new ClassCastException("No puede transformarse "
-                +"un entero en un booleano");
     }
 
     @Override

@@ -4,8 +4,7 @@ package pila.interprete.datos;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- *
- * @author Gonzalo Ortiz Jaureguizar
+ * Este DatoPila representa a un Natural.
  */
 public class Natural extends DatoPila {
 
@@ -22,33 +21,17 @@ public class Natural extends DatoPila {
     }
 
     @Override
-    public int toInt() {
-        throw new ClassCastException("No puede transformarse "
-                +"un natural en un entero");
-    }
-
-    @Override
     public long toNatural() {
         return valor;
     }
 
+    /*
+     * TODO: Decidir si se permite
     @Override
-    public float toFloat() {
-        throw new ClassCastException("No puede transformarse "
-                +"un natual en un real");
+    public float toFloat() throws DatoExc {
+        
     }
-
-    @Override
-    public char toChar() {
-        throw new ClassCastException("No puede transformarse "
-                +"un natural en un char");
-    }
-
-    @Override
-    public boolean toBoolean() {
-        throw new ClassCastException("No puede transformarse "
-                +"un natural en un booleano");
-    }
+     */
 
     @Override
     public String toString() {
