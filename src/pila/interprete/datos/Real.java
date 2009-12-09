@@ -4,8 +4,7 @@ package pila.interprete.datos;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- *
- * @author Gonzalo Ortiz Jaureguizar
+ * Este DatoPila representa a un Real (float).
  */
 public class Real extends DatoPila {
 
@@ -22,30 +21,8 @@ public class Real extends DatoPila {
     }
 
     @Override
-    public int toInt() {
-        return Math.round(valor);
-    }
-
-    @Override
-    public long toNatural() {
-        return (long)Math.round(valor);
-    }
-
-    @Override
     public float toFloat() {
         return valor;
-    }
-
-    @Override
-    public char toChar() {
-        throw new ClassCastException("No puede transformarse "
-                +"un real en un char");
-    }
-
-    @Override
-    public boolean toBoolean() {
-        throw new ClassCastException("No puede transformarse "
-                +"un real en un booleano");
     }
 
     @Override

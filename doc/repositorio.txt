@@ -1,0 +1,69 @@
+El repositorio tiene las siguientes carpetas:
+
+ + /
+ |----+ doc
+ |----+ src
+	  |----+ compilador
+	  |----+ interfaz
+	  |    |----+ pila
+	  |----+ pila
+	  |    |----+ interprete
+	  |    |    |----+ datos
+	  |    |    |----+ instrucciones
+	  |    |    |----+ excepciones
+	  |    |----+ jvm        
+
+	/:
+En principio aqui no deberia haber nada que se me ocurra
+
+	/doc:
+Aqui deberia ir toda la documentacion de la practica
+
+	/src:
+Aqui va el codigo java, por lo que a los directorios que salen de aqui son nombres de paquetes.
+	
+	/src/compilador:
+Este paquete es el que contiene todo lo relacionado con la parte del compilador de la practica.
+Es de suponer que tendra varios paquetes dentro
+
+	/src/interfaz:
+Este paquete es el que contiene todo lo relacionado con la interfaz grafica de la practica.
+Seguramente consista en una ventana que pida ficheros de texto en pseudopascal y un nombre para
+un fichero donde se generara el bytecode.
+	
+	/src/interfaz/pila
+Para testear que funcione correctamente el interprete necesitamos generar bytecode. Para hacerlo
+en este paquete pondremos un pequeño programilla (con interfaz grafica) que permita escribir
+cosas como "apila 3, apila 4, suma" y lo pase a bytecode, para luego poder ejecutarlo con el
+interprete y ver que este funciona correctamente.
+
+	/src/pila
+Este paquete es el que contiene todo lo relacionado con el lenguaje a pila y su interprete. En
+este directorio hay unas pocas clases abstractas (Dato, Instruccion, etco) que realmente
+podrian ponerse integrarse con sus "herederas" de /src/pila/interprete, pero es mejor dejarlo
+asi para, si nos atrevemos a dar la opcion de compilar a java bytecode, tener en comun lo
+suficiente con el interprete que haremos nosotros.
+
+	/src/pila/interprete
+Este paquete es el que contiene todo lo relacionado con el interprete del lenguaje a pila.
+Contiene unas pocas clases basicas y se divide en varios paquetes para estar organizado.
+
+	/src/pila/interprete/datos
+Este paquete contiene DatoPila, del cual heredan otros objetos que simbolizan cada uno de los
+tipos de dato posible en el lenguaje a pila (caracter, natural, entero, etc), dando funcionalidad
+a cosas como el casting, la comparacion, etc.
+
+	/src/pila/interprete/instrucciones
+Este paquete contiene InstruccionInterprete, del cual heredan otros objetos que simbolizan cada
+una de las instrucciones del lenguaje a pila (apila, desapiladir, suma...). Lo que realmente
+distingue a unas instrucciones de otras es el metodo "ejecutate", que interactua con el objeto
+interprete para cambiar el estado de la pila, de la memoria, el contador de programa, etc.
+
+	/src/pila/interprete/excepciones
+Lo mas sencillo para gestionar los fallos al interpretar un programa a pila es tener nuestras
+propias excepciones, que se encuentran en este paquete. Para saber mas de cada una mirad
+el javadoc.
+
+	/src/pila/jvc
+Es el paquete donde deberia ir todo lo necesario para compilar nuestro lenguaje a pila a java
+bytecode. Es algo que esta muy en el aire

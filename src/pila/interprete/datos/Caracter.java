@@ -4,8 +4,7 @@ package pila.interprete.datos;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- *
- * @author Gonzalo Ortiz Jaureguizar
+ * Este DatoPila representa a un caracter
  */
 public class Caracter extends DatoPila {
 
@@ -39,12 +38,6 @@ public class Caracter extends DatoPila {
     @Override
     public char toChar() {
         return valor;
-    }
-
-    @Override
-    public boolean toBoolean() {
-        throw new ClassCastException("No puede transformarse "
-                +"un caracter en un booleano");
     }
 
     @Override

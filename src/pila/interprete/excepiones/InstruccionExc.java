@@ -1,12 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package pila.interprete.excepiones;
 
 import pila.interprete.instrucciones.InstruccionInterprete;
 
+/**
+ * Esta excepción se lanza cuando se produce un error al
+ * ejecutar una instrucción. Por ejemplo, al intentar
+ * sumar un natural y un booleano. Tiene un atributo
+ * "instruccion" que permite obtener la instrucción que
+ * falló.
+ */
 public class InstruccionExc extends Exception {
     
     private InstruccionInterprete inst;
@@ -19,6 +21,10 @@ public class InstruccionExc extends Exception {
     public InstruccionExc(InstruccionInterprete inst, String str) {
         super(str);
         this.inst = inst;
+    }
+
+    public InstruccionInterprete getInstruccion() {
+        return inst;
     }
 
 }

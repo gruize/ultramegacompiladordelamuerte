@@ -1,12 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package pila.interprete.excepiones;
 
-import pila.Dato;
 
+/**
+ * Esta exepción puede ser lanzada en el momento de
+ * leer el bytecode debido a fallos de codificación
+ * (por ejemplo, no pasarle parametros a un apila)
+ */
 public class LectorExc extends Exception {
     
     public LectorExc() {

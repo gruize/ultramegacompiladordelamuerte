@@ -5,6 +5,10 @@
 
 package pila;
 
+/**
+ * Se trata de una representación muy abstracta de una
+ * instrucción
+ */
 public abstract class Instruccion {
 
     abstract public Dato getDato();
