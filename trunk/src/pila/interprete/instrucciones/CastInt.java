@@ -1,7 +1,9 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
@@ -9,12 +11,19 @@ import java.util.Stack;
  */
 public class CastInt extends InstruccionInterprete{
 
-    public CastInt(byte o){
-        super(o);
+    public CastInt() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_CASTINT);
+    }
+
+    public CastInt(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_CASTINT);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
     public void ejecutate(Interprete interprete) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Entero e = new Entero(interprete.getPila().removeFirst().toInt());
+        interprete.getPila().addFirst(e);
     }
 }

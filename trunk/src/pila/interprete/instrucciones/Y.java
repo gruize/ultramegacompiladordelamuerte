@@ -19,7 +19,7 @@ public class Y extends InstruccionInterprete{
 
     public Y(Dato d) throws LectorExc {
         this();
-        throw new LectorExc("La instrucción Y no "
+        throw new LectorExc("La instrucción no "
                 +"acepta argumentos");
     }
 

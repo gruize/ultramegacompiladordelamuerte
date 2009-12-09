@@ -1,15 +1,22 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
  * @author ruben
  */
 public class Divide extends InstruccionInterprete{
-    public Divide(byte o){
-        super(o);
+    public Divide() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_DIVIDE);
+    }
+
+    public Divide(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_DIVIDE);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override

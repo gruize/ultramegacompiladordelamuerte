@@ -1,8 +1,9 @@
 
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
@@ -10,12 +11,17 @@ import java.util.Stack;
  */
 public class Desapilar extends InstruccionInterprete{
 
-    public Desapilar(byte o){
-        super(o);
+    public Desapilar() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_DESAPILAR);
     }
 
+    public Desapilar(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_DESAPILAR);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
+    }
     @Override
     public void ejecutate(Interprete interprete) {
-        pila.pop();
+        interprete.getPila().removeFirst();
     }
 }

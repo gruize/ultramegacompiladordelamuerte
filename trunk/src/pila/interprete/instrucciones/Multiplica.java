@@ -1,33 +1,42 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
  * @author ruben
  */
 public class Multiplica extends InstruccionInterprete {
-    public Multiplica(byte o){
-        super(o);
+    public Multiplica() throws LectorExc{
+        super(InstruccionInterprete.CODIGO_MULTIPLICA);
+    }
+
+    public Multiplica(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_MULTIPLICA);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
     public void ejecutate(Interprete interprete) {
-        DatoPila d1=(DatoPila) pila.pop();
-        DatoPila d2=(DatoPila) pila.pop();
-        byte tipo=d1.getTipo();
-        if (d1.getTipo() != d2.getTipo() || tipo==CODIGO_BOOLEAN || tipo==CODIGO_CHAR){
+        ArrayDeque<DatoPila> pila = interprete.getPila();
+        DatoPila d1= pila.pop();
+        DatoPila d2= pila.pop();
+        byte tipo=d1.getTipoDato();
+        if (d1.getTipoDato() != d2.getTipoDato() || tipo==DatoPila.BOOL_T || tipo==DatoPila.CHAR_T){
             //error;
         }
         else{
-            switch (d1.getTipo()){
-                case CODIGO_NATURAL:
-                case CODIGO_INTEGER:
+            switch (d1.getTipoDato()){
+                case DatoPila.NAT_T:
+                case DatoPila.INT_T:
                     int i=(int)d1.getDato() * (int) d2.getDato();
                     System.out.println(i);
                     break;
-                case CODIGO_FLOAT:
+                case DatoPila.FLOAT_T:
                     float f=d1.getDato() * d2.getDato();
                     System.out.println(f);
                     break;

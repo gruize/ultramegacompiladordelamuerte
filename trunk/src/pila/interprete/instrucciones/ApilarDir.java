@@ -1,21 +1,27 @@
 
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
  * @author ruben
  */
 public class ApilarDir extends InstruccionInterprete{
-    public byte tipo;
-    public float dato;
 
-    public ApilarDir(byte o,byte t,float d){
-        super(o);
-        tipo=t;
-        dato=d;
+    public ApilarDir() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_APILARDIR);
+        throw new LectorExc("La instrucción requiere un " +
+                "argumento natural");
+    }
+
+    public ApilarDir(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_APILARDIR, d);
+        if(d.getTipoDato() != DatoPila.NAT_T)
+            throw new LectorExc("La instrucción requiere un " +
+                    "argumento natural");
     }
 
     @Override

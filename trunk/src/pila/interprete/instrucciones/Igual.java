@@ -1,15 +1,22 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
  * @author ruben
  */
 public class Igual extends InstruccionInterprete{
-    public Igual(byte o){
-        super(o);
+    public Igual() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_IGUAL);
+    }
+
+    public Igual(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_IGUAL);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
