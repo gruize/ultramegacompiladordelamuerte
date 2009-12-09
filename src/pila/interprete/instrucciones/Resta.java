@@ -30,8 +30,8 @@ public class Resta extends InstruccionInterprete{
     @Override
     public void ejecutate(Interprete interprete) throws InstruccionExc{
         ArrayDeque<DatoPila> pila = interprete.getPila();
-        DatoPila d1= pila.pop();
-        DatoPila d2= pila.pop();
+        DatoPila d1= pila.removeFirst();
+        DatoPila d2= pila.removeFirst();
         DatoPila res;
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();

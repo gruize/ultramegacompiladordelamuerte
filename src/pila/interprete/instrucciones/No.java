@@ -1,7 +1,8 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
@@ -9,8 +10,14 @@ import java.util.Stack;
  */
 public class No extends InstruccionInterprete{
 
-    public No(byte o){
-        super(o);
+    public No() throws LectorExc{
+        super(InstruccionInterprete.CODIGO_NO);
+    }
+
+    public No(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_NO);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override

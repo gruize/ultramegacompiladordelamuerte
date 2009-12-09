@@ -16,12 +16,18 @@ import pila.interprete.excepiones.InterpreteExc;
 public class Interprete {
     private ArrayList<InstruccionInterprete> programa;
     private ArrayDeque<DatoPila> pila;
+    private DatoPila[] memoria;
     private boolean parar; //true si ha acabado
     private int cp; //el contador de programa
 
-    public Interprete() {
+    public Interprete(int longMem) {
         programa = null;
         pila = null;
+        memoria = new DatoPila[longMem];
+    }
+
+    public Interprete() {
+        this(100);
     }
 
     public void leerPrograma(File f) throws FileNotFoundException, IOException {
@@ -80,5 +86,12 @@ public class Interprete {
      */
     public void setCp(int cp) {
         this.cp = cp;
+    }
+
+    /**
+     * @return the memoria
+     */
+    public DatoPila[] getMemoria() {
+        return memoria;
     }
 }

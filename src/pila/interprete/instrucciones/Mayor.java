@@ -1,7 +1,8 @@
 package pila.interprete.instrucciones;
 
-import interprete.*;
-import java.util.Stack;
+import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.LectorExc;
 
 /**
  *
@@ -9,8 +10,14 @@ import java.util.Stack;
  */
 public class Mayor extends InstruccionInterprete{
 
-    public Mayor(byte o){
-        super(o);
+    public Mayor() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_MAYOR);
+    }
+
+    public Mayor(DatoPila d) throws LectorExc{
+        super(InstruccionInterprete.CODIGO_MAYOR);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
