@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import pila.Instruccion;
 import pila.LectorBytecode;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
@@ -87,9 +88,15 @@ public class LectorPila implements LectorBytecode {
         byte tipoIns = dis.readByte();
         InstruccionInterprete inst;
         switch(tipoIns) {
+            /*
+             * Gonzalo: Quito esto porque no existe esta instruccion. Ponerlo si
+             * decidis implementarla
             case (byte) 0:
                 inst = new Error();
                 break;
+             */
+            default:
+                throw new IOException("Instrucción inválida");
             case InstruccionInterprete.CODIGO_APILAR:
                 inst = new Apilar(leerDato(dis));
                 break;
@@ -162,16 +169,12 @@ public class LectorPila implements LectorBytecode {
             case InstruccionInterprete.CODIGO_CASTFLOAT:
                 inst = new CastFloat();
                 break;
-
-
-            default:
-                throw new IOException("Instrucción inválida");
         }
         return inst;
     }
 
-    public ArrayList<InstruccionInterprete> leerFuente(File f) throws FileNotFoundException, IOException, LectorExc{
-        ArrayList<InstruccionInterprete> ad = new ArrayList<InstruccionInterprete>();
+    public ArrayList<Instruccion> leerPrograma(File f) throws FileNotFoundException, IOException, LectorExc{
+        ArrayList<Instruccion> ad = new ArrayList<Instruccion>();
         DataInputStream dis = new DataInputStream(new FileInputStream(f));
         while (dis.available() > 0) {//mientras haya bytes disponibles sigo leyendo
             ad.add(leerInstruccion(dis));

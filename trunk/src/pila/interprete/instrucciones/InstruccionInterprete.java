@@ -1,7 +1,10 @@
 package pila.interprete.instrucciones;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import pila.interprete.*;
 import pila.*;
+import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -37,7 +40,7 @@ public abstract class InstruccionInterprete extends Instruccion {
     public static final byte CODIGO_CASTCHAR = (byte) 23;
     public static final byte CODIGO_CASTFLOAT = (byte) 24;
 
-    private Dato dato;
+    private DatoPila dato;
     private byte tipoIns;
 
     public InstruccionInterprete(byte tipoIns) throws LectorExc{
@@ -45,7 +48,7 @@ public abstract class InstruccionInterprete extends Instruccion {
         this.dato = null;
     }
 
-    public InstruccionInterprete(byte tipoIns, Dato dato) throws LectorExc{
+    public InstruccionInterprete(byte tipoIns, DatoPila dato) throws LectorExc{
         this.tipoIns = tipoIns;
         this.dato = dato;
     }
@@ -63,7 +66,7 @@ public abstract class InstruccionInterprete extends Instruccion {
     /**
      * @return El dato asociado a esta instrucción en el caso de tenerlo
      */
-    public Dato getDato() {
+    public DatoPila getDato() {
         return dato;
     }
 
@@ -72,6 +75,13 @@ public abstract class InstruccionInterprete extends Instruccion {
      */
     public byte getTipoIns() {
         return tipoIns;
+    }
+
+    public void escribete(DataOutputStream dos) throws IOException {
+        dos.writeByte(getTipoIns());
+        if(getDato() != null) {
+            getDato().escribete(dos);
+        }
     }
 
 }

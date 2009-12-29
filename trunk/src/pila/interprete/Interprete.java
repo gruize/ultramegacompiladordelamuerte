@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import pila.Instruccion;
 
 /**
  * El interprete es la "maquina virtual" que carga un
@@ -30,7 +31,7 @@ public class Interprete {
      * constantes
      */
     private ArrayDeque<DatoPila> pila;
-    private ArrayList<InstruccionInterprete> programa;
+    private ArrayList<Instruccion> programa;
     private DatoPila[] memoria;
     private boolean parar; //true si ha acabado
     private int cp; //el contador de programa
@@ -68,7 +69,7 @@ public class Interprete {
      */
     public void leerPrograma(File f) throws FileNotFoundException, IOException, LectorExc {
         LectorPila lector = new LectorPila();
-        programa = lector.leerFuente(f);
+        programa = lector.leerPrograma(f);
         pila = new ArrayDeque<DatoPila>();
     }
 
@@ -83,7 +84,7 @@ public class Interprete {
         setCp(0);
         setParar(false);
         while(!isParar()) {
-            programa.get(getCp()).ejecutate(this);
+            ((InstruccionInterprete)programa.get(getCp())).ejecutate(this);
         }
     }
 

@@ -1,9 +1,6 @@
 package pila;
 
-import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -12,5 +9,5 @@ import java.util.ArrayList;
  * compilado del flujo de bytes.
  */
 public interface LectorBytecode {
-    public ArrayList<InstruccionInterprete> leerFuente(File f) throws Exception;
+    public ArrayList<Instruccion> leerPrograma(File f) throws Exception;
 }
