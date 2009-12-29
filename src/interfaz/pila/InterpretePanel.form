@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="lenguajeGroup">
+    </Component>
+  </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -88,6 +92,40 @@
             <Property name="rows" type="int" value="5"/>
             <Property name="text" type="java.lang.String" value="Este panel hace de intermediario entre el bytecode del lenguaje a pila y el explicado en clase (con sentencias alfanumericas como &quot;apila 3&quot; o &quot;suma&quot;).&#xa;&#xa;Al decompilar un archivo en bytecode este se mostrar&#xe1; como cadenas alfanumericas&#xa;&#xa;Al compilar, el texto escrito sera traducido a lenguaje de pila, siempre y cuando su sint&#xe1;xis sea correcta"/>
             <Property name="wrapStyleWord" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="First"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Lenguaje objeto:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="propioLengBut">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="lenguajeGroup"/>
+            </Property>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="Lenguaje Propio"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="javaLengBut">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="lenguajeGroup"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Java Bytecode"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
       </SubComponents>

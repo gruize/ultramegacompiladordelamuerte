@@ -1,5 +1,8 @@
 package pila.interprete.datos;
 
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import pila.Dato;
 import pila.interprete.excepiones.DatoExc;
 
@@ -99,5 +102,8 @@ public abstract class DatoPila extends Dato {
      */
     public abstract int comparar(DatoPila arg0) throws DatoExc;
 
+    public void escribete(DataOutputStream dos) throws IOException {
+        dos.writeByte(tipoDato);
+    }
     
 }

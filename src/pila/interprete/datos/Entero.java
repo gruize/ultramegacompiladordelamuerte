@@ -1,6 +1,8 @@
 
 package pila.interprete.datos;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import pila.interprete.excepiones.DatoExc;
 
 /**
@@ -50,5 +52,11 @@ public class Entero extends DatoPila {
             return 1;
         else
             return 0;
+    }
+
+    @Override
+    public void escribete(DataOutputStream dos) throws IOException {
+        super.escribete(dos);
+        dos.writeInt(valor);
     }
 }

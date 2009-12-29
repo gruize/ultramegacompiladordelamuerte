@@ -2,8 +2,6 @@ package pila.interprete.instrucciones;
 
 import pila.Dato;
 import pila.interprete.Interprete;
-import pila.interprete.excepiones.InstruccionExc;
-import pila.interprete.excepiones.InterpreteExc;
 import pila.interprete.excepiones.LectorExc;
 
 
