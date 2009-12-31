@@ -40,7 +40,7 @@ public abstract class InstruccionInterprete extends Instruccion {
     public static final byte CODIGO_CASTCHAR = (byte) 23;
     public static final byte CODIGO_CASTFLOAT = (byte) 24;
 
-    private DatoPila dato;
+    protected DatoPila dato;
     private byte tipoIns;
 
     public InstruccionInterprete(byte tipoIns) throws LectorExc{

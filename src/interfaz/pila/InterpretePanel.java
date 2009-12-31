@@ -13,6 +13,8 @@ package interfaz.pila;
 
 import java.awt.ComponentOrientation;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.LectorBytecode;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import javax.swing.JOptionPane;
 import pila.EscritorBytecode;
 import pila.Instruccion;
 import pila.interprete.EscritorPila;
+import pila.interprete.LectorPila;
 
 /**
  *
@@ -36,6 +39,7 @@ public class InterpretePanel extends javax.swing.JPanel {
     public static void main(String [] args) {
         JFrame frame = new JFrame();
         frame.setContentPane(new InterpretePanel());
+        frame.pack();
         frame.setVisible(true);
     }
 
@@ -45,12 +49,19 @@ public class InterpretePanel extends javax.swing.JPanel {
         fileChooser = new JFileChooser();
     }
 
-    public void decompilar(File f, LectorBytecode lb) {
+    public void decompilar(File f) {
         try {
             if(f == null || !f.canRead())
                 throw new IOException("Archivo inválido o ilegible");
 
+            LectorBytecode lb;
+            if(true) {
+                 lb = new LectorPila();
+            }
+
             ArrayList<Instruccion> programa = lb.leerPrograma(f);
+
+            textArea.setText("");
             for(Iterator<Instruccion> it = programa.iterator(); it.hasNext();) {
                 Instruccion ins = it.next();
                 textArea.append(ins.toString());
@@ -115,6 +126,11 @@ public class InterpretePanel extends javax.swing.JPanel {
 
         compilarBot.setText("Compilar...");
         compilarBot.setToolTipText("Al compilar, el texto escrito sera traducido a lenguaje \nde pila, siempre y cuando su sintáxis sea correcta");
+        compilarBot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compilarBotActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout botonesPanelLayout = new javax.swing.GroupLayout(botonesPanel);
         botonesPanel.setLayout(botonesPanelLayout);
@@ -167,9 +183,21 @@ public class InterpretePanel extends javax.swing.JPanel {
         int ret = fileChooser.showOpenDialog(this);
         if(ret == JFileChooser.APPROVE_OPTION) {
             File f = fileChooser.getSelectedFile();
-            decompilar(f, null);
+            decompilar(f);
         }
     }//GEN-LAST:event_decompilarBotActionPerformed
+
+    private void compilarBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compilarBotActionPerformed
+        int ret = fileChooser.showSaveDialog(this);
+        if(ret == JFileChooser.APPROVE_OPTION) {
+            File f = fileChooser.getSelectedFile();
+            try {
+                compilar(f);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Error al compilar", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_compilarBotActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

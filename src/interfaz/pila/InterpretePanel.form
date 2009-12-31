@@ -70,6 +70,9 @@
             <Property name="text" type="java.lang.String" value="Compilar..."/>
             <Property name="toolTipText" type="java.lang.String" value="Al compilar, el texto escrito sera traducido a lenguaje &#xa;de pila, siempre y cuando su sint&#xe1;xis sea correcta"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="compilarBotActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
