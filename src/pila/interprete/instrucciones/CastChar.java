@@ -23,8 +23,10 @@ public class CastChar extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        /*
         Caracter e = new Caracter(interprete.getPila().removeFirst().toChar());
         interprete.getPila().addFirst(e);
+         */
     }
     
 }

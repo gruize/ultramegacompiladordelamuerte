@@ -101,7 +101,7 @@ public abstract class TraductorPila {
                     throw new Exception();
             }
             catch (Exception e) { //es demasiado grande
-                if(expInt.matcher(str).matches()) {
+                if(expNat.matcher(str).matches()) {
                     dato = traducirNat(str);
                 }
             }

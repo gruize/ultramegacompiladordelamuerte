@@ -21,6 +21,7 @@ public class Divide extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        /*
         DatoPila d1=(DatoPila) pila.pop();
         DatoPila d2=(DatoPila) pila.pop();
         byte tipo=d1.getTipo();
@@ -40,5 +41,6 @@ public class Divide extends InstruccionInterprete{
                     break;
             }
         }
+         * */
     }
 }

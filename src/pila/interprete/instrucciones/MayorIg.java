@@ -23,7 +23,8 @@ public class MayorIg extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        DatoPila d1=(DatoPila) pila.pop();
+        /*
+         DatoPila d1=(DatoPila) pila.pop();
         DatoPila d2=(DatoPila) pila.pop();
         byte tipo=d1.getTipo();
         if (d1.getTipo() != d2.getTipo() || tipo==CODIGO_BOOLEAN || tipo==CODIGO_CHAR){
@@ -41,6 +42,6 @@ public class MayorIg extends InstruccionInterprete{
                     System.out.println(b1);
                     break;
             }
-        }
+        }*/
     }
 }
