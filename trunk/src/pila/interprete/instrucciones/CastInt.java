@@ -23,7 +23,9 @@ public class CastInt extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        /*
         Entero e = new Entero(interprete.getPila().removeFirst().toInt());
         interprete.getPila().addFirst(e);
+         */
     }
 }

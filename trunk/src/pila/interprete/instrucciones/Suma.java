@@ -7,6 +7,7 @@ import pila.interprete.Interprete;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -41,18 +42,23 @@ public class Suma extends InstruccionInterprete {
                     +d1.toString()+" + "+d2.toString()+")");
         }
         else{
-            switch (d1.getTipoDato()){
-                case DatoPila.NAT_T:
-                    res = new Natural(d1.toNatural()+d2.toNatural());
-                    break;
-                case DatoPila.INT_T:
-                    res = new Entero(d1.toInt()+d2.toInt());
-                    break;
-                case DatoPila.FLOAT_T:
-                    res = new Real(d1.toFloat()+d2.toFloat());
-                    break;
-                default:
-                    throw new InstruccionExc(this,"Tipo inválido ("+d1.toString()+")");
+            try {
+                switch (d1.getTipoDato()){
+                    case DatoPila.NAT_T:
+                        res = new Natural(d1.toNatural()+d2.toNatural());
+                        break;
+                    case DatoPila.INT_T:
+                        res = new Entero(d1.toInt()+d2.toInt());
+                        break;
+                    case DatoPila.FLOAT_T:
+                        res = new Real(d1.toFloat()+d2.toFloat());
+                        break;
+                    default:
+                        throw new InstruccionExc(this,"Tipo inválido ("+d1.toString()+")");
+                }
+            }
+            catch (DatoExc e) {
+                throw new InstruccionExc(this, "Error en un dato: "+e.getMessage());
             }
             pila.addFirst(res);
             interprete.setCp(interprete.getCp());

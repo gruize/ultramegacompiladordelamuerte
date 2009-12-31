@@ -24,6 +24,7 @@ public class MenorIg extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        /*
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1=(DatoPila) pila.pop();
         DatoPila d2=(DatoPila) pila.pop();
@@ -46,5 +47,6 @@ public class MenorIg extends InstruccionInterprete{
                     break;
             }
         }
+         * */
     }
 }

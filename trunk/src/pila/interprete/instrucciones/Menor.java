@@ -23,6 +23,7 @@ public class Menor extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        /*
         DatoPila d1=(DatoPila) pila.pop();
         DatoPila d2=(DatoPila) pila.pop();
         byte tipo=d1.getTipo();
@@ -41,6 +42,6 @@ public class Menor extends InstruccionInterprete{
                     System.out.println(b1);
                     break;
             }
-        }
+        }*/
     }
 }

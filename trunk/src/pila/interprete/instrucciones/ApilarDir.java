@@ -26,7 +26,9 @@ public class ApilarDir extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        DatoPila d=new DatoPila(tipo,dato);
+        /*
+         DatoPila d=new DatoPila(tipo,dato);
         pila.push(d);
+         */
     }
 }

@@ -23,7 +23,9 @@ public class CastFloat extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        Real e = new Real(interprete.getPila().removeFirst().toFloat());
+        /*
+         Real e = new Real(interprete.getPila().removeFirst().toFloat());
         interprete.getPila().addFirst(e);
+         * */
     }
 }
