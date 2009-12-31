@@ -64,4 +64,9 @@ public class Suma extends InstruccionInterprete {
             interprete.setCp(interprete.getCp());
         }        
     }
+
+    @Override
+    public String toString() {
+        return "Suma";
+    }
 }

@@ -16,7 +16,6 @@ import pila.interprete.excepiones.LectorExc;
  */
 public class Apilar extends InstruccionInterprete{
     public byte tipo;
-    public DatoPila dato;
 
     public Apilar() throws LectorExc{
         super(InstruccionInterprete.CODIGO_APILAR);
@@ -25,12 +24,16 @@ public class Apilar extends InstruccionInterprete{
     }
 
     public Apilar(DatoPila d) throws LectorExc {
-        super(InstruccionInterprete.CODIGO_APILAR);
-        dato = d;
+        super(InstruccionInterprete.CODIGO_APILAR,d);
     }
 
     @Override
     public void ejecutate(Interprete interprete) {
         interprete.getPila().addFirst(dato);
+    }
+
+    @Override
+    public String toString() {
+        return "Apilar";
     }
 }

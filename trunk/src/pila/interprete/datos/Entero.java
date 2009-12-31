@@ -13,7 +13,7 @@ public class Entero extends DatoPila {
     private int valor;
 
     public Entero(int valor) {
-        super(NAT_T);
+        super(INT_T);
         this.valor = valor;
     }
 
