@@ -35,7 +35,7 @@ public class analizadorER {
     }
 
     public boolean buscarChar(String str) {
-        return Pattern.compile("'.'").matcher(str).matches();
+        return Pattern.compile("'[a-zA-Z0-9]'").matcher(str).matches();
     }
 
     public boolean buscarComentario(String str) {
