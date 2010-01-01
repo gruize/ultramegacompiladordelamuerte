@@ -11,10 +11,7 @@
 
 package interfaz.pila;
 
-import java.awt.ComponentOrientation;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.LectorBytecode;
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +36,7 @@ public class InterpretePanel extends javax.swing.JPanel {
     public static void main(String [] args) {
         JFrame frame = new JFrame();
         frame.setContentPane(new InterpretePanel());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
