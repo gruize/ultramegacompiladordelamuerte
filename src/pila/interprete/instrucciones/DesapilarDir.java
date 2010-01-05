@@ -27,5 +27,6 @@ public class DesapilarDir extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
+        interprete.getPila().pop();
     }
 }

@@ -1,8 +1,11 @@
 package pila.interprete.instrucciones;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
@@ -23,9 +26,11 @@ public class CastInt extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        /*
-        Entero e = new Entero(interprete.getPila().removeFirst().toInt());
-        interprete.getPila().addFirst(e);
-         */
+        try {
+            Entero e = new Entero(interprete.getPila().removeFirst().toInt());
+            interprete.getPila().addFirst(e);
+        } catch (DatoExc ex) {
+            Logger.getLogger(CastInt.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

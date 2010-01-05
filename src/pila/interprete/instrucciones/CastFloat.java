@@ -1,8 +1,11 @@
 package pila.interprete.instrucciones;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
@@ -23,9 +26,11 @@ public class CastFloat extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        /*
-         Real e = new Real(interprete.getPila().removeFirst().toFloat());
-        interprete.getPila().addFirst(e);
-         * */
+        try {
+            Real e = new Real(interprete.getPila().removeFirst().toFloat());
+            interprete.getPila().addFirst(e);
+        } catch (DatoExc ex) {
+            Logger.getLogger(CastFloat.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
