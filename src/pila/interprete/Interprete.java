@@ -84,7 +84,8 @@ public class Interprete {
         setCp(0);
         setParar(false);
         while(!isParar()) {
-            ((InstruccionInterprete)programa.get(getCp())).ejecutate(this);
+            if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))
+                cp++;
         }
     }
 

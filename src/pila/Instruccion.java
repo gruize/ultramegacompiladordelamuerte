@@ -9,13 +9,7 @@ package pila;
  * Se trata de una representación muy abstracta de una
  * instrucción
  */
-public abstract class Instruccion {
+public interface Instruccion {
 
-    abstract public Dato getDato();
-
-    @Override
-    public String toString() {
-        return "Abstracta";
-    }
-
+    public Dato getDato();
 }

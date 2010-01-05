@@ -24,17 +24,17 @@ public class Caracter extends DatoPila {
 
     @Override
     public int toInt() {
-        return (int)valor;
+        return valor;
     }
 
     @Override
-    public long toNatural() {
-        return (long)valor;
+    public int toNatural() {
+        return valor;
     }
 
     @Override
     public float toFloat() {
-        return (float)valor;
+        return valor;
     }
 
     @Override

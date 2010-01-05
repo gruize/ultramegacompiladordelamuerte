@@ -22,14 +22,14 @@ public class Entero extends DatoPila {
         return valor;
     }
 
+    /*La memoria dice que no se admite estos castings
+    public int toNatural()
+    public char toChar()
+     */
+    
     @Override
     public int toInt() {
         return valor;
-    }
-
-    @Override
-    public long toNatural() {
-        return (long)valor;
     }
 
     @Override

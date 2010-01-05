@@ -120,10 +120,10 @@ public abstract class TraductorPila {
     }
 
     abstract protected Dato traducirInt(String str) throws Exception;
-    abstract protected Dato traducirNat(String str);
-    abstract protected Dato traducirFloat(String str);
-    abstract protected Dato traducirChar(String str);
-    abstract protected Dato traducirBool(String str);
+    abstract protected Dato traducirNat(String str) throws Exception;
+    abstract protected Dato traducirFloat(String str) throws Exception;
+    abstract protected Dato traducirChar(String str) throws Exception;
+    abstract protected Dato traducirBool(String str) throws Exception;
 
     abstract protected Instruccion traducirApila(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirApilaDir(StringTokenizer st) throws Exception;

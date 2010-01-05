@@ -2,6 +2,7 @@ package pila.interprete.instrucciones;
 
 import pila.Dato;
 import pila.interprete.Interprete;
+import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
 
@@ -22,7 +23,21 @@ public class Y extends InstruccionInterprete{
     }
 
     @Override
-    public void ejecutate(Interprete interprete) {
+    public String toString() {
+        return "Y";
+    }
+
+    /**
+     * Semantica:
+     * apilar(Booleano(desapilar && desapilar))
+     * @return siempre true (nunca modifica el cp del interprete)
+     * @throws InstruccionExc si encuentra tipos de datos no booleanos
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) throws InstruccionExc {
+        /*
+         * TODO: Implementar
+         */
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

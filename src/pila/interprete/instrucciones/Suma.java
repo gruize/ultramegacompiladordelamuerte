@@ -32,7 +32,18 @@ public class Suma extends InstruccionInterprete {
     }
 
     @Override
-    public void ejecutate(Interprete interprete) throws InstruccionExc{
+    public String toString() {
+        return "Suma";
+    }
+
+    /**
+     * Semantica:
+     * apilar(DatoQueSea(desapilar + desapilar))
+     * @return siempre true (nunca modifica el cp del interprete)
+     * @throws InstruccionExc si encuentra tipos de datos incompatibles
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();
@@ -59,10 +70,12 @@ public class Suma extends InstruccionInterprete {
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
                 }
                 pila.addFirst(res);
-                interprete.setCp(interprete.getCp());
             } catch (DatoExc ex) {
-                Logger.getLogger(Suma.class.getName()).log(Level.SEVERE, null, ex);
+                //realmente este error no deberia darse nunca, puesto que se
+                //comprueba en el if(t1 != t2)
+                throw new InstruccionExc(this, ex.getMessage());
             }
-        }        
+        }
+        return true;
     }
 }
