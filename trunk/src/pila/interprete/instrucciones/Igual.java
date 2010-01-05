@@ -1,5 +1,7 @@
 package pila.interprete.instrucciones;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.LectorExc;
@@ -21,15 +23,15 @@ public class Igual extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        /*
-        DatoPila d1=(DatoPila) pila.pop();
-        DatoPila d2=(DatoPila) pila.pop();
-        byte tipo=d1.getTipo();
-        if (d1.getTipo() != d2.getTipo() || tipo!=CODIGO_BOOLEAN){
+        DatoPila d1 = (DatoPila) interprete.getPila().pop();
+        DatoPila d2 = (DatoPila) interprete.getPila().pop();
+        byte tipo = d1.getTipoDato();
+        if (d1.getTipoDato() != d2.getTipoDato() || tipo!=CODIGO_BOOLEAN){
             //error;
+            Logger.getLogger(CastInt.class.getName()).log(Level.SEVERE, null);
         }
         else{
             
-        }*/
+        }
     }
 }

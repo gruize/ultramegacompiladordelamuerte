@@ -1,6 +1,8 @@
 package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.Dato;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.Interprete;
@@ -43,30 +45,24 @@ public class Suma extends InstruccionInterprete {
         }
         else{
             try {
-                switch (d1.getTipoDato()){
+                switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Natural(d1.toNatural()+d2.toNatural());
+                        res = new Natural(d1.toNatural() + d2.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Entero(d1.toInt()+d2.toInt());
+                        res = new Entero(d1.toInt() + d2.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Real(d1.toFloat()+d2.toFloat());
+                        res = new Real(d1.toFloat() + d2.toFloat());
                         break;
                     default:
-                        throw new InstruccionExc(this,"Tipo inválido ("+d1.toString()+")");
+                        throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
                 }
+                pila.addFirst(res);
+                interprete.setCp(interprete.getCp());
+            } catch (DatoExc ex) {
+                Logger.getLogger(Suma.class.getName()).log(Level.SEVERE, null, ex);
             }
-            catch (DatoExc e) {
-                throw new InstruccionExc(this, "Error en un dato: "+e.getMessage());
-            }
-            pila.addFirst(res);
-            interprete.setCp(interprete.getCp());
         }        
-    }
-
-    @Override
-    public String toString() {
-        return "Suma";
     }
 }

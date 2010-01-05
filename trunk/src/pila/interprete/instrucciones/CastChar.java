@@ -1,8 +1,11 @@
 package pila.interprete.instrucciones;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
@@ -23,10 +26,12 @@ public class CastChar extends InstruccionInterprete{
 
     @Override
     public void ejecutate(Interprete interprete) {
-        /*
-        Caracter e = new Caracter(interprete.getPila().removeFirst().toChar());
-        interprete.getPila().addFirst(e);
-         */
+        try {
+            Caracter e = new Caracter(interprete.getPila().removeFirst().toChar());
+            interprete.getPila().addFirst(e);
+        } catch (DatoExc ex) {
+            Logger.getLogger(CastChar.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

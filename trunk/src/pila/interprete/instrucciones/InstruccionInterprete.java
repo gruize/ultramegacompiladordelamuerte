@@ -39,8 +39,17 @@ public abstract class InstruccionInterprete extends Instruccion {
     public static final byte CODIGO_CASTINT = (byte) 22;
     public static final byte CODIGO_CASTCHAR = (byte) 23;
     public static final byte CODIGO_CASTFLOAT = (byte) 24;
+    //añado algunos que no estan, pero que verdaderamente no
+    //estoy segura de q se usen asi...
+    public static final byte CODIGO_ERROR = (byte) 25;
+    public static final byte CODIGO_BOOLEAN = (byte) 26;
+    public static final byte CODIGO_CHAR = (byte) 27;
+    public static final byte CODIGO_FLOAT = (byte) 28;
+    public static final byte CODIGO_INTEGER = (byte) 29;
+    public static final byte CODIGO_NATURAL = (byte) 30;
 
-    protected DatoPila dato;
+
+    private DatoPila dato;
     private byte tipoIns;
 
     public InstruccionInterprete(byte tipoIns) throws LectorExc{
