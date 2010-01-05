@@ -2,6 +2,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
@@ -24,7 +25,23 @@ public class Shl extends InstruccionInterprete{
     }
 
     @Override
-    public void ejecutate(Interprete interprete) {
+    public String toString() {
+        return "shl";
+    }
+
+    /**
+     * Semantica:
+     * apilar(DatoQueSea(desapilar shl desapilar))
+     * @return siempre true (nunca modifica el cp del interprete)
+     * @throws InstruccionExc si encuentra tipos de datos incompatibles (el
+     * segundo debe ser siempre un natural)
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) throws InstruccionExc {
+        /*
+         * TODO: Implementar. shl == <<. No lo pongo en el javadoc porque lo
+         * reconoce como etiqueta html xD
+         */
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

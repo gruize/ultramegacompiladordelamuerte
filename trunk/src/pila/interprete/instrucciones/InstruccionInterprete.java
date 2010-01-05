@@ -13,7 +13,7 @@ import pila.interprete.excepiones.LectorExc;
  * Contiene las constantes de todos los tipos de instrucción y la
  * interfaz del método ejecutar, el más importante de las instrucciones
  */
-public abstract class InstruccionInterprete extends Instruccion {
+public abstract class InstruccionInterprete implements Instruccion {
 
     public static final byte CODIGO_APILAR = (byte) 1;
     public static final byte CODIGO_APILARDIR = (byte) 2;
@@ -70,10 +70,10 @@ public abstract class InstruccionInterprete extends Instruccion {
      * @param interprete el interprete que ejecuta la instrucción
      * @throws InstruccionExc Si ocurre un error al ejecutar la instrucción
      */
-    public abstract void ejecutate(Interprete interprete) throws InstruccionExc;
+    public abstract boolean ejecutate(Interprete interprete) throws InstruccionExc;
 
     /**
-     * @return El dato asociado a esta instrucción en el caso de tenerlo
+     * @return the dato
      */
     public DatoPila getDato() {
         return dato;
@@ -91,6 +91,11 @@ public abstract class InstruccionInterprete extends Instruccion {
         if(getDato() != null) {
             getDato().escribete(dos);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Abstracta";
     }
 
 }

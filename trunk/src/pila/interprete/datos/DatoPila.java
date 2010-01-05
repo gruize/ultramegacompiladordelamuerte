@@ -1,6 +1,5 @@
 package pila.interprete.datos;
 
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import pila.Dato;
@@ -45,7 +44,7 @@ public abstract class DatoPila extends Dato {
      * @throws DatoExc si son datos de tipos distintos y
      * el casting no puede hacerse
      */
-    public long toNatural() throws DatoExc {
+    public int toNatural() throws DatoExc {
         throw new DatoExc(this,toString()+" no puede transformarse en " +
                 "un natural");
     }

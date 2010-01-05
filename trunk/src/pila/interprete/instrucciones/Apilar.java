@@ -28,8 +28,9 @@ public class Apilar extends InstruccionInterprete{
     }
 
     @Override
-    public void ejecutate(Interprete interprete) {
-        interprete.getPila().addFirst(dato);
+    public boolean ejecutate(Interprete interprete) {
+        interprete.getPila().addFirst(getDato());
+        return true;
     }
 
     @Override

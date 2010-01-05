@@ -1,13 +1,7 @@
 package pila.interprete.instrucciones;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Entero;
-import pila.interprete.datos.Natural;
-import pila.interprete.datos.Real;
-import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -27,7 +21,21 @@ public class Resta extends InstruccionInterprete{
     }
 
     @Override
-    public void ejecutate(Interprete interprete) throws InstruccionExc{
+    public String toString() {
+        return "Resta";
+    }
+
+    /**
+     * Semantica:
+     * apilar(DatoQueSea(desapilar - desapilar))
+     * @return siempre true (nunca modifica el cp del interprete)
+     * @throws InstruccionExc si encuentra tipos de datos incompatibles o si dos
+     * naturales dan como resultado un numero negativo
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) throws InstruccionExc {
+        /*
+         * TODO: Implementar
         DatoPila d1 = interprete.getPila().removeFirst();
         DatoPila d2 = interprete.getPila().removeFirst();
         DatoPila res;
@@ -61,6 +69,8 @@ public class Resta extends InstruccionInterprete{
                 Logger.getLogger(Resta.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+         */
+        return true;
     }
 
 }

@@ -3,6 +3,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
 /**
@@ -26,7 +27,21 @@ public class DesapilarDir extends InstruccionInterprete{
 
 
     @Override
-    public void ejecutate(Interprete interprete) {
+    public String toString() {
+        return "DesapilarDir";
+    }
+
+    /**
+     * Semantica:
+     * memoria[dato] = desapilar
+     * @return siempre true (nunca modifica el cp del interprete)
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) throws InstruccionExc {
+        /*
+         * TODO: Implementar
+         */
         interprete.getPila().pop();
+        return true;
     }
 }

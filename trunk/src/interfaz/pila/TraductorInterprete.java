@@ -10,6 +10,7 @@ import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.Apilar;
 import pila.interprete.instrucciones.ApilarDir;
 import pila.interprete.instrucciones.CastChar;
@@ -213,8 +214,8 @@ public class TraductorInterprete extends TraductorPila {
     }
 
     @Override
-    protected Dato traducirNat(String str) {
-        return new Natural(Long.valueOf(str));
+    protected Dato traducirNat(String str) throws DatoExc {
+        return new Natural(Integer.valueOf(str));
     }
 
     @Override

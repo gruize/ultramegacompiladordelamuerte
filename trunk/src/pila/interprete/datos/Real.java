@@ -28,6 +28,16 @@ public class Real extends DatoPila {
     }
 
     @Override
+    public int toInt() {
+        return (int) valor; //por defecto trunca
+    }
+
+    /*La memoria dice que no se admite estos castings
+    public int toNatural()
+    public char toChar()
+     */
+
+    @Override
     public String toString() {
         return "Real ("+Float.toString(valor)+")";
     }

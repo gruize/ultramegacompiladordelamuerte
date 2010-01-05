@@ -25,8 +25,21 @@ public class ApilarDir extends InstruccionInterprete{
     }
 
     @Override
-    public void ejecutate(Interprete interprete) {
-        DatoPila d = new DatoPila(tipo,dato);
+    public String toString() {
+        return "ApilarDir";
+    }
+
+    /**
+     * Semantica:
+     * apilar memoria[this.getDato()]
+     * @return siempre true (nunca modifica el cp del interprete)
+     */
+    @Override
+    public boolean ejecutate(Interprete interprete) {
+        /*
+         * TODO: Implementar
         interprete.getPila().push(d);
+         */
+        return true;
     }
 }

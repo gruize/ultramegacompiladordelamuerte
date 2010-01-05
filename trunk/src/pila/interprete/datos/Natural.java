@@ -10,11 +10,13 @@ import pila.interprete.excepiones.DatoExc;
  */
 public class Natural extends DatoPila {
 
-    private long valor;
+    private int valor;
 
-    public Natural(long valor) {
+    public Natural(int valor) throws DatoExc {
         super(NAT_T);
         this.valor = valor;
+        if(valor < 0)
+            throw new DatoExc(this, "No puede asignarse un valor negativo a un natural");
     }
 
     @Override
@@ -23,17 +25,27 @@ public class Natural extends DatoPila {
     }
 
     @Override
-    public long toNatural() {
+    public int toNatural() {
         return valor;
     }
 
-    /*
-     * TODO: Decidir si se permite
     @Override
-    public float toFloat() throws DatoExc {
-        
+    public char toChar() throws DatoExc {
+        char c = (char)valor;
+        if(c != valor)
+            super.toChar(); //esto lanzara excepcion
+        return c;
     }
-     */
+
+    @Override
+    public int toInt() {
+        return valor;
+    }
+
+    @Override
+    public float toFloat() {
+        return valor;
+    }
 
     @Override
     public String toString() {
@@ -55,6 +67,6 @@ public class Natural extends DatoPila {
     @Override
     public void escribete(DataOutputStream dos) throws IOException {
         super.escribete(dos);
-        dos.writeLong(valor);
+        dos.writeInt(valor);
     }
 }

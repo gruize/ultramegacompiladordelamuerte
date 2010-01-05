@@ -1,6 +1,9 @@
 package pila.interprete;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.DataInputStream;
 import java.io.File;
@@ -59,7 +62,11 @@ public class LectorPila implements LectorBytecode {
                 case DatoPila.CHAR_T:
                     return new Caracter(dis.readChar());
                 case DatoPila.NAT_T:
-                    return new Natural(dis.readLong());
+                    try {
+                        return new Natural(dis.readInt());
+                    } catch (DatoExc ex) {
+                        throw new LectorExc(ex.getLocalizedMessage());
+                    }
                 case DatoPila.INT_T:
                     return new Entero(dis.readInt());
                 case DatoPila.FLOAT_T:
