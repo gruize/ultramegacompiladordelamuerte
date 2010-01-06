@@ -9,7 +9,7 @@ import java.util.Iterator;
 import pila.jvm.AtributoInfo;
 import pila.jvm.Tabla;
 import pila.jvm.U2;
-import pila.jvm.instrucciones.InstruccionJVM;
+import pila.jvm.instrucciones.InstJvm;
 
 /**
  *
@@ -43,7 +43,7 @@ public class CodeAttribute extends AtributoInfo {
      * @param codigo
      * @param maxLocals
      */
-    public CodeAttribute (U2 nameIndex, Tabla<InstruccionJVM> codigo, int maxLocals) {
+    public CodeAttribute (U2 nameIndex, Tabla<InstJvm> codigo, int maxLocals) {
         super(nameIndex);
         //guardamos max_stack
         U2 u2 = new U2();
@@ -56,7 +56,7 @@ public class CodeAttribute extends AtributoInfo {
         u2.appendTo(info);
 
         //guardamos el codigo
-        for(Iterator<InstruccionJVM> it = codigo.iterator(); it.hasNext();)
+        for(Iterator<InstJvm> it = codigo.iterator(); it.hasNext();)
             it.next().appendTo(info);
 
         //guardamos 0 en el nº de expceciones
