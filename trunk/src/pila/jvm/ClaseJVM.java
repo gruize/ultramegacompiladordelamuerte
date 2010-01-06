@@ -9,7 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 import pila.jvm.atributos.CodeAttribute;
-import pila.jvm.instrucciones.InstruccionJVM;
+import pila.jvm.instrucciones.InstJvm;
 
 /**
  * El objetivo de esta clase es crear archivos .class comprensibles por una
@@ -124,7 +124,7 @@ public class ClaseJVM implements EstructuraClass {
      * cuenta los longs y doubles cuentan doble.
      */
     public void nuevoMetodo(String identificador, Class<?> tipoDevuelto, 
-            Class<?>[] tiposArgs, U2 accessFlags, Tabla<InstruccionJVM> codigo,
+            Class<?>[] tiposArgs, U2 accessFlags, Tabla<InstJvm> codigo,
             int maxLocals) {
         U2 dirId = constantPool.nuevoUtf8(identificador);
         StringBuilder methodDescriptor = new StringBuilder();
