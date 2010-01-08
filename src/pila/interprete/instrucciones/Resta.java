@@ -1,7 +1,12 @@
 package pila.interprete.instrucciones;
 
+import java.util.ArrayDeque;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Natural;
+import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -36,8 +41,10 @@ public class Resta extends InstruccionInterprete{
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         /*
          * TODO: Implementar
-        DatoPila d1 = interprete.getPila().removeFirst();
-        DatoPila d2 = interprete.getPila().removeFirst();
+        */
+        ArrayDeque<DatoPila> pila = interprete.getPila();
+        DatoPila d1= pila.pop();
+        DatoPila d2= pila.pop();
         DatoPila res;
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
@@ -63,13 +70,14 @@ public class Resta extends InstruccionInterprete{
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
                 }
-                interprete.getPila().addFirst(res);
-                interprete.setCp(interprete.getCp());
+                pila.addFirst(res);
+
             } catch (DatoExc ex) {
-                Logger.getLogger(Resta.class.getName()).log(Level.SEVERE, null, ex);
+                //realmente este error no deberia darse nunca, puesto que se
+                //comprueba en el if(t1 != t2)
+                throw new InstruccionExc(this, ex.getMessage());
             }
         }
-         */
         return true;
     }
 

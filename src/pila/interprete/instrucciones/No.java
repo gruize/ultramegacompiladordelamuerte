@@ -1,7 +1,10 @@
 package pila.interprete.instrucciones;
 
+import java.util.ArrayDeque;
 import pila.interprete.Interprete;
+import pila.interprete.datos.Booleano;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -9,16 +12,15 @@ import pila.interprete.excepiones.LectorExc;
  *
  * @author ruben
  */
-public class No extends InstruccionInterprete{
+public class No extends InstruccionInterprete {
 
-    public No() throws LectorExc{
+    public No() throws LectorExc {
         super(InstruccionInterprete.CODIGO_NO);
     }
 
-    public No(DatoPila d) throws LectorExc{
+    public No(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_NO);
-        throw new LectorExc("La instrucción no "
-                +"acepta argumentos");
+        throw new LectorExc("La instrucción no " + "acepta argumentos");
     }
 
     @Override
@@ -44,6 +46,24 @@ public class No extends InstruccionInterprete{
         /*
          * TODO: Implementar
          */
-        throw new UnsupportedOperationException("Not supported yet.");
+        ArrayDeque<DatoPila> pila = interprete.getPila();
+        DatoPila d = pila.pop();
+        DatoPila res;
+
+        try {
+            switch (d.getTipoDato()) {
+                case DatoPila.BOOL_T:
+                    res = new Booleano(!d.toBoolean());
+                    break;
+                default:
+                    throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");
+            }
+            pila.addFirst(res);
+        } catch (DatoExc ex) {
+            //realmente este error no deberia darse nunca, puesto que se
+            //comprueba en el if(t1 != t2)
+            throw new InstruccionExc(this, ex.getMessage());
+        }
+    return true;
     }
 }

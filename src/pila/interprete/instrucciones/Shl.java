@@ -41,6 +41,7 @@ public class Shl extends InstruccionInterprete{
         /*
          * TODO: Implementar. shl == <<. No lo pongo en el javadoc porque lo
          * reconoce como etiqueta html xD
+         * Estoy mirando documentacion en internet sobre como hacer la operacion
          */
         throw new UnsupportedOperationException("Not supported yet.");
     }
