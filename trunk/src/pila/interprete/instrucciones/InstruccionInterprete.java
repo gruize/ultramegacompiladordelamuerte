@@ -47,6 +47,11 @@ public abstract class InstruccionInterprete implements Instruccion {
     public static final byte CODIGO_FLOAT = (byte) 28;
     public static final byte CODIGO_INTEGER = (byte) 29;
     public static final byte CODIGO_NATURAL = (byte) 30;
+    //los pongo aqui abajo porque no quiero descuadrar los numeros
+    //pero sino, los pongo en orden alfabetico, ya me decis
+    public static final byte CODIGO_ABS = (byte) 31;
+    public static final byte CODIGO_ENTRADA = (byte) 32;
+    public static final byte CODIGO_SALIDA = (byte) 33;
 
 
     private DatoPila dato;
@@ -80,7 +85,7 @@ public abstract class InstruccionInterprete implements Instruccion {
     }
 
     /**
-     * @return el byate que identifica el tipo de instrucción
+     * @return el byte que identifica el tipo de instrucción
      */
     public byte getTipoIns() {
         return tipoIns;

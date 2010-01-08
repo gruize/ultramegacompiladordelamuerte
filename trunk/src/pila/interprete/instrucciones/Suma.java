@@ -1,8 +1,6 @@
 package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.Dato;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.Interprete;
@@ -70,6 +68,7 @@ public class Suma extends InstruccionInterprete {
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
                 }
                 pila.addFirst(res);
+                
             } catch (DatoExc ex) {
                 //realmente este error no deberia darse nunca, puesto que se
                 //comprueba en el if(t1 != t2)

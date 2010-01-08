@@ -39,6 +39,7 @@ public class Shr extends InstruccionInterprete{
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         /*
          * TODO: Implementar
+         * Estoy mirando documentacion en internet sobre como hacer la operacion
          */
         throw new UnsupportedOperationException("Not supported yet.");
     }
