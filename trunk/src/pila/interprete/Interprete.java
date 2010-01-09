@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Iterator;
 import pila.Instruccion;
+import pila.interprete.datos.DatoPila;
 
 /**
  * El interprete es la "maquina virtual" que carga un
@@ -35,24 +37,33 @@ public class Interprete {
     private DatoPila[] memoria;
     private boolean parar; //true si ha acabado
     private int cp; //el contador de programa
+    private boolean modoDepuracion;
+    private StringBuilder sb; //para mostrar la pila, mas eficiente para jugar con el que un String
 
     /**
      * Crea un interprete con tantas posiciones de memoria
      * como se le indique
      * @param longMem el tamaño de la memoria
+     * @param depuracion
      */
-    public Interprete(int longMem) {
+    public Interprete(int longMem, boolean depuracion) {
         programa = null;
         pila = null;
         memoria = new DatoPila[longMem];
+        modoDepuracion = depuracion;
+        if(depuracion)
+            sb = new StringBuilder(100);
+        else
+            sb = null;
     }
 
     /**
      * Crea un interprete con un tamaño de memoria por
      * defecto (100)
+     * @param depuracion
      */
-    public Interprete() {
-        this(100);
+    public Interprete(boolean depuracion) {
+        this(100,depuracion);
     }
 
     /**
@@ -73,17 +84,44 @@ public class Interprete {
         pila = new ArrayDeque<DatoPila>();
     }
 
+    public String mostrarEstado() {
+        sb.delete(0, sb.length()); //se resetea
+        int i = memoria.length-1;
+        //buscamos la primera direccion de memoria con un dato guardado
+        System.out.println("Contenido de la memoria:");
+        while(i > 0 && memoria[i] == null)
+            i--;
+        for(int j = 0; j <= i; j++) {
+            System.out.println("\t"+j+") "+memoria[j].toString());
+        }
+
+        System.out.println("\n\nContenido de la pila:");
+        Iterator<DatoPila> it = pila.iterator();
+        i = 0;
+        while(it.hasNext()) {
+            sb.append("\t"+i+") "+it.next().toString());
+            i++;
+        }
+
+        return new String(sb);
+    }
+
     /**
      * Ejecuta el programa que se haya leído con anterioridad
      * @throws InstruccionExc si ocurre un error en ejecución
      * @throws NullPointerException si no se ha cargado ningún programa
      */
-    public void ejecutarPrograma() throws InstruccionExc {
+    public void ejecutarPrograma() throws InstruccionExc, IOException {
         if(programa != null)
             throw new NullPointerException("Programa no iniciado");
         setCp(0);
         setParar(false);
         while(!isParar()) {
+            if(modoDepuracion) {
+                System.out.print(mostrarEstado()+"\n\nDEBUG>");
+                System.in.read();
+                System.out.println();
+            }
             if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))
                 cp++;
         }
