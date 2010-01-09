@@ -12,6 +12,7 @@ public class Natural extends DatoPila {
 
     private int valor;
 
+
     public Natural(int valor) throws DatoExc {
         super(NAT_T);
         this.valor = valor;

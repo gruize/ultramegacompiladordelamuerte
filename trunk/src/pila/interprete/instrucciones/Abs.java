@@ -4,8 +4,13 @@
  */
 package pila.interprete.instrucciones;
 
+import java.util.ArrayDeque;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Natural;
+import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -18,22 +23,51 @@ public class Abs extends InstruccionInterprete {
     public byte tipo;
 
     public Abs() throws LectorExc {
-        super(InstruccionInterprete.CODIGO_APILAR);
+        super(InstruccionInterprete.CODIGO_ABS);
         throw new LectorExc("La instrucción apilar necesita " +
                 "un parámetro");
     }
 
     public Abs(DatoPila d) throws LectorExc {
-        super(InstruccionInterprete.CODIGO_APILAR, d);
+        super(InstruccionInterprete.CODIGO_ABS, d);
     }
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         /*
          * TODO: Implementar
-         * Acabo de añadirla,tengo q mirarlo
          */
-        throw new UnsupportedOperationException("Not supported yet.");
+        ArrayDeque<DatoPila> pila = interprete.getPila();
+        DatoPila d = pila.pop();
+        DatoPila res = null;
+
+        try {
+            switch (d.getTipoDato()) {
+                case DatoPila.NAT_T:
+                    res = new Natural(d.toNatural());
+                    break;
+                case DatoPila.INT_T:
+                    if (d.toInt() < 0)
+                        res = new Entero(d.toInt() + (d.toInt()^2));
+                    else
+                        res = new Entero(d.toInt());
+                    break;
+                case DatoPila.FLOAT_T:
+                    if (d.toFloat() < 0)
+                        res = new Real(d.toFloat() + (d.toFloat() * d.toFloat()));
+                    else
+                        res = new Real(d.toFloat());
+                    break;
+                default:
+                    throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");
+            }
+            pila.addFirst(res);
+        } catch (DatoExc ex) {
+            //realmente este error no deberia darse nunca, puesto que se
+            //comprueba en el if(t1 != t2)
+            throw new InstruccionExc(this, ex.getMessage());
+        }
+        return true;
     }
 
     @Override
