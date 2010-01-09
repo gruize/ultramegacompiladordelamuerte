@@ -13,11 +13,12 @@ import pila.interprete.excepiones.DatoExc;
  */
 public abstract class DatoPila extends Dato {
     
-    public static final byte FLOAT_T = 1;
-    public static final byte BOOL_T = 2;
+    public static final byte BOOL_T = 1;
+    public static final byte CHAR_T = 2;
     public static final byte NAT_T = 3;
     public static final byte INT_T = 4;
-    public static final byte CHAR_T = 5;
+    public static final byte FLOAT_T = 5;
+    
 
     private Byte tipoDato;
 
