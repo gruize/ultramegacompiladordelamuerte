@@ -44,11 +44,6 @@ public abstract class InstruccionInterprete implements Instruccion {
     public static final byte CODIGO_ABS = (byte) 26;
     public static final byte CODIGO_ENTRADA = (byte) 27;
     public static final byte CODIGO_SALIDA = (byte) 28;
-    //los pongo aqui abajo porque no quiero descuadrar los numeros
-    //pero sino, los pongo en orden alfabetico, ya me decis
-    public static final byte CODIGO_ABS = (byte) 31;
-    public static final byte CODIGO_ENTRADA = (byte) 32;
-    public static final byte CODIGO_SALIDA = (byte) 33;
 
 
     private DatoPila dato;
