@@ -43,7 +43,6 @@ public class Shr extends InstruccionInterprete{
         /*
          * TODO: Implementar shr == >>
          * Estoy mirando documentacion en internet sobre como hacer la operacion
-         * Estoy mirando documentacion en internet sobre como hacer la operacion
          */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
