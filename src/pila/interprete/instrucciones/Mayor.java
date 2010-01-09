@@ -62,11 +62,12 @@ public class Mayor extends InstruccionInterprete{
                     case DatoPila.FLOAT_T:
                         res = new Booleano(d1.toFloat() > d2.toFloat());
                         break;
-                    /* No funciona
                     case DatoPila.BOOL_T:
-                        res = new Booleano(d1.toBoolean() > d2.toBoolean());
+                        if (d1.toBoolean() && !d2.toBoolean()) //true > false
+                            res = new Booleano(true);
+                        else
+                            res = new Booleano(false);
                         break;
-                     */
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
                 }

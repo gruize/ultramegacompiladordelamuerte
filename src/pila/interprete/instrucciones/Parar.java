@@ -14,17 +14,17 @@ import pila.interprete.excepiones.LectorExc;
  *
  * @author Laura Reyero
  */
-public class Entrada extends InstruccionInterprete{
-    public byte tipo;
+public class Parar extends InstruccionInterprete {
+        public byte tipo;
 
-    public Entrada() throws LectorExc {
-        super(InstruccionInterprete.CODIGO_ENTRADA);
+    public Parar() throws LectorExc {
+        super(InstruccionInterprete.CODIGO_PARAR);
         throw new LectorExc("La instrucción apilar necesita " +
                 "un parámetro");
     }
 
-    public Entrada(DatoPila d) throws LectorExc {
-        super(InstruccionInterprete.CODIGO_ENTRADA, d);
+    public Parar(DatoPila d) throws LectorExc {
+        super(InstruccionInterprete.CODIGO_PARAR, d);
     }
 
     @Override
@@ -33,12 +33,13 @@ public class Entrada extends InstruccionInterprete{
          * TODO: Implementar
          * Acabo de añadirla,tengo q mirarlo
          */
-        throw new UnsupportedOperationException("Not supported yet.");
+        interprete.setParar(true);
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Entrada";
+        return "Parar";
     }
 
 }

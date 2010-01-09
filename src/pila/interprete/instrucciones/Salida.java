@@ -18,13 +18,13 @@ public class Salida extends InstruccionInterprete{
     public byte tipo;
 
     public Salida() throws LectorExc {
-        super(InstruccionInterprete.CODIGO_APILAR);
+        super(InstruccionInterprete.CODIGO_SALIDA);
         throw new LectorExc("La instrucción apilar necesita " +
                 "un parámetro");
     }
 
     public Salida(DatoPila d) throws LectorExc {
-        super(InstruccionInterprete.CODIGO_APILAR, d);
+        super(InstruccionInterprete.CODIGO_SALIDA, d);
     }
 
     @Override

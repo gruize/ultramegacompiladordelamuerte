@@ -1,8 +1,11 @@
 
 package pila.interprete.instrucciones;
 
+import java.util.ArrayDeque;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Natural;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -40,8 +43,22 @@ public class DesapilarDir extends InstruccionInterprete{
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         /*
          * TODO: Implementar
+         * interprete.getPila().pop();
          */
-        interprete.getPila().pop();
+        
+        try {
+            ArrayDeque<DatoPila> pila = interprete.getPila();
+            DatoPila d = pila.removeFirst();
+            switch (d.getTipoDato()) {
+                case DatoPila.NAT_T:
+                    interprete.getMemoria()[getDato().toNatural()] = d;
+                    break;
+                default:
+                    throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");
+            }
+        } catch (DatoExc ex) {
+            throw new InstruccionExc(this, ex.getMessage());
+        }
         return true;
     }
 }
