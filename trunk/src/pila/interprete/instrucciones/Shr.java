@@ -16,15 +16,12 @@ public class Shr extends InstruccionInterprete{
 
     public Shr() throws LectorExc {
         super(InstruccionInterprete.CODIGO_SHR);
-        throw new LectorExc("La instrucción necesista un " +
-                "valor natural como argumento");
     }
 
     public Shr(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_SHR,d);
-        if(d.getTipoDato() != DatoPila.NAT_T)
-            throw new LectorExc("La instrucción necesista " +
-                    "un valor natural como argumento");
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
@@ -40,10 +37,6 @@ public class Shr extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar shr == >>
-         * Estoy mirando documentacion en internet sobre como hacer la operacion
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();
@@ -51,7 +44,7 @@ public class Shr extends InstruccionInterprete{
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
+            throw new InstruccionExc(this,"Operandos inválidos ("
                     +d1.toString()+" + "+d2.toString()+")");
         }
         else{

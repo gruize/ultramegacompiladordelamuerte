@@ -38,9 +38,6 @@ public class Divide extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-        */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();
@@ -48,14 +45,11 @@ public class Divide extends InstruccionInterprete{
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
+            throw new InstruccionExc(this,"Operandos inválidos ("
                     + d1.toString()+" - "+ d2.toString()+")");
         }
         else{
             try {
-                if (d1.comparar(d2) < 0) {
-                    throw new InstruccionExc(this, d1.toString() + " mayor que " + d2.toString());
-                }
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
                         res = new Natural(d1.toNatural() / d2.toNatural());

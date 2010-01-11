@@ -38,15 +38,11 @@ public class CastInt extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar excepcion. Debe atrapar la DatoExc y lanzar una
-         * InstruccionExc
-         */
         try {
             Entero e = new Entero(interprete.getPila().removeFirst().toInt());
             interprete.getPila().addFirst(e);
         } catch (DatoExc ex) {
-            Logger.getLogger(CastInt.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InstruccionExc(this, ex.getMessage());
         }
         return true;
     }

@@ -48,7 +48,7 @@ public class Multiplica extends InstruccionInterprete {
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2) {
-            throw new InstruccionExc(this, "Operadores invalidos (" + d1.toString() + " + " + d2.toString() + ")");
+            throw new InstruccionExc(this, "Operandos invalidos (" + d1.toString() + " + " + d2.toString() + ")");
         } else {
             try {
                 switch (d1.getTipoDato()) {

@@ -38,15 +38,11 @@ public class CastFloat extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar excepcion. Debe atrapar la DatoExc y lanzar una
-         * InstruccionExc
-         */
         try {
             Real e = new Real(interprete.getPila().removeFirst().toFloat());
             interprete.getPila().addFirst(e);
         } catch (DatoExc ex) {
-            Logger.getLogger(CastFloat.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InstruccionExc(this, ex.getMessage());
         }
         return true;
     }

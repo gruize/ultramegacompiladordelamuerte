@@ -29,10 +29,6 @@ public class Parar extends InstruccionInterprete {
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         * Acabo de añadirla,tengo q mirarlo
-         */
         interprete.setParar(true);
         return true;
     }

@@ -49,24 +49,17 @@ public class Modulo extends InstruccionInterprete{
         DatoPila res;
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
-        if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
-                    + d1.toString()+" - "+ d2.toString()+")");
+        if (t2 != DatoPila.NAT_T){
+            throw new InstruccionExc(this,"Segundo operando "+d2.toString()+" inválido");
         }
         else{
             try {
-                if (d1.comparar(d2) < 0) {
-                    throw new InstruccionExc(this, d1.toString() + " mayor que " + d2.toString());
-                }
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
                         res = new Natural(d1.toNatural() % d2.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Entero(d1.toInt() % d2.toInt());
-                        break;
-                    case DatoPila.FLOAT_T:
-                        res = new Real(d1.toFloat() % d2.toFloat());
+                        res = new Entero(d1.toInt() % d2.toNatural());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
@@ -74,8 +67,6 @@ public class Modulo extends InstruccionInterprete{
                 pila.addFirst(res);
 
             } catch (DatoExc ex) {
-                //realmente este error no deberia darse nunca, puesto que se
-                //comprueba en el if(t1 != t2)
                 throw new InstruccionExc(this, ex.getMessage());
             }
         }

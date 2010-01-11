@@ -16,15 +16,12 @@ public class Shl extends InstruccionInterprete{
 
     public Shl() throws LectorExc{
         super(InstruccionInterprete.CODIGO_SHL);
-        throw new LectorExc("La instrucción necesista " +
-                "un valor natural como argumento");
     }
 
     public Shl(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_SHL,d);
-        if(d.getTipoDato() != DatoPila.NAT_T)
-            throw new LectorExc("La instrucción necesista " +
-                    "un valor natural como argumento");
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
@@ -41,11 +38,6 @@ public class Shl extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar. shl == <<. No lo pongo en el javadoc porque lo
-         * reconoce como etiqueta html xD
-         * Estoy mirando documentacion en internet sobre como hacer la operacion
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();
@@ -53,7 +45,7 @@ public class Shl extends InstruccionInterprete{
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
+            throw new InstruccionExc(this,"Operandos inválidos ("
                     +d1.toString()+" + "+d2.toString()+")");
         }
         else{
