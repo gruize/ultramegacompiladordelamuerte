@@ -5,8 +5,12 @@
 
 package pila.interprete.instrucciones;
 
+import java.util.ArrayDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -19,21 +23,41 @@ public class Salida extends InstruccionInterprete{
 
     public Salida() throws LectorExc {
         super(InstruccionInterprete.CODIGO_SALIDA);
-        throw new LectorExc("La instrucción apilar necesita " +
-                "un parámetro");
     }
 
     public Salida(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_SALIDA, d);
+        throw new LectorExc("La instrucción no "
+                +"acepta argumentos");
     }
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         * Acabo de añadirla,tengo q mirarlo
-         */
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            ArrayDeque<DatoPila> pila = interprete.getPila();
+            DatoPila d1 = pila.pop();
+            switch (d1.getTipoDato()) {
+                case DatoPila.BOOL_T:
+                    System.out.println(d1.toBoolean());
+                    break;
+                case DatoPila.CHAR_T:
+                    System.out.println(d1.toChar());
+                    break;
+                case DatoPila.NAT_T:
+                    System.out.println(d1.toNatural());
+                    break;
+                case DatoPila.INT_T:
+                    System.out.println(d1.toInt());
+                    break;
+                case DatoPila.FLOAT_T:
+                    System.out.println(d1.toFloat());
+                    break;
+            }
+        } catch (DatoExc ex) {
+            throw new InstruccionExc(this, ex.getMessage());
+        }
+            return true;
+
     }
 
     @Override

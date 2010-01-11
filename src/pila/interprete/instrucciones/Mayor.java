@@ -37,9 +37,6 @@ public class Mayor extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();
@@ -47,7 +44,7 @@ public class Mayor extends InstruccionInterprete{
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
+            throw new InstruccionExc(this,"Operandos inválidos ("
                     +d1.toString()+" + "+d2.toString()+")");
         }
         else{

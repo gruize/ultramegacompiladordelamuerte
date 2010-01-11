@@ -49,7 +49,7 @@ public class Suma extends InstruccionInterprete {
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
         if (t1 != t2){
-            throw new InstruccionExc(this,"Operadores invalidos ("
+            throw new InstruccionExc(this,"Operandos inválidos ("
                     +d1.toString()+" + "+d2.toString()+")");
         }
         else{

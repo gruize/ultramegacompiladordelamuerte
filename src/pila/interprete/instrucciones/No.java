@@ -43,9 +43,6 @@ public class No extends InstruccionInterprete {
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d = pila.pop();
         DatoPila res;
@@ -60,8 +57,6 @@ public class No extends InstruccionInterprete {
             }
             pila.addFirst(res);
         } catch (DatoExc ex) {
-            //realmente este error no deberia darse nunca, puesto que se
-            //comprueba en el if(t1 != t2)
             throw new InstruccionExc(this, ex.getMessage());
         }
     return true;

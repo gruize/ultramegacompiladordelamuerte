@@ -41,11 +41,6 @@ public class DesapilarDir extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         * interprete.getPila().pop();
-         */
-        
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila d = pila.removeFirst();

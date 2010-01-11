@@ -5,8 +5,19 @@
 
 package pila.interprete.instrucciones;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pila.interprete.Interprete;
+import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Natural;
+import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -15,7 +26,7 @@ import pila.interprete.excepiones.LectorExc;
  * @author Laura Reyero
  */
 public class Entrada extends InstruccionInterprete{
-    public byte tipo;
+    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public Entrada() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA);
@@ -25,15 +36,56 @@ public class Entrada extends InstruccionInterprete{
 
     public Entrada(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA, d);
+        if(d.getTipoDato() != DatoPila.NAT_T)
+            throw new LectorExc("La instrucción requiere un " +
+                    "argumento natural");
     }
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         * Acabo de añadirla,tengo q mirarlo
-         */
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            DatoPila dato;
+            String leido = reader.readLine();
+            byte tipoDato;
+            if(interprete.getMemoria()[getDato().toNatural()] == null)
+                throw new InstruccionExc(this,"Dirección de memoria "
+                        +getDato().toNatural()+" no iniciada");
+            switch(interprete.getMemoria()[getDato().toNatural()].getTipoDato()) {
+                case DatoPila.BOOL_T:
+                    boolean b;
+                    if(leido.equals("true"))
+                        b = true;
+                    else
+                        if(leido.equals("false"))
+                            b = false;
+                        else
+                            throw new InstruccionExc(this,"El dato leido no " +
+                                    "puede asignarse a un booleano");
+                    dato = new Booleano(b);
+                    break;
+                case DatoPila.CHAR_T:
+                    dato = new Caracter(leido.charAt(0));
+                    break;
+                case DatoPila.NAT_T:
+                    int i = Integer.valueOf(leido);
+                    if(i < 0)
+                        throw new InstruccionExc(this,"El dato leído es "
+                            +getDato().toNatural()+" no iniciada");
+                    dato = new Natural(i);
+                    break;
+                case DatoPila.INT_T:
+                    dato = new Entero(Integer.valueOf(leido));
+                    break;
+                case DatoPila.FLOAT_T:
+                    dato = new Real(Float.valueOf(leido));
+                    break;
+
+            }
+
+        } catch (Exception ex) {
+            throw new InstruccionExc(this, ex.getMessage());
+        }
+        return true;
     }
 
     @Override

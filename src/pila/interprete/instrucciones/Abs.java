@@ -34,9 +34,6 @@ public class Abs extends InstruccionInterprete {
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d = pila.pop();
         DatoPila res = null;
@@ -48,15 +45,15 @@ public class Abs extends InstruccionInterprete {
                     break;
                 case DatoPila.INT_T:
                     if (d.toInt() < 0)
-                        res = new Entero(d.toInt() + (d.toInt()^2));
+                        res = new Entero(-d.toInt());
                     else
-                        res = new Entero(d.toInt());
+                        res = d;
                     break;
                 case DatoPila.FLOAT_T:
                     if (d.toFloat() < 0)
-                        res = new Real(d.toFloat() + (d.toFloat() * d.toFloat()));
+                        res = new Real(-d.toFloat());
                     else
-                        res = new Real(d.toFloat());
+                        res = d;
                     break;
                 default:
                     throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");

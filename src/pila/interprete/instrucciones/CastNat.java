@@ -50,7 +50,7 @@ public class CastNat extends InstruccionInterprete{
             Natural n = new Natural(interprete.getPila().removeFirst().toNatural());
             interprete.getPila().addFirst(n);
         } catch (DatoExc ex) {
-            Logger.getLogger(CastNat.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InstruccionExc(this, ex.getMessage());
         }
         return true;
     }

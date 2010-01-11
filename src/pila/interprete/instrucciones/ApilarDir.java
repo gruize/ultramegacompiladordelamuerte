@@ -39,10 +39,6 @@ public class ApilarDir extends InstruccionInterprete {
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-            /*
-             * TODO: Implementar
-            interprete.getPila().push(d);
-             */
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila d = pila.pop();
