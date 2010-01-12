@@ -88,20 +88,25 @@ public class Interprete {
         sb.delete(0, sb.length()); //se resetea
         int i = memoria.length-1;
         //buscamos la primera direccion de memoria con un dato guardado
-        System.out.println("Contenido de la memoria:");
-        while(i > 0 && memoria[i] == null)
+        sb.append("Contenido de la memoria:\n");
+        while(i >= 0 && memoria[i] == null)
             i--;
+        if(i < 0)
+            sb.append("Vacía\n");
         for(int j = 0; j <= i; j++) {
-            System.out.println("\t"+j+") "+memoria[j].toString());
+            sb.append("\t"+j+") "+memoria[j]+"\n");
         }
 
-        System.out.println("\n\nContenido de la pila:");
+        sb.append("\n\nContenido de la pila:\n");
         Iterator<DatoPila> it = pila.iterator();
         i = 0;
-        while(it.hasNext()) {
-            sb.append("\t"+i+") "+it.next().toString());
-            i++;
-        }
+        if(it.hasNext())
+            while(it.hasNext()) {
+                sb.append("\t"+i+") "+it.next()+"\n");
+                i++;
+            }
+        else
+            sb.append("Vacía\n");
 
         return new String(sb);
     }
@@ -112,14 +117,14 @@ public class Interprete {
      * @throws NullPointerException si no se ha cargado ningún programa
      */
     public void ejecutarPrograma() throws InstruccionExc, IOException {
-        if(programa != null)
+        if(programa == null)
             throw new NullPointerException("Programa no iniciado");
         setCp(0);
         setParar(false);
         while(!isParar()) {
             if(modoDepuracion) {
                 System.out.print(mostrarEstado()+"\n\nDEBUG>");
-                System.in.read();
+                //System.in.read();
                 System.out.println();
             }
             if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))

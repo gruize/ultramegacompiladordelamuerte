@@ -1,7 +1,5 @@
 package pila.interprete;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.InstruccionInterprete;
@@ -19,14 +17,17 @@ import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.LectorExc;
+import pila.interprete.instrucciones.Abs;
 import pila.interprete.instrucciones.Apilar;
 import pila.interprete.instrucciones.ApilarDir;
 import pila.interprete.instrucciones.CastChar;
 import pila.interprete.instrucciones.CastFloat;
 import pila.interprete.instrucciones.CastInt;
+import pila.interprete.instrucciones.CastNat;
 import pila.interprete.instrucciones.Desapilar;
 import pila.interprete.instrucciones.DesapilarDir;
 import pila.interprete.instrucciones.Divide;
+import pila.interprete.instrucciones.Entrada;
 import pila.interprete.instrucciones.Igual;
 import pila.interprete.instrucciones.Mayor;
 import pila.interprete.instrucciones.MayorIg;
@@ -38,7 +39,9 @@ import pila.interprete.instrucciones.Multiplica;
 import pila.interprete.instrucciones.No;
 import pila.interprete.instrucciones.NoIgual;
 import pila.interprete.instrucciones.O;
+import pila.interprete.instrucciones.Parar;
 import pila.interprete.instrucciones.Resta;
+import pila.interprete.instrucciones.Salida;
 import pila.interprete.instrucciones.Shl;
 import pila.interprete.instrucciones.Shr;
 import pila.interprete.instrucciones.Suma;
@@ -114,7 +117,7 @@ public class LectorPila implements LectorBytecode {
                 inst = new Desapilar();
                 break;
             case InstruccionInterprete.CODIGO_DESAPILARDIR:
-                inst = new DesapilarDir();
+                inst = new DesapilarDir(leerDato(dis));
                 break;
             case InstruccionInterprete.CODIGO_MENOR:
                 inst = new Menor();
@@ -175,6 +178,21 @@ public class LectorPila implements LectorBytecode {
                 break;
             case InstruccionInterprete.CODIGO_CASTFLOAT:
                 inst = new CastFloat();
+                break;
+            case InstruccionInterprete.CODIGO_CASTNAT:
+                inst = new CastNat();
+                break;
+            case InstruccionInterprete.CODIGO_PARAR:
+                inst = new Parar();
+                break;
+            case InstruccionInterprete.CODIGO_ABS:
+                inst = new Abs();
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA:
+                inst = new Entrada(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_SALIDA:
+                inst = new Salida();
                 break;
         }
         return inst;

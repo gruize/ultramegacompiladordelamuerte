@@ -29,9 +29,9 @@ public abstract class TraductorPila {
 
     public Instruccion traducirInstruccion(StringTokenizer st) throws Exception {
         String texto = st.nextToken().toLowerCase();
-        if (texto.equals("apila"))
+        if (texto.equals("apilar"))
             return traducirApila(st);
-        else if (texto.equals("apiladir"))
+        else if (texto.equals("apilardir"))
             return traducirApilaDir(st);
         else if (texto.equals("desapilar"))
             return traducirDesapila(st);
@@ -71,12 +71,22 @@ public abstract class TraductorPila {
             return traducirShl(st);
         else if (texto.equals("shr"))
             return traducirShr(st);
-        else if (texto.equals("int"))
+        else if (texto.equals("castint"))
             return traducirInt(st);
-        else if (texto.equals("char"))
+        else if (texto.equals("castchar"))
             return traducirChar(st);
-        else if (texto.equals("float"))
+        else if (texto.equals("castfloat"))
             return traducirFloat(st);
+        else if (texto.equals("castnat"))
+            return traducirNat(st);
+        else if (texto.equals("parar"))
+            return traducirParar(st);
+        else if(texto.equals("in"))
+            return traducirIn(st);
+        else if(texto.equals("out"))
+            return traducirOut(st);
+        else if(texto.equals("abs"))
+            return traducirAbs(st);
         throw new Exception("Nombre de instrucción \""+texto+"\" inválido");
     }
 
@@ -93,18 +103,11 @@ public abstract class TraductorPila {
         else if(expFloat.matcher(str).matches())
             dato = traducirFloat(str);
             
-        else if(expInt.matcher(str).matches()) {
-            try {
-                dato = traducirInt(str);
-                
-                if(dato == null)
-                    throw new Exception();
-            }
-            catch (Exception e) { //es demasiado grande
-                if(expNat.matcher(str).matches()) {
-                    dato = traducirNat(str);
-                }
-            }
+        else if(expNat.matcher(str).matches()) {
+            dato = traducirNat(str);
+
+            if(dato == null)
+                throw new Exception();
         }
         if(dato == null)
             throw new Exception("Dato "+str+" inválido");
@@ -131,6 +134,7 @@ public abstract class TraductorPila {
     abstract protected Instruccion traducirDesapilaDir(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirChar(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirFloat(StringTokenizer st) throws Exception;
+    abstract protected Instruccion traducirNat(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirInt(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirDiv(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirIgual(StringTokenizer st) throws Exception;
@@ -149,5 +153,11 @@ public abstract class TraductorPila {
     abstract protected Instruccion traducirShr(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirSuma(StringTokenizer st) throws Exception;
     abstract protected Instruccion traducirY(StringTokenizer st) throws Exception;
+    abstract protected Instruccion traducirParar(StringTokenizer st) throws Exception;
+    abstract protected Instruccion traducirIn(StringTokenizer st) throws Exception;
+    abstract protected Instruccion traducirOut(StringTokenizer st) throws Exception;
+    abstract protected Instruccion traducirAbs(StringTokenizer st) throws Exception;
+
+
 }
 
