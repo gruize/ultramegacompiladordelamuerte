@@ -19,12 +19,11 @@ public class Parar extends InstruccionInterprete {
 
     public Parar() throws LectorExc {
         super(InstruccionInterprete.CODIGO_PARAR);
-        throw new LectorExc("La instrucción apilar necesita " +
-                "un parámetro");
     }
 
     public Parar(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_PARAR, d);
+        throw new LectorExc("La instrucción parar no necesita parámetros");
     }
 
     @Override

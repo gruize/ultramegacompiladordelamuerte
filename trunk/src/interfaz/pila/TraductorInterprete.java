@@ -11,14 +11,17 @@ import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
+import pila.interprete.instrucciones.Abs;
 import pila.interprete.instrucciones.Apilar;
 import pila.interprete.instrucciones.ApilarDir;
 import pila.interprete.instrucciones.CastChar;
 import pila.interprete.instrucciones.CastFloat;
 import pila.interprete.instrucciones.CastInt;
+import pila.interprete.instrucciones.CastNat;
 import pila.interprete.instrucciones.Desapilar;
 import pila.interprete.instrucciones.DesapilarDir;
 import pila.interprete.instrucciones.Divide;
+import pila.interprete.instrucciones.Entrada;
 import pila.interprete.instrucciones.Igual;
 import pila.interprete.instrucciones.InstruccionInterprete;
 import pila.interprete.instrucciones.Mayor;
@@ -31,7 +34,9 @@ import pila.interprete.instrucciones.Multiplica;
 import pila.interprete.instrucciones.No;
 import pila.interprete.instrucciones.NoIgual;
 import pila.interprete.instrucciones.O;
+import pila.interprete.instrucciones.Parar;
 import pila.interprete.instrucciones.Resta;
+import pila.interprete.instrucciones.Salida;
 import pila.interprete.instrucciones.Shl;
 import pila.interprete.instrucciones.Shr;
 import pila.interprete.instrucciones.Suma;
@@ -231,6 +236,31 @@ public class TraductorInterprete extends TraductorPila {
     @Override
     protected Dato traducirBool(String str) {
         return new Booleano(Boolean.valueOf(str));
+    }
+
+    @Override
+    protected Instruccion traducirParar(StringTokenizer st) throws Exception {
+        return new Parar();
+    }
+
+    @Override
+    protected Instruccion traducirIn(StringTokenizer st) throws Exception {
+        return new Entrada((DatoPila) traducirDato(st));
+    }
+
+    @Override
+    protected Instruccion traducirOut(StringTokenizer st) throws Exception {
+        return new Salida();
+    }
+
+    @Override
+    protected Instruccion traducirAbs(StringTokenizer st) throws Exception {
+        return new Abs();
+    }
+
+    @Override
+    protected Instruccion traducirNat(StringTokenizer st) throws Exception {
+        return new CastNat();
     }
 
 }

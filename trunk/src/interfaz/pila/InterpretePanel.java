@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import pila.EscritorBytecode;
 import pila.Instruccion;
 import pila.interprete.EscritorPila;
+import pila.interprete.Interprete;
 import pila.interprete.LectorPila;
 
 /**
@@ -103,6 +104,7 @@ public class InterpretePanel extends javax.swing.JPanel {
         botonesPanel = new javax.swing.JPanel();
         decompilarBot = new javax.swing.JButton();
         compilarBot = new javax.swing.JButton();
+        EjecutarBot = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
@@ -130,22 +132,32 @@ public class InterpretePanel extends javax.swing.JPanel {
             }
         });
 
+        EjecutarBot.setText("Ejecutar");
+        EjecutarBot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EjecutarBotActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout botonesPanelLayout = new javax.swing.GroupLayout(botonesPanel);
         botonesPanel.setLayout(botonesPanelLayout);
         botonesPanelLayout.setHorizontalGroup(
             botonesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, botonesPanelLayout.createSequentialGroup()
+            .addGroup(botonesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(decompilarBot)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                 .addComponent(compilarBot)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(EjecutarBot)
                 .addContainerGap())
         );
         botonesPanelLayout.setVerticalGroup(
             botonesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(botonesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(decompilarBot)
                 .addComponent(compilarBot)
-                .addComponent(decompilarBot))
+                .addComponent(EjecutarBot))
         );
 
         add(botonesPanel, java.awt.BorderLayout.PAGE_END);
@@ -197,8 +209,23 @@ public class InterpretePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_compilarBotActionPerformed
 
+    private void EjecutarBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EjecutarBotActionPerformed
+        int ret = fileChooser.showOpenDialog(this);
+        if(ret == JFileChooser.APPROVE_OPTION) {
+            try {
+                File f = fileChooser.getSelectedFile();
+                Interprete interprete = new Interprete(true);
+                interprete.leerPrograma(f);
+                interprete.ejecutarPrograma();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.toString(), "Error al compilar", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_EjecutarBotActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton EjecutarBot;
     private javax.swing.JPanel botonesPanel;
     private javax.swing.JButton compilarBot;
     private javax.swing.JButton decompilarBot;
