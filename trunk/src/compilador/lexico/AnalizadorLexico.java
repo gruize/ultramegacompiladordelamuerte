@@ -61,7 +61,9 @@ private static final int FLOAT3 = 40;
 private static final int FLOAT4 = 41;
 private static final int FLOAT_FINAL3 = 42;
 private static final int FLOAT_FINAL4 = 43;
-
+private static final int CHAR1 = 44;
+private static final int CHAR2 = 45;
+private static final int CHAR_FINAL = 46;
 
 private char buff;
 private String lex;
@@ -115,6 +117,8 @@ public void scanner() throws IOException{
                     case '-': transita(SIGNO_MENOS); break;
                     case '0': transita(NATURAL_FINAL1); break;
                     case '[0-9]': transita(NATURAL_FINAL2); break;
+                    case ''' : transita(CHAR1); break;
+                    case '[a-zA-Z0-9]': transita()
                 }
                 break;
             case PARENTESIS_C :
@@ -310,6 +314,20 @@ public void scanner() throws IOException{
                 break;
             case FLOAT_FINAL4 :
                 break;
+            case CHAR1:
+                switch(buff){
+                    case '[a-zA-Z]': transita(CHAR2); break;
+                    default: error(estado);
+                }
+                break;
+            case CHAR2:
+                switch(buff){
+                    case ''': transita(CHAR_FINAL); break;
+                    default: error(estado);
+                }
+                break;
+            case CHAR_FINAL:
+                arrayTokens.add(new Char(lex));
             
         }
     }
