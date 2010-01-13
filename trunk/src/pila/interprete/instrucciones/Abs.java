@@ -24,8 +24,6 @@ public class Abs extends InstruccionInterprete {
 
     public Abs() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ABS);
-        throw new LectorExc("La instrucción apilar necesita " +
-                "un parámetro");
     }
 
     public Abs(DatoPila d) throws LectorExc {
