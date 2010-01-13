@@ -42,19 +42,26 @@ private static final int MENOR_IG = 21;
 private static final int SHR = 22;
 private static final int DOS_PUNTOS = 23;
 private static final int DOS_PUNTOS_IG = 24;
-private static final int NATURAL_FINAL1 = 25;
-private static final int NATURAL_FINAL2 = 26;
-private static final int FLOAT1 = 27;
-private static final int FLOAT_FINAL1 = 28;
-private static final int FLOAT_FINAL2 = 29;
-private static final int FLOAT2 = 30;
-private static final int FLOAT3 = 31;
-private static final int FLOAT4 = 32;
-private static final int FLOAT_FINAL3 = 33;
-private static final int FLOAT_FINAL4 = 34;
-private static final int DISTINTO1 = 35;
-private static final int DISTINTO2 = 36;
-private static final int DISTINTO_FINAL = 37;
+private static final int SEPARADOR =25;
+private static final int PUNTO_COMA = 26;
+private static final int DISTINTO1 = 27;
+private static final int DISTINTO2 = 28;
+private static final int DISTINTO_FINAL = 29;
+private static final int SUMA = 30;
+private static final int MULTIPLICACION = 31;
+private static final int MODULO = 32;
+private static final int SIGNO_MENOS = 33;
+private static final int NATURAL_FINAL1 = 34;
+private static final int NATURAL_FINAL2 = 35;
+private static final int FLOAT1 = 36;
+private static final int FLOAT_FINAL1 = 37;
+private static final int FLOAT_FINAL2 = 38;
+private static final int FLOAT2 = 39;
+private static final int FLOAT3 = 40;
+private static final int FLOAT4 = 41;
+private static final int FLOAT_FINAL3 = 42;
+private static final int FLOAT_FINAL4 = 43;
+
 
 private char buff;
 private String lex;
@@ -100,6 +107,12 @@ public void scanner() throws IOException{
                     case '<': transita(MENOR); break;
                     case '=': transita(DISTINTO1); break;
                     case ':': transita(DOS_PUNTOS); break;
+                    case '&': transita(SEPARADOR); break;
+                    case ';': transita(PUNTO_COMA); break;
+                    case '+': transita(SUMA); break;
+                    case '*': transita(MULTIPLICACION); break;
+                    case '%': transita(MODULO); break;
+                    case '-': transita(SIGNO_MENOS); break;
                     case '0': transita(NATURAL_FINAL1); break;
                     case '[0-9]': transita(NATURAL_FINAL2); break;
                 }
@@ -236,6 +249,39 @@ public void scanner() throws IOException{
             case DOS_PUNTOS_IG :
                 arrayTokens.add(new Dos_puntos_ig(lex));
                 break;
+            case SEPARADOR:
+                arrayTokens.add(new Separador(lex));
+                break;
+            case PUNTO_COMA:
+                arrayTokens.add(new Punto_coma(lex));
+                break;
+            case DISTINTO1:
+                switch(buff){
+                    case '/': transita(DISTINTO2); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO2 :
+                switch(buff){
+                    case '=': transita(DISTINTO_FINAL); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO_FINAL:
+                arrayTokens.add(new Distinto(lex));
+                break;
+            case SUMA:
+                arrayTokens.add(new Suma(lex));
+                break;
+            case MULTIPLICACION:
+                arrayTokens.add(new Multiplicacion(lex));
+                break;
+            case MODULO:
+                arrayTokens.add(new Modulo(lex));
+                break;
+            case SIGNO_MENOS:
+                arrayTokens.add(new Signo_menos(lex));
+                break;
             case NATURAL_FINAL1 :
                 switch(buff){
                     case '.': transita(FLOAT1); break;
@@ -264,21 +310,7 @@ public void scanner() throws IOException{
                 break;
             case FLOAT_FINAL4 :
                 break;
-            case DISTINTO1:
-                switch(buff){
-                    case '/': transita(DISTINTO2); break;
-                    default: error(estado);
-                }
-                break;
-            case DISTINTO2 :
-                switch(buff){
-                    case '=': transita(DISTINTO_FINAL); break;
-                    default: error(estado);
-                }
-                break;
-            case DISTINTO_FINAL:
-                arrayTokens.add(new Distinto(lex));
-                break;
+            
         }
     }
 }
