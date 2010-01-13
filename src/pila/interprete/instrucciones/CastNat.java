@@ -5,8 +5,6 @@
 
 package pila.interprete.instrucciones;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Natural;
@@ -42,10 +40,7 @@ public class CastNat extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar excepcion. Debe atrapar la DatoExc y lanzar una
-         * InstruccionExc
-         */
+
         try {
             Natural n = new Natural(interprete.getPila().removeFirst().toNatural());
             interprete.getPila().addFirst(n);

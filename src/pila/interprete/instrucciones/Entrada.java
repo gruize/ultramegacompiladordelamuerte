@@ -6,10 +6,7 @@
 package pila.interprete.instrucciones;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
@@ -17,7 +14,6 @@ import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
-import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 
@@ -46,7 +42,6 @@ public class Entrada extends InstruccionInterprete{
         try {
             DatoPila dato;
             String leido = reader.readLine();
-            byte tipoDato;
             if(interprete.getMemoria()[getDato().toNatural()] == null)
                 throw new InstruccionExc(this,"Dirección de memoria "
                         +getDato().toNatural()+" no iniciada");
