@@ -1,0 +1,17 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package compilador.lexico;
+
+/**
+ *
+ * @author ruben
+ */
+public class Cast_nat extends Token{
+    public Cast_nat(String l){
+        super(l);
+    }
+
+}
