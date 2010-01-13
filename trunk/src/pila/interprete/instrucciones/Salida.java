@@ -6,8 +6,6 @@
 package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;

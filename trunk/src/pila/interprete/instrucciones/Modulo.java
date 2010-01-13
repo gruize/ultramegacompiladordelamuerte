@@ -5,7 +5,6 @@ import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
-import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -40,9 +39,6 @@ public class Modulo extends InstruccionInterprete{
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1= pila.pop();
         DatoPila d2= pila.pop();

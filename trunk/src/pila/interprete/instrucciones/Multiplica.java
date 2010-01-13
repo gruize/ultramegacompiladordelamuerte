@@ -38,9 +38,6 @@ public class Multiplica extends InstruccionInterprete {
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
-        /*
-         * TODO: Implementar
-         */
         ArrayDeque<DatoPila> pila = interprete.getPila();
         DatoPila d1 = pila.pop();
         DatoPila d2 = pila.pop();
