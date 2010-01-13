@@ -36,20 +36,25 @@ private static final int CASTING_COMUN = 15;
 private static final int CASTING_FINAL =16;
 private static final int MAYOR = 17;
 private static final int MAYOR_IG = 18;
-private static final int MENOR = 19;
-private static final int MENOR_IG = 20;
-private static final int DOS_PUNTOS = 21;
-private static final int DOS_PUNTOS_IG = 22;
-private static final int NATURAL_FINAL1 = 23;
-private static final int NATURAL_FINAL2 = 24;
-private static final int FLOAT1 = 25;
-private static final int FLOAT_FINAL1 = 26;
-private static final int FLOAT_FINAL2 = 27;
-private static final int FLOAT2 = 28;
-private static final int FLOAT3 = 29;
-private static final int FLOAT4 = 30;
-private static final int FLOAT_FINAL3 = 31;
-private static final int FLOAT_FINAL4 = 32;
+private static final int SHL = 19;
+private static final int MENOR = 20;
+private static final int MENOR_IG = 21;
+private static final int SHR = 22;
+private static final int DOS_PUNTOS = 23;
+private static final int DOS_PUNTOS_IG = 24;
+private static final int NATURAL_FINAL1 = 25;
+private static final int NATURAL_FINAL2 = 26;
+private static final int FLOAT1 = 27;
+private static final int FLOAT_FINAL1 = 28;
+private static final int FLOAT_FINAL2 = 29;
+private static final int FLOAT2 = 30;
+private static final int FLOAT3 = 31;
+private static final int FLOAT4 = 32;
+private static final int FLOAT_FINAL3 = 33;
+private static final int FLOAT_FINAL4 = 34;
+private static final int DISTINTO1 = 35;
+private static final int DISTINTO2 = 36;
+private static final int DISTINTO_FINAL = 37;
 
 private char buff;
 private String lex;
@@ -93,6 +98,10 @@ public void scanner() throws IOException{
                     case '(': transita(PARENTESIS_A); break;
                     case '>': transita(MAYOR); break;
                     case '<': transita(MENOR); break;
+                    case '=': transita(DISTINTO1); break;
+                    case ':': transita(DOS_PUNTOS); break;
+                    case '0': transita(NATURAL_FINAL1); break;
+                    case '[0-9]': transita(NATURAL_FINAL2); break;
                 }
                 break;
             case PARENTESIS_C :
@@ -194,38 +203,50 @@ public void scanner() throws IOException{
                 break;
             case MAYOR :
                 switch(buff){
-                    case '>':
+                    case '>': transita(SHL); break;
                     case '=': transita(MAYOR_IG); break;
                     default: arrayTokens.add(new Menor(lex)); break;
                 }
                 break;
             case MAYOR_IG :
-                if (lex.equals(">="))
-                        arrayTokens.add(new Mayor_ig(lex));
-                else if (lex.equals(">>"))
-                        arrayTokens.add(new Shl(lex));
-                     else error(estado);
+                arrayTokens.add(new Mayor_ig(lex));
+                break;
+            case SHL :
+                arrayTokens.add(new Shl(lex));
+                break;
             case MENOR :
                  switch(buff){
-                    case '<':
+                    case '<': transita(SHR); break;
                     case '=': transita(MENOR_IG); break;
                     default: arrayTokens.add(new Menor(lex)); break;
                 }
                 break;
             case MENOR_IG :
-                if (lex.equals("<="))
-                        arrayTokens.add(new Menor_ig(lex));
-                else if (lex.equals("<<"))
-                        arrayTokens.add(new Shr(lex));
-                     else error(estado);
+                arrayTokens.add(new Menor_ig(lex));
+                break;
+            case SHR:
+                arrayTokens.add(new Shl(lex));
                 break;
             case DOS_PUNTOS :
+                switch(buff){
+                    case '<': transita(DOS_PUNTOS_IG); break;
+                    default: arrayTokens.add(new Dos_puntos(lex)); break;
+                }
                 break;
             case DOS_PUNTOS_IG :
+                arrayTokens.add(new Dos_puntos_ig(lex));
                 break;
             case NATURAL_FINAL1 :
+                switch(buff){
+                    case '.': transita(FLOAT1); break;
+                    default: error(estado);
+                }
                 break;
             case NATURAL_FINAL2 :
+                switch(buff){
+                    case '.': transita(FLOAT1); break;
+                    default: error(estado);
+                }
                 break;
             case FLOAT1 :
                 break;
@@ -242,6 +263,21 @@ public void scanner() throws IOException{
             case FLOAT_FINAL3 :
                 break;
             case FLOAT_FINAL4 :
+                break;
+            case DISTINTO1:
+                switch(buff){
+                    case '/': transita(DISTINTO2); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO2 :
+                switch(buff){
+                    case '=': transita(DISTINTO_FINAL); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO_FINAL:
+                arrayTokens.add(new Distinto(lex));
                 break;
         }
     }
