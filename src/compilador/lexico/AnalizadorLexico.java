@@ -23,47 +23,56 @@ private static final int COMENTARIO = 2;
 private static final int PARENTESIS_A = 3;
 private static final int CASTING_INT1 =4;
 private static final int CASTING_INT2 = 5;
-private static final int CASTING_NAT1 = 6;
-private static final int CASTING_NAT2 = 7;
-private static final int CASTING_FLOAT1 = 8;
-private static final int CASTING_FLOAT2 = 9;
-private static final int CASTING_FLOAT3 = 10;
-private static final int CASTING_FLOAT4 = 11;
-private static final int CASTING_CHAR1 = 12;
-private static final int CASTING_CHAR2 = 13;
-private static final int CASTING_CHAR3 = 14;
-private static final int CASTING_COMUN = 15;
-private static final int CASTING_FINAL =16;
-private static final int MAYOR = 17;
-private static final int MAYOR_IG = 18;
-private static final int SHL = 19;
-private static final int MENOR = 20;
-private static final int MENOR_IG = 21;
-private static final int SHR = 22;
-private static final int DOS_PUNTOS = 23;
-private static final int DOS_PUNTOS_IG = 24;
-private static final int SEPARADOR =25;
-private static final int PUNTO_COMA = 26;
-private static final int DISTINTO1 = 27;
-private static final int DISTINTO2 = 28;
-private static final int DISTINTO_FINAL = 29;
-private static final int SUMA = 30;
-private static final int MULTIPLICACION = 31;
-private static final int MODULO = 32;
-private static final int SIGNO_MENOS = 33;
-private static final int NATURAL_FINAL1 = 34;
-private static final int NATURAL_FINAL2 = 35;
+private static final int CASTING_INT3 =6;
+private static final int CAST_INT = 7;
+private static final int CASTING_NAT1 = 8;
+private static final int CASTING_NAT2 = 9;
+private static final int CASTING_NAT3 = 10;
+private static final int CAST_NAT = 11;
+private static final int CASTING_FLOAT1 = 12;
+private static final int CASTING_FLOAT2 = 13;
+private static final int CASTING_FLOAT3 = 14;
+private static final int CASTING_FLOAT4 = 15;
+private static final int CASTING_FLOAT5 = 16;
+private static final int CAST_FLOAT = 17;
+private static final int CASTING_CHAR1 = 18;
+private static final int CASTING_CHAR2 = 19;
+private static final int CASTING_CHAR3 = 20;
+private static final int CASTING_CHAR4 = 21;
+private static final int CAST_CHAR = 22;
+private static final int MAYOR = 23;
+private static final int SHL = 24;
+private static final int MAYOR_IG = 25;
+private static final int MENOR = 26;
+private static final int SHR = 27;
+private static final int MENOR_IG = 28;
+private static final int DOS_PUNTOS = 29;
+private static final int DOS_PUNTOS_IG = 30;
+private static final int IGUAL = 31;
+private static final int DISTINTO1 = 32;
+private static final int DISTINTO = 33;
+private static final int LIT_NAT1 = 34;
+private static final int LIT_NAT2 = 35;
 private static final int FLOAT1 = 36;
-private static final int FLOAT_FINAL1 = 37;
-private static final int FLOAT_FINAL2 = 38;
+private static final int LIT_FLO1 = 37;
+private static final int LIT_FLO2 = 38;
 private static final int FLOAT2 = 39;
 private static final int FLOAT3 = 40;
-private static final int FLOAT4 = 41;
-private static final int FLOAT_FINAL3 = 42;
-private static final int FLOAT_FINAL4 = 43;
-private static final int CHAR1 = 44;
-private static final int CHAR2 = 45;
-private static final int CHAR_FINAL = 46;
+private static final int LIT_FLO3 = 41;
+private static final int FLOAT4 = 42;
+private static final int LIT_FLO4 = 43;
+private static final int SEPARADOR =44;
+private static final int PUNTO_COMA = 45;
+private static final int SUMA = 46;
+private static final int MULTIPLICACION = 47;
+private static final int DIVISION = 48;
+private static final int MODULO = 49;
+private static final int ABSOLUTO = 50;
+private static final int CADENA = 51;
+private static final int CHAR1 = 52;
+private static final int CHAR2 = 53;
+private static final int LIT_CHA= 54;
+private static final int SIGNO_MENOS = 55;
 
 private char buff;
 private String lex;
@@ -102,23 +111,37 @@ public void scanner() throws IOException{
         switch(estado){
             case INICIAL :
                 switch (buff){
+                    case '\n':
+                    case '\t':
+                    case ' ': transita(INICIAL); break;
                     case ')': transita(PARENTESIS_C); break;
                     case '#': transita(COMENTARIO); break;
                     case '(': transita(PARENTESIS_A); break;
                     case '>': transita(MAYOR); break;
                     case '<': transita(MENOR); break;
-                    case '=': transita(DISTINTO1); break;
                     case ':': transita(DOS_PUNTOS); break;
+                    case '=': transita(IGUAL); break;
                     case '&': transita(SEPARADOR); break;
                     case ';': transita(PUNTO_COMA); break;
                     case '+': transita(SUMA); break;
                     case '*': transita(MULTIPLICACION); break;
+                    case '/': transita(DIVISION); break;
                     case '%': transita(MODULO); break;
+                    case '|': transita(ABSOLUTO); break;
+                    case '\'' : transita(CHAR1); break;
                     case '-': transita(SIGNO_MENOS); break;
-                    case '0': transita(NATURAL_FINAL1); break;
-                    case '[0-9]': transita(NATURAL_FINAL2); break;
-                    case ''' : transita(CHAR1); break;
-                    case '[a-zA-Z0-9]': transita()
+                    default:
+                        if (Character.isDigit(buff)){
+                            switch(buff){
+                                 case '0': transita(LIT_NAT2); break;
+                                 default : transita(LIT_NAT1);
+                            }
+                        }
+                        else{
+                            if(Character.isLetter(buff))
+                                transita(CADENA);
+                            else error(estado);
+                        }
                 }
                 break;
             case PARENTESIS_C :
@@ -143,9 +166,18 @@ public void scanner() throws IOException{
                 break;
             case CASTING_INT2 :
                 switch (buff){
-                    case 't': transita(CASTING_COMUN); break;
+                    case 't': transita(CASTING_INT3); break;
                     default: error(estado);
                 }
+                break;
+            case CASTING_INT3 :
+                switch (buff){
+                    case ')': transita(CAST_INT); break;
+                    default: error(estado);
+                }
+                break;
+            case CAST_INT :
+                arrayTokens.add(new Cast_int(lex));
                 break;
             case CASTING_NAT1 :
                 switch (buff){
@@ -155,9 +187,18 @@ public void scanner() throws IOException{
                 break;
             case CASTING_NAT2 :
                 switch (buff){
-                    case 't': transita(CASTING_COMUN); break;
+                    case 't': transita(CASTING_NAT3); break;
                     default: error(estado);
                 }
+                break;
+            case CASTING_NAT3 :
+                switch (buff){
+                    case ')': transita(CAST_NAT); break;
+                    default: error(estado);
+                }
+                break;
+            case CAST_NAT :
+                arrayTokens.add(new Cast_nat(lex));
                 break;
             case CASTING_FLOAT1 :
                 switch (buff){
@@ -179,9 +220,18 @@ public void scanner() throws IOException{
                 break;
             case CASTING_FLOAT4 :
                 switch (buff){
-                    case 't': transita(CASTING_CHAR1); break;
+                    case 't': transita(CASTING_FLOAT5); break;
                     default: error(estado);
                 }
+                break;
+            case CASTING_FLOAT5 :
+                switch (buff){
+                    case ')': transita(CAST_FLOAT); break;
+                    default: error(estado);
+                }
+                break;
+            case CAST_FLOAT :
+                arrayTokens.add(new Cast_float(lex));
                 break;
             case CASTING_CHAR1 :
                 switch (buff){
@@ -197,32 +247,24 @@ public void scanner() throws IOException{
                 break;
             case CASTING_CHAR3 :
                 switch (buff){
-                    case 'a': transita(CASTING_COMUN); break;
+                    case 'r': transita(CASTING_CHAR4); break;
                     default: error(estado);
                 }
                 break;
-            case CASTING_COMUN :
+            case CASTING_CHAR4 :
                 switch (buff){
-                    case ')': transita(CASTING_FINAL); break;
+                    case ')': transita(CAST_CHAR); break;
                     default: error(estado);
                 }
                 break;
-            case CASTING_FINAL :
-                if (lex.equals("(int)"))
-                    arrayTokens.add(new Cast_int(lex));
-                else if (lex.equals("(nat)"))
-                        arrayTokens.add(new Cast_nat(lex));
-                else if (lex.equals("(float)"))
-                    arrayTokens.add(new Cast_float(lex));
-                else if (lex.equals("(char)"))
-                    arrayTokens.add(new Cast_char(lex));
-                else error(estado);
+            case CAST_CHAR :
+                arrayTokens.add(new Cast_char(lex));
                 break;
             case MAYOR :
                 switch(buff){
                     case '>': transita(SHL); break;
                     case '=': transita(MAYOR_IG); break;
-                    default: arrayTokens.add(new Menor(lex)); break;
+                    default: arrayTokens.add(new Mayor(lex)); break;
                 }
                 break;
             case MAYOR_IG :
@@ -253,26 +295,113 @@ public void scanner() throws IOException{
             case DOS_PUNTOS_IG :
                 arrayTokens.add(new Dos_puntos_ig(lex));
                 break;
+            case IGUAL:
+                switch(buff){
+                    case '/': transita(DISTINTO1); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO1 :
+                switch(buff){
+                    case '=': transita(DISTINTO); break;
+                    default: error(estado);
+                }
+                break;
+            case DISTINTO:
+                arrayTokens.add(new Distinto(lex));
+                break;
+            case LIT_NAT1 :
+                switch(buff){
+                    case '.': transita(FLOAT1); break;
+                    default: arrayTokens.add(new Distinto(lex));
+                }
+                break;
+            case LIT_NAT2 :
+                switch(buff){
+                    case '.': transita(FLOAT1); break;
+                    default: arrayTokens.add(new Distinto(lex));
+                }
+                break;
+            case FLOAT1 :
+                if(Character.isDigit(buff))
+                    switch(buff){
+                        case '0': transita(LIT_FLO1); break;
+                        default: transita(LIT_FLO2);
+                    }
+                else
+                    error(estado);
+                break;
+            case LIT_FLO1 :
+                switch(buff){
+                    case 'e':
+                    case 'E': transita(FLOAT3); break;
+                    default:
+                        if(Character.isDigit(buff))
+                            switch(buff){
+                                case '0': transita(FLOAT2); break;
+                                default: transita(LIT_FLO2);
+                            }
+                        else
+                            arrayTokens.add(new LitFlo(lex));
+                }
+                break;
+            case LIT_FLO2 :
+                switch(buff){
+                    case 'e':
+                    case 'E': transita(FLOAT3); break;
+                    default: 
+                        if(Character.isDigit(buff))
+                            switch(buff){
+                                case '0': transita(FLOAT2); break;
+                                default: transita(LIT_FLO2);
+                            }
+                        else    
+                            arrayTokens.add(new LitFlo(lex));
+
+                }
+                break;
+            case FLOAT2 :
+                if(Character.isDigit(buff))
+                    switch(buff){
+                        case '0': transita(FLOAT2); break;
+                        default: transita(LIT_FLO2);
+                    }
+                else
+                    error(estado);
+                break;
+            case FLOAT3 :
+                switch(buff){
+                    case '-': transita(FLOAT4); break;
+                    default:
+                        if(Character.isDigit(buff))
+                            switch(buff){
+                                case '0': transita(LIT_FLO3); break;
+                                default: transita(LIT_FLO4);
+                            }
+                        else
+                            error(estado);
+                }
+                break;
+            case FLOAT4 :
+                if(Character.isDigit(buff))
+                        switch(buff){
+                            case '0': error(estado); break;
+                            default: transita(LIT_FLO4);
+                        }
+                else
+                    error(estado);
+
+            case LIT_FLO3:
+                arrayTokens.add(new LitFlo(lex));
+                break;
+            case LIT_FLO4 :
+                arrayTokens.add(new LitFlo(lex));
+                break;
             case SEPARADOR:
                 arrayTokens.add(new Separador(lex));
                 break;
             case PUNTO_COMA:
                 arrayTokens.add(new Punto_coma(lex));
-                break;
-            case DISTINTO1:
-                switch(buff){
-                    case '/': transita(DISTINTO2); break;
-                    default: error(estado);
-                }
-                break;
-            case DISTINTO2 :
-                switch(buff){
-                    case '=': transita(DISTINTO_FINAL); break;
-                    default: error(estado);
-                }
-                break;
-            case DISTINTO_FINAL:
-                arrayTokens.add(new Distinto(lex));
                 break;
             case SUMA:
                 arrayTokens.add(new Suma(lex));
@@ -280,54 +409,37 @@ public void scanner() throws IOException{
             case MULTIPLICACION:
                 arrayTokens.add(new Multiplicacion(lex));
                 break;
+            case DIVISION :
+                arrayTokens.add(new Division(lex));
             case MODULO:
                 arrayTokens.add(new Modulo(lex));
+                break;
+            case ABSOLUTO:
+                arrayTokens.add(new Absoluto(lex));
+                break;
+            case CADENA:
+                switch(buff){
+                    case 'd': transita(CADENA); break;
+                    default: //mirar si es palabra reservada
+                }
+            case CHAR1:
+                if(Character.isDigit(buff) || Character.isLetter(buff))
+                    transita(CHAR2);
+                else error(estado);
+                break;
+            case CHAR2:
+                switch(buff){
+                    case '\'': transita(LIT_CHA);
+                    default: error(estado);
+                }
+                break;
+            case LIT_CHA:
+                arrayTokens.add(new LitCha(lex));
                 break;
             case SIGNO_MENOS:
                 arrayTokens.add(new Signo_menos(lex));
                 break;
-            case NATURAL_FINAL1 :
-                switch(buff){
-                    case '.': transita(FLOAT1); break;
-                    default: error(estado);
-                }
-                break;
-            case NATURAL_FINAL2 :
-                switch(buff){
-                    case '.': transita(FLOAT1); break;
-                    default: error(estado);
-                }
-                break;
-            case FLOAT1 :
-                break;
-            case FLOAT_FINAL1 :
-                break;
-            case FLOAT_FINAL2 :
-                break;
-            case FLOAT2 :
-                break;
-            case FLOAT3 :
-                break;
-            case FLOAT4 :
-                break;
-            case FLOAT_FINAL3 :
-                break;
-            case FLOAT_FINAL4 :
-                break;
-            case CHAR1:
-                switch(buff){
-                    case '[a-zA-Z]': transita(CHAR2); break;
-                    default: error(estado);
-                }
-                break;
-            case CHAR2:
-                switch(buff){
-                    case ''': transita(CHAR_FINAL); break;
-                    default: error(estado);
-                }
-                break;
-            case CHAR_FINAL:
-                arrayTokens.add(new LitCha(lex));
+            
             
         }
     }
