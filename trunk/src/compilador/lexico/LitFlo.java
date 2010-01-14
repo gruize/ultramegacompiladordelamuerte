@@ -7,10 +7,10 @@ package compilador.lexico;
 
 /**
  *
- * @author ruben
+ * @author usuario_local
  */
-public class Nat extends Token{
-    public Nat(String l){
+public class LitFlo extends Token{
+    public LitFlo(String l){
         super(l);
     }
 }

@@ -7,10 +7,10 @@ package compilador.lexico;
 
 /**
  *
- * @author ruben
+ * @author usuario_local
  */
-public class Boolean extends Token{
-    public Boolean(String l){
+public class Absoluto extends Token{
+    public Absoluto(String l){
         super(l);
     }
 }
