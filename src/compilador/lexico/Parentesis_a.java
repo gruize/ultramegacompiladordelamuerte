@@ -7,10 +7,10 @@ package compilador.lexico;
 
 /**
  *
- * @author ruben
+ * @author usuario_local
  */
-public class Natural extends Token{
-    public Natural(String l){
+public class Parentesis_a extends Token{
+    public Parentesis_a(String l){
         super(l);
     }
 }

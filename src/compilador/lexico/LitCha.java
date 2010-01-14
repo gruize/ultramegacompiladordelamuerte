@@ -9,8 +9,8 @@ package compilador.lexico;
  *
  * @author ruben
  */
-public class True extends Token{
-    public True(String l){
+public class LitCha extends Token{
+    public LitCha(String l){
         super(l);
     }
 }

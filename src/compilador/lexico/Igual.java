@@ -7,10 +7,10 @@ package compilador.lexico;
 
 /**
  *
- * @author ruben
+ * @author usuario_local
  */
-public class Integer extends Token{
-    public Integer(String l){
+public class Igual extends Token{
+    public Igual(String l){
         super(l);
     }
 }

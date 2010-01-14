@@ -7,10 +7,10 @@ package compilador.lexico;
 
 /**
  *
- * @author ruben
+ * @author usuario_local
  */
-public class Character extends Token{
-    public Character(String l){
+public class Division extends Token{
+    public Division(String l){
         super(l);
     }
 }

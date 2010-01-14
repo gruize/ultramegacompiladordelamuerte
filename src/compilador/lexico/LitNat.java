@@ -9,8 +9,8 @@ package compilador.lexico;
  *
  * @author ruben
  */
-public class Char extends Token{
-    public Char(String l){
+public class LitNat extends Token{
+    public LitNat(String l){
         super(l);
     }
 }

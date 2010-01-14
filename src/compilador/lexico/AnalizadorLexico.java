@@ -327,7 +327,7 @@ public void scanner() throws IOException{
                 }
                 break;
             case CHAR_FINAL:
-                arrayTokens.add(new Char(lex));
+                arrayTokens.add(new LitCha(lex));
             
         }
     }

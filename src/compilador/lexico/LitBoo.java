@@ -9,8 +9,8 @@ package compilador.lexico;
  *
  * @author ruben
  */
-public class Bool extends Token{
-    public Bool(String l){
+public class LitBoo extends Token{
+    public LitBoo(String l){
         super(l);
     }
 }
