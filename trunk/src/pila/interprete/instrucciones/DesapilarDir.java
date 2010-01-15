@@ -43,15 +43,9 @@ public class DesapilarDir extends InstruccionInterprete{
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila d = pila.removeFirst();
-            switch (d.getTipoDato()) {
-                case DatoPila.NAT_T:
-                    interprete.getMemoria()[getDato().toNatural()] = d;
-                    break;
-                default:
-                    throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");
-            }
+            interprete.getMemoria()[getDato().toNatural()] = d;
         } catch (DatoExc ex) {
-            throw new InstruccionExc(this, ex.getMessage());
+            throw new InstruccionExc(this, ex.getLocalizedMessage());
         }
         return true;
     }

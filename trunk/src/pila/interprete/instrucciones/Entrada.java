@@ -26,7 +26,7 @@ public class Entrada extends InstruccionInterprete{
 
     public Entrada() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA);
-        throw new LectorExc("La instrucción apilar necesita " +
+        throw new LectorExc("La instrucción de entrada necesita " +
                 "un parámetro");
     }
 
@@ -40,7 +40,7 @@ public class Entrada extends InstruccionInterprete{
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-            DatoPila dato;
+            DatoPila datoLeido = null;
             String leido = reader.readLine();
             if(interprete.getMemoria()[getDato().toNatural()] == null)
                 throw new InstruccionExc(this,"Dirección de memoria "
@@ -56,27 +56,28 @@ public class Entrada extends InstruccionInterprete{
                         else
                             throw new InstruccionExc(this,"El dato leido no " +
                                     "puede asignarse a un booleano");
-                    dato = new Booleano(b);
+                    datoLeido = new Booleano(b);
                     break;
                 case DatoPila.CHAR_T:
-                    dato = new Caracter(leido.charAt(0));
+                    datoLeido = new Caracter(leido.charAt(0));
                     break;
                 case DatoPila.NAT_T:
                     int i = Integer.valueOf(leido);
                     if(i < 0)
-                        throw new InstruccionExc(this,"El dato leído es "
-                            +getDato().toNatural()+" no iniciada");
-                    dato = new Natural(i);
+                        throw new InstruccionExc(this,"El dato leído ("
+                            +datoLeido.toNatural()+") no es un natural");
+                    datoLeido = new Natural(i);
                     break;
                 case DatoPila.INT_T:
-                    dato = new Entero(Integer.valueOf(leido));
+                    datoLeido = new Entero(Integer.valueOf(leido));
                     break;
                 case DatoPila.FLOAT_T:
-                    dato = new Real(Float.valueOf(leido));
+                    datoLeido = new Real(Float.valueOf(leido));
                     break;
-
             }
-
+            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
+        } catch (InstruccionExc ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }

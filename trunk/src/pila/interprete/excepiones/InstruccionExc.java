@@ -27,4 +27,8 @@ public class InstruccionExc extends Exception {
         return inst;
     }
 
+    @Override
+    public String getMessage() {
+        return inst.toString()+": "+super.getMessage();
+    }
 }
