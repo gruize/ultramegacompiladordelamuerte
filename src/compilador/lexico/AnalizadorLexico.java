@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -73,6 +74,21 @@ public class AnalizadorLexico {
     private static final int CHAR2 = 53;
     private static final int LIT_CHA= 54;
     private static final int SIGNO_MENOS = 55;
+
+    private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
+    static{
+        palabrasReservadas.put("true",new LitBoo("true"));
+        palabrasReservadas.put("false",new LitBoo("false"));
+        palabrasReservadas.put("integer",new Tipo("integer"));
+        palabrasReservadas.put("natural",new Tipo("natural"));
+        palabrasReservadas.put("boolean",new Tipo("boolean"));
+        palabrasReservadas.put("float",new Tipo("float"));
+        palabrasReservadas.put("character",new Tipo("character"));
+        palabrasReservadas.put("and",new And("and"));
+        palabrasReservadas.put("or",new Or("or"));
+        palabrasReservadas.put("not",new Not("not"));
+    }
+
 
     private char buff;
     private String lex;
@@ -450,10 +466,18 @@ public void scanner() throws IOException{
                 terminaEstado();
                 break;
             case CADENA:
-                switch(buff){
-                    case ' ': transita(CADENA); break;
-                    default: //mirar si es palabra reservada
-                }
+                if (Character.isLetter(buff) || Character.isDigit(buff))
+                    transita(CADENA);
+                else if (palabrasReservadas.containsKey(lex)){
+                        arrayTokens.add((Token) palabrasReservadas.get(lex));
+                        terminaEstado();
+                    }
+                     else {
+                        arrayTokens.add(new Identificador(lex));
+                        terminaEstado();
+                     }
+                break;
+
             case CHAR1:
                 if(Character.isDigit(buff) || Character.isLetter(buff))
                     transita(CHAR2);
