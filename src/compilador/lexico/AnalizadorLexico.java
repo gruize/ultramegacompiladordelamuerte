@@ -87,6 +87,8 @@ public class AnalizadorLexico {
         palabrasReservadas.put("and",new And("and"));
         palabrasReservadas.put("or",new Or("or"));
         palabrasReservadas.put("not",new Not("not"));
+        palabrasReservadas.put("in",new In("in"));
+        palabrasReservadas.put("out",new Out("out"));
     }
 
 
