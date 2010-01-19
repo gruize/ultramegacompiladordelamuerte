@@ -7,12 +7,19 @@ import java.util.Hashtable;
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class TablaSimbolos {
-
+	
+	Hashtable<String,InfoTs> ht;
+	
+	public TablaSimbolos(){
+		ht=new Hashtable<String,InfoTs>();
+	}
+	
     /**
      * Devuelve una tabla de símbolos vacía
      */
-    public Hashtable<String, String> creaTS() {
-        return new Hashtable<String, String>();
+    public static TablaSimbolos creaTS() {
+        TablaSimbolos t = new TablaSimbolos();
+        return t;
     }
 
     /**
@@ -22,10 +29,11 @@ public class TablaSimbolos {
      * @param tipo Tipo del identificador
      * @return La tabla de símbolos resultante de añadir la entrada con id y tipo a ts
      */
-    public Hashtable<String, String> inserta(Hashtable<String, String> ts, String id, String tipo) {
-        if (!existe(ts, id)) {
-            ts.put(id, tipo);
-        }
+    public static TablaSimbolos inserta(TablaSimbolos ts, String id, String tipo, int dir) {
+    	if (!existe(ts,id)){
+    		Hashtable<String,InfoTs> ht= ts.getHashtable();
+    		ht.put(id, new InfoTs(tipo,dir));
+    	}
         return ts;
     }
 
@@ -35,8 +43,9 @@ public class TablaSimbolos {
      * @param id Identificador de la entrada a comprobar
      * @return True si existe la entrada. False en caso contrario.
      */
-    public boolean existe(Hashtable<String, String> ts, String id) {
-        return ts.contains(id);
+    public static boolean existe(TablaSimbolos ts, String id) {
+    	Hashtable<String,InfoTs> ht= ts.getHashtable();
+        return ht.contains(id);
     }
 
     /**
@@ -45,11 +54,16 @@ public class TablaSimbolos {
      * @param id Identificador de la entrada a modificar
      * @return El tipo de la entrada especificada si dicha entrada existe. Null en caso contrario.
      */
-    public String gettipo(Hashtable<String, String> ts, String id) {
-        if (ts.contains(id)) {
-            return ts.get(id);
-        } else {
-            return null;
+    public static String gettipo(TablaSimbolos ts, String id) {
+    	Hashtable<String,InfoTs> ht= ts.getHashtable();
+        if (ht.contains(id)) {
+        	InfoTs i = ht.get(id);
+        	return i.getTipo();
         }
+        return null;
+    }
+    
+    public Hashtable<String,InfoTs> getHashtable(){
+    	return ht;
     }
 }
