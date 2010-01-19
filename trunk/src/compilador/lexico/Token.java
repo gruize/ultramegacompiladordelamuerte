@@ -14,4 +14,7 @@ public class Token {
     public Token(String l){
         lex=l;
     }
+    public String getLex(){
+    	return lex;
+    }
 }
