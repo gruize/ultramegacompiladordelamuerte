@@ -545,6 +545,7 @@ public class AnalizadorLexico {
 	
 	
 	public static void main(String [] args) throws FileNotFoundException, IOException {
+		@SuppressWarnings("unused")
 		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba.txt");
 	}
 
