@@ -54,13 +54,22 @@ public class TablaSimbolos {
      * @param id Identificador de la entrada a modificar
      * @return El tipo de la entrada especificada si dicha entrada existe. Null en caso contrario.
      */
-    public static String gettipo(TablaSimbolos ts, String id) {
+    public static String getTipo(TablaSimbolos ts, String id) {
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
         if (ht.contains(id)) {
         	InfoTs i = ht.get(id);
         	return i.getTipo();
         }
         return null;
+    }
+    
+    public static int getDir(TablaSimbolos ts,String id){
+    	Hashtable<String,InfoTs> ht= ts.getHashtable();
+        if (ht.contains(id)) {
+        	InfoTs i = ht.get(id);
+        	return i.getDir();
+        }
+        return -1;
     }
     
     public Hashtable<String,InfoTs> getHashtable(){
