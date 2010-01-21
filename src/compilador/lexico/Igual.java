@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Igual extends Token{
-    public Igual(String l){
-        super(l);
+    public Igual(int n){
+        super(n);
     }
 }

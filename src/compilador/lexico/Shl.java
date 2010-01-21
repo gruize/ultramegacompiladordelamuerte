@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Shl extends Token{
-    public Shl(String l){
-        super(l);
+    public Shl(int n){
+        super(n);
     }
 }

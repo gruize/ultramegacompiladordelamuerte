@@ -10,7 +10,9 @@ package compilador.lexico;
  * @author ruben
  */
 public class Identificador extends Token{
-    public Identificador(String l){
-        super(l);
+    String lex;
+    public Identificador(String l, int n){
+        super(n);
+        lex = l;
     }
 }

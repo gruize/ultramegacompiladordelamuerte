@@ -10,8 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Menor_ig extends Token{
-    public Menor_ig(String l){
-        super(l);
+    public Menor_ig(int n){
+        super(n);
     }
-
 }

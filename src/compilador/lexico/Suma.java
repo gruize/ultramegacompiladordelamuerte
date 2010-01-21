@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Suma extends Token{
-    public Suma(String l){
-        super(l);
+    public Suma(int n){
+        super(n);
     }
 }

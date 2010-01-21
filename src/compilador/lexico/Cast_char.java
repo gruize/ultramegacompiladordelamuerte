@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Cast_char extends Token{
-    public Cast_char(String l){
-        super(l);
+    public Cast_char(int n){
+        super(n);
     }
 }

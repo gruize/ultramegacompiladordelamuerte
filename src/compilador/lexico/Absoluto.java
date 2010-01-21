@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Absoluto extends Token{
-    public Absoluto(String l){
-        super(l);
+    public Absoluto(int n){
+        super(n);
     }
 }

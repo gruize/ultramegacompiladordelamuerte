@@ -10,8 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Cast_nat extends Token{
-    public Cast_nat(String l){
-        super(l);
+    public Cast_nat(int n){
+        super(n);
     }
-
 }

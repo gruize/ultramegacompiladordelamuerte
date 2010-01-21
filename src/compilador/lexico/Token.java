@@ -10,11 +10,8 @@ package compilador.lexico;
  * @author ruben
  */
 public class Token {
-    private String lex;
-    public Token(String l){
-        lex=l;
-    }
-    public String getLex(){
-    	return lex;
+    int numLinea;
+    public Token(int n){
+        numLinea = n;
     }
 }

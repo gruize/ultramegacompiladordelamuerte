@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Parentesis_a extends Token{
-    public Parentesis_a(String l){
-        super(l);
+    public Parentesis_a(int n){
+        super(n);
     }
 }

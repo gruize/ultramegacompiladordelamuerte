@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class LitCha extends Token{
-    public LitCha(String l){
-        super(l);
+    public LitCha(int n){
+        super(n);
     }
 }

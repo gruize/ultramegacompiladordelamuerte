@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Distinto extends Token{
-    public Distinto(String l){
-        super(l);
+    public Distinto(int n){
+        super(n);
     }
 }

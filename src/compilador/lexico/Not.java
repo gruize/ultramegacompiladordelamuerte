@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Not extends Token{
-    public Not(String l){
-        super(l);
+    public Not(int n){
+        super(n);
     }
 }
