@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Multiplicacion extends Token{
-    public Multiplicacion(String l){
-        super(l);
+    public Multiplicacion(int n){
+        super(n);
     }
 }

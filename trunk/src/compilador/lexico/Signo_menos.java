@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Signo_menos extends Token{
-    public Signo_menos(String l){
-        super(l);
+    public Signo_menos(int n){
+        super(n);
     }
 }

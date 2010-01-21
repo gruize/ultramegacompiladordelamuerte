@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Tipo extends Token{
-    public Tipo(String l){
-        super(l);
+    public Tipo(int n){
+        super(n);
     }
 }

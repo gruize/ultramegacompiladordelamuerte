@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class LitBoo extends Token{
-    public LitBoo(String l){
-        super(l);
+    public LitBoo(int n){
+        super(n);
     }
 }

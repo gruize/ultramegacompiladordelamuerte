@@ -9,8 +9,8 @@ package compilador.lexico;
  *
  * @author ruben
  */
-public class Cast_float extends Token{
-    public Cast_float(int n){
+public class Natural extends Token{
+    public Natural(int n){
         super(n);
     }
 }

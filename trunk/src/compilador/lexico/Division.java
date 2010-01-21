@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Division extends Token{
-    public Division(String l){
-        super(l);
+    public Division(int n){
+        super(n);
     }
 }

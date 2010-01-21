@@ -72,18 +72,18 @@ public class AnalizadorLexico {
 
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
-		palabrasReservadas.put("true",new LitBoo("true"));
-		palabrasReservadas.put("false",new LitBoo("false"));
-		palabrasReservadas.put("integer",new Tipo("integer"));
-		palabrasReservadas.put("natural",new Tipo("natural"));
-		palabrasReservadas.put("boolean",new Tipo("boolean"));
-		palabrasReservadas.put("float",new Tipo("float"));
-		palabrasReservadas.put("character",new Tipo("character"));
-		palabrasReservadas.put("and",new And("and"));
-		palabrasReservadas.put("or",new Or("or"));
-		palabrasReservadas.put("not",new Not("not"));
-		palabrasReservadas.put("in",new In("in"));
-		palabrasReservadas.put("out",new Out("out"));
+		palabrasReservadas.put("true",new True(numLinea));
+		palabrasReservadas.put("false",new False(numLinea));
+		palabrasReservadas.put("integer",new Integer(numLinea));
+		palabrasReservadas.put("natural",new Natural(numLinea));
+		palabrasReservadas.put("boolean",new Boolean(numLinea));
+		palabrasReservadas.put("float",new Float(numLinea));
+		palabrasReservadas.put("character",new character(numLinea));
+		palabrasReservadas.put("and",new And(numLinea));
+		palabrasReservadas.put("or",new Or(numLinea));
+		palabrasReservadas.put("not",new Not(numLinea));
+		palabrasReservadas.put("in",new In(numLinea));
+		palabrasReservadas.put("out",new Out(numLinea));
 	}
 
 
@@ -92,6 +92,7 @@ public class AnalizadorLexico {
 	private int estado;
 	private InputStreamReader reader = null;
 	private ArrayList<Token> arrayTokens;
+    private static int numLinea;
 
 	public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
 		File f=new File(src);
@@ -100,6 +101,7 @@ public class AnalizadorLexico {
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
+        numLinea=0;
 		scanner();
 	}
 
@@ -161,7 +163,7 @@ public class AnalizadorLexico {
 			switch(estado){
 			case INICIAL :
 				switch (buff){
-				case '\n':
+				case '\n': numLinea ++;
 				case '\t':
 				case ' ': transita(INICIAL); break;
 				case ')': transita(PARENTESIS_C); break;
@@ -195,12 +197,12 @@ public class AnalizadorLexico {
 				}
 				break;
 			case PARENTESIS_C :
-				arrayTokens.add(new Parentesis_c(lex));
+				arrayTokens.add(new Parentesis_c(numLinea));
 				terminaEstado();
 				break;
 			case COMENTARIO :
 				switch(buff){
-				case '\n': arrayTokens.add(new Comentario(lex)); terminaEstado(); break;
+				case '\n': numLinea ++ ; terminaEstado(); break;
 				default: transita(COMENTARIO);
 				}
 
@@ -211,7 +213,8 @@ public class AnalizadorLexico {
 				case 'n': transita(CASTING_NAT1); break;
 				case 'f': transita(CASTING_FLOAT1); break;
 				case 'c': transita(CASTING_CHAR1); break;
-				default: arrayTokens.add(new Parentesis_a(lex)); terminaEstado();
+                case ' ': transita(PARENTESIS_A); break;
+				default: arrayTokens.add(new Parentesis_a(numLinea)); terminaEstado();
 				}
 				break;
 			case CASTING_INT1 :
@@ -229,11 +232,12 @@ public class AnalizadorLexico {
 			case CASTING_INT3 :
 				switch (buff){
 				case ')': transita(CAST_INT); break;
+                case ' ': transita(CASTING_INT3); break;
 				default: error();
 				}
 				break;
 			case CAST_INT :
-				arrayTokens.add(new Cast_int(lex));
+				arrayTokens.add(new Cast_int(numLinea));
 				terminaEstado();
 				break;
 			case CASTING_NAT1 :
@@ -251,11 +255,12 @@ public class AnalizadorLexico {
 			case CASTING_NAT3 :
 				switch (buff){
 				case ')': transita(CAST_NAT); break;
+                case ' ': transita(CASTING_NAT3); break;
 				default: error();
 				}
 				break;
 			case CAST_NAT :
-				arrayTokens.add(new Cast_nat(lex));
+				arrayTokens.add(new Cast_nat(numLinea));
 				terminaEstado();
 				break;
 			case CASTING_FLOAT1 :
@@ -285,11 +290,12 @@ public class AnalizadorLexico {
 			case CASTING_FLOAT5 :
 				switch (buff){
 				case ')': transita(CAST_FLOAT); break;
+                case ' ': transita(CASTING_FLOAT5); break;
 				default: error();
 				}
 				break;
 			case CAST_FLOAT :
-				arrayTokens.add(new Cast_float(lex));
+				arrayTokens.add(new Cast_float(numLinea));
 				terminaEstado();
 				break;
 			case CASTING_CHAR1 :
@@ -313,57 +319,58 @@ public class AnalizadorLexico {
 			case CASTING_CHAR4 :
 				switch (buff){
 				case ')': transita(CAST_CHAR); break;
+                case ' ': transita(CASTING_CHAR4); break;
 				default: error();
 				}
 				break;
 			case CAST_CHAR :
-				arrayTokens.add(new Cast_char(lex));
+				arrayTokens.add(new Cast_char(numLinea));
 				terminaEstado();
 				break;
 			case MAYOR :
 				switch(buff){
 				case '>': transita(SHL); break;
 				case '=': transita(MAYOR_IG); break;
-				default: arrayTokens.add(new Mayor(lex)); terminaEstado();
+				default: arrayTokens.add(new Mayor(numLinea)); terminaEstado();
 				}
 				break;
 			case MAYOR_IG :
-				arrayTokens.add(new Mayor_ig(lex));
+				arrayTokens.add(new Mayor_ig(numLinea));
 				terminaEstado();
 				break;
 			case SHL :
-				arrayTokens.add(new Shl(lex));
+				arrayTokens.add(new Shl(numLinea));
 				terminaEstado();
 				break;
 			case MENOR :
 				switch(buff){
 				case '<': transita(SHR); break;
 				case '=': transita(MENOR_IG); break;
-				default: arrayTokens.add(new Menor(lex)); terminaEstado();
+				default: arrayTokens.add(new Menor(numLinea)); terminaEstado();
 				}
 				break;
 			case MENOR_IG :
-				arrayTokens.add(new Menor_ig(lex));
+				arrayTokens.add(new Menor_ig(numLinea));
 				terminaEstado();
 				break;
 			case SHR:
-				arrayTokens.add(new Shl(lex));
+				arrayTokens.add(new Shl(numLinea));
 				terminaEstado();
 				break;
 			case DOS_PUNTOS :
 				switch(buff){
 				case '=': transita(DOS_PUNTOS_IG); break;
-				default: arrayTokens.add(new Dos_puntos(lex)); terminaEstado();
+				default: arrayTokens.add(new Dos_puntos(numLinea)); terminaEstado();
 				}
 				break;
 			case DOS_PUNTOS_IG :
-				arrayTokens.add(new Dos_puntos_ig(lex));
+				arrayTokens.add(new Dos_puntos_ig(numLinea));
 				terminaEstado();
 				break;
 			case IGUAL:
 				switch(buff){
 				case '/': transita(DISTINTO1); break;
-				default: arrayTokens.add(new Igual(lex)); terminaEstado();
+				default: arrayTokens.add(new Igual(numLinea)); terminaEstado();
 				}
 				break;
 			case DISTINTO1 :
@@ -373,13 +380,13 @@ public class AnalizadorLexico {
 				}
 				break;
 			case DISTINTO:
-				arrayTokens.add(new Distinto(lex));
+				arrayTokens.add(new Distinto(numLinea));
 				terminaEstado();
 				break;
 			case LIT_NAT1 :
 				switch(buff){
 				case '.': transita(FLOAT1); break;
-				default: arrayTokens.add(new Distinto(lex)); terminaEstado();
+				default: arrayTokens.add(new LitNat(lex,numLinea)); terminaEstado();
 				}
 				break;
 			case LIT_NAT2 :
@@ -389,7 +396,7 @@ public class AnalizadorLexico {
 					if (Character.isDigit(buff))
 						transita(LIT_NAT2);
 					else
-						arrayTokens.add(new Distinto(lex)); terminaEstado();
+						arrayTokens.add(new LitNat(lex,numLinea)); terminaEstado();
 				}
 				break;
 			case FLOAT1 :
@@ -412,7 +419,7 @@ public class AnalizadorLexico {
 						default: transita(LIT_FLO2);
 						}
 					else{
-						arrayTokens.add(new LitFlo(lex));
+						arrayTokens.add(new LitFlo(lex,numLinea));
 						terminaEstado();
 					}
 				}
@@ -428,7 +435,7 @@ public class AnalizadorLexico {
 						default: transita(LIT_FLO2);
 						}
 					else{
-						arrayTokens.add(new LitFlo(lex));
+						arrayTokens.add(new LitFlo(lex,numLinea));
 						terminaEstado();
 					}
 				}
@@ -465,39 +472,39 @@ public class AnalizadorLexico {
 					error();
 
 			case LIT_FLO3:
-				arrayTokens.add(new LitFlo(lex));
+				arrayTokens.add(new LitFlo(lex,numLinea));
 				terminaEstado();
 				break;
 			case LIT_FLO4 :
-				arrayTokens.add(new LitFlo(lex));
+				arrayTokens.add(new LitFlo(lex,numLinea));
 				terminaEstado();
 				break;
 			case SEPARADOR:
-				arrayTokens.add(new Separador(lex));
+				arrayTokens.add(new Separador(numLinea));
 				terminaEstado();
 				break;
 			case PUNTO_COMA:
-				arrayTokens.add(new Punto_coma(lex));
+				arrayTokens.add(new Punto_coma(numLinea));
 				terminaEstado();
 				break;
 			case SUMA:
-				arrayTokens.add(new Suma(lex));
+				arrayTokens.add(new Suma(numLinea));
 				terminaEstado();
 				break;
 			case MULTIPLICACION:
-				arrayTokens.add(new Multiplicacion(lex));
+				arrayTokens.add(new Multiplicacion(numLinea));
 				terminaEstado();
 				break;
 			case DIVISION :
-				arrayTokens.add(new Division(lex));
+				arrayTokens.add(new Division(numLinea));
 				terminaEstado();
 				break;
 			case MODULO:
-				arrayTokens.add(new Modulo(lex));
+				arrayTokens.add(new Modulo(numLinea));
 				terminaEstado();
 				break;
 			case ABSOLUTO:
-				arrayTokens.add(new Absoluto(lex));
+				arrayTokens.add(new Absoluto(numLinea));
 				terminaEstado();
 				break;
 			case CADENA:
@@ -508,7 +515,7 @@ public class AnalizadorLexico {
 					terminaEstado();
 				}
 				else {
-					arrayTokens.add(new Identificador(lex));
+					arrayTokens.add(new Identificador(lex,numLinea));
 					terminaEstado();
 				}
 				break;
@@ -525,11 +532,11 @@ public class AnalizadorLexico {
 				}
 				break;
 			case LIT_CHA:
-				arrayTokens.add(new LitCha(lex));
+				arrayTokens.add(new LitCha(numLinea));
 				terminaEstado();
 				break;
 			case SIGNO_MENOS:
-				arrayTokens.add(new Signo_menos(lex));
+				arrayTokens.add(new Signo_menos(numLinea));
 				terminaEstado();
 				break;
 

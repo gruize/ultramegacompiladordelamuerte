@@ -10,7 +10,4 @@ package compilador.lexico;
  * @author ruben
  */
 public class Comentario extends Token{
-    public Comentario(String l){
-        super(l);
-    }
 }

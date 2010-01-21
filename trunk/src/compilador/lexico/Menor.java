@@ -9,9 +9,8 @@ package compilador.lexico;
  *
  * @author ruben
  */
-public class Menor extends Token
-{
-    public Menor (String l){
-        super(l);
+public class Menor extends Token{
+    public Menor(int n){
+        super(n);
     }
 }

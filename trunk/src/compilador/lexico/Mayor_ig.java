@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Mayor_ig extends Token{
-    public Mayor_ig(String l){
-        super(l);
+    public Mayor_ig(int n){
+        super(n);
     }
 }

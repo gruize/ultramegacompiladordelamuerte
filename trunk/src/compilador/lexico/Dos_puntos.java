@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class Dos_puntos extends Token{
-    public Dos_puntos(String l){
-        super(l);
+    public Dos_puntos(int n){
+        super(n);
     }
 }

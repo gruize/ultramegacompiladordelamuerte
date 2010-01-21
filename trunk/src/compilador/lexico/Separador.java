@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Separador extends Token{
-    public Separador(String l){
-        super(l);
+    public Separador(int n){
+        super(n);
     }
 }

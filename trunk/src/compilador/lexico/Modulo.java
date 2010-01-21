@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Modulo extends Token{
-    public Modulo(String l){
-        super(l);
+    public Modulo(int n){
+        super(n);
     }
 }

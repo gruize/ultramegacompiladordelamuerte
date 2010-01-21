@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Out extends Token{
-    public Out(String l){
-        super(l);
+    public Out(int n){
+        super(n);
     }
 }

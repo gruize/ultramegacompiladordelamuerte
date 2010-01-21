@@ -10,7 +10,9 @@ package compilador.lexico;
  * @author usuario_local
  */
 public class LitFlo extends Token{
-    public LitFlo(String l){
-        super(l);
+    String lex;
+    public LitFlo(String l,int n){
+        super(n);
+        lex=l;
     }
 }

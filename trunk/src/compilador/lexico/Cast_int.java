@@ -10,8 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Cast_int extends Token{
-    public Cast_int(String l){
-        super(l);
+    public Cast_int(int n){
+        super(n);
     }
-
 }
