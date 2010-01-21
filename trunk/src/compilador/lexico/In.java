@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class In extends Token{
-    public In(int n){
-        super(n);
+    public In(){
+        super();
     }
 }

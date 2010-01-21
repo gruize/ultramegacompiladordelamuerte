@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Float extends Token{
-    public Float(int n){
-        super(n);
+    public Float(){
+        super();
     }
 }
