@@ -2,11 +2,16 @@ package compilador.tablaSimbolos;
 
 import java.util.Hashtable;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
+
+import pila.interprete.datos.DatoPila;
+
 /**
  * Tabla de simbolos para cada ámbito
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class TablaSimbolos {
+	
 	
 	Hashtable<String,InfoTs> ht;
 	
@@ -29,7 +34,7 @@ public class TablaSimbolos {
      * @param tipo Tipo del identificador
      * @return La tabla de símbolos resultante de añadir la entrada con id y tipo a ts
      */
-    public static TablaSimbolos inserta(TablaSimbolos ts, String id, String tipo, int dir) {
+    public static TablaSimbolos inserta(TablaSimbolos ts, String id, Tipos tipo, int dir) {
     	if (!existe(ts,id)){
     		Hashtable<String,InfoTs> ht= ts.getHashtable();
     		ht.put(id, new InfoTs(tipo,dir));
@@ -54,7 +59,7 @@ public class TablaSimbolos {
      * @param id Identificador de la entrada a modificar
      * @return El tipo de la entrada especificada si dicha entrada existe. Null en caso contrario.
      */
-    public static String getTipo(TablaSimbolos ts, String id) {
+    public static Tipos getTipo(TablaSimbolos ts, String id) {
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
         if (ht.contains(id)) {
         	InfoTs i = ht.get(id);
