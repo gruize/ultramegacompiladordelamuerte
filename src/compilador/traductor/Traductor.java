@@ -7,6 +7,13 @@ import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.instrucciones.*;
 import compilador.lexico.*;
+import compilador.lexico.Igual;
+import compilador.lexico.Mayor;
+import compilador.lexico.Menor;
+import compilador.lexico.Modulo;
+import compilador.lexico.Shl;
+import compilador.lexico.Shr;
+import compilador.lexico.Suma;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 /**
@@ -395,116 +402,90 @@ public abstract class Traductor {
 		return Literal();
 	}
 
-//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
-//		barraVertical()
-//		Expresión(out: tipo2, codP2, codJ2)
-//		barraVertical()
-//		{
-//		tipo1 ← 
-//			si (tipo2 = error v tipo2=boolean v tipo2=character)
-//			          error
-//			sino si (tipo2 = float)
-//				float
-//			sino si (tipo2 = natural v tipo2 = integer)
-//				natural
-//			sino error
-	//	
-	//
-//		codP1 ← codP2 || abs
+	//Literal(out: tipo1, cod1)
+	protected Object[] Literal(){
+		Token t=sigToken();
+		if (t instanceof Identificador){
+			return Literal_Id(t);
+		}
+		else if (t instanceof LitNat){
+			return Literal_LitNat(t);
+		}
+		else if (t instanceof LitFlo){
+			return Literal_LitFlo(t);
+		}
+		else if (t instanceof LitBoo){
+			return Literal_LitBoo(t);
+		}
+		else if (t instanceof LitCha){
+			return Literal_LitCha(t);
+		}
+		else {
+			i_token--;
+			return new Object[]{Tipos.ERROR,new Codigo()};
+		}
+		
+	}
+	
+	protected abstract Object[] Literal_Id(Token t);
+	protected abstract Object[] Literal_LitNat(Token t);
+	protected abstract Object[] Literal_LitBoo(Token t);
+	protected abstract Object[] Literal_LitCha(Token t);
+	protected abstract Object[] Literal_LitFlo(Token t);
+	
+	protected Operaciones OpNiv0(){
+		Token t=sigToken();
+		if (t instanceof Menor) return Operaciones.MENOR;
+		if (t instanceof Mayor) return Operaciones.MAYOR;
+		if (t instanceof Menor_ig) return Operaciones.MENORIG;
+		if (t instanceof Mayor_ig) return Operaciones.MAYORIG;
+		if (t instanceof Igual) return Operaciones.IGUAL;
+		if (t instanceof Distinto) return Operaciones.DISTINTO;
+		i_token--;
+		return null;
+	}
+	
+	protected Operaciones OpNiv1(){
+		Token t=sigToken();
+		if (t instanceof Suma) return Operaciones.SUMA;
+		if (t instanceof Signo_menos) return Operaciones.RESTA;
+		if (t instanceof Or) return Operaciones.OR;
+		i_token--;
+		return null;
+	}
+	
+	
+	protected Operaciones OpNiv2(){
+		Token t=sigToken();		
+		if (t instanceof Multiplicacion) return Operaciones.MULT;
+		if (t instanceof Division) return Operaciones.DIV;
+		if (t instanceof Modulo) return Operaciones.MOD;
+		if (t instanceof And) return Operaciones.AND;
+		i_token--;
+		return null;
+	}
+	
+	protected Operaciones OpNiv3(){
+		Token t=sigToken();		
+		if (t instanceof Shl) return Operaciones.SHL;
+		if (t instanceof Shr)return Operaciones.SHR;
+		i_token--;
+		return null;
+	}
 
-	//
+	protected Operaciones OpNiv4(){
+		Token t=sigToken();		
+		if (t instanceof Not) return Operaciones.NOT;
+		if (t instanceof Signo_menos)return Operaciones.NEG;
+		if (t instanceof Cast_float) return Operaciones.CASTREAL;
+		if (t instanceof Cast_int)return Operaciones.CASTENT;
+		if (t instanceof Cast_nat) return Operaciones.CASTNAT;
+		if (t instanceof Cast_char)return Operaciones.CASTCHAR;
+		i_token--;
+		return null;
+	}
+	
 
-	
-	
-	
-	
-	//
-	//Literal(out: tipo1, codP1, codJ1) → id
-//		{
-//		tipo1 ← ts[id.lex].tipo
-//		dir ← ts[id.lex].dir
-//		codP1 ← apila-dir dir
-//		codJ1 ←  case(ts[id.lex].tipo)
-//			boolean:
-//				i2b || iload  dir
-//			tCha:
-//				i2c || iload  dir
-//			natural:
-//			entero:
-//				iload dir
-//			float:
-//				fload  dir
-//		}
-	//Literal(out: tipo1, codP1, codJ1) → litNat
-//		{
-//		tipo1 ← natural
-//		codP1 ← apila getValor(litNat.lex)
-//		codJ1 ← iconst getValor(litNat.lex))
-//		}
-	//Literal(out: tipo1, codP1, codJ1) → litFlo
-//		{
-//		tipo1 ← float
-//		codP1 ← apila getValor(litFlo.lex)
-//		codJ1 ← fconst getValor(litFlo.lex))
-//		}
-	//Literal(out: tipo1, codP1, codJ1) → litBoo
-//		{
-//		tipo1 ← boolean	
-//		codP1 ← apila getValor(litBoo.lex)
-//		codJ1 ← iconst getValor(litEnt.lex))
-//		}
-	//Literal(out: tipo1, codP1, codJ1) → litCha
-//		{
-//		tipo1 ← character
-//		codP1 ← apila getValor(litCha.lex)
-//		codJ1 ← iconst getValor(litCha.lex))
-//		}
-	//
-	//OpNiv0(out: op) → <
-//		{op = menor}
-	//OpNiv0(out: op) → >	
-//		{op = mayor}
-	//OpNiv0(out: op) → <=
-//		{op = menor-ig}
-	//OpNiv0(out: op) → >=
-//		{op = mayor-ig}
-	//OpNiv0(out: op) → =
-//		{op = igual}
-	//OpNiv0(out: op) → =/=
-//		{op = no-igual}
-	//OpNiv1(out: op) → +
-//		{op = suma}
-	//OpNiv1(out: op) → -
-//		{op = resta}
-	//OpNiv1(out: op) → or
-//		{op = o}
-	//OpNiv2(out: op) → *
-//		{op = multiplica}
-	//OpNiv2(out: op) → /
-//		{op = divide}
-	//OpNiv2(out: op) → %
-//		{op = modulo}
-	//OpNiv2(out: op) → and
-//		{op = y}
-	//OpNiv3(out: op) → >>
-//		{op = shl}
-	//OpNiv3(out: op) → <<
-//		{op = shr}
-	//OpNiv4(out: op) → not
-//		{op = no}
-	//OpNiv4(out: op) → -
-//		{op = menos}
-	//OpNiv4(out: op) → (float)
-//		{op = cast-float}
-	//OpNiv4(out: op) → (int)
-//		{op = cast-int}
-	//OpNiv4(out: op) → (nat)
-//		{op = cast-nat}
-	//OpNiv4(out: op) → (char)
-//		{op = cast-char}
-	//	
-	//	
-	//	
 		
 
 		

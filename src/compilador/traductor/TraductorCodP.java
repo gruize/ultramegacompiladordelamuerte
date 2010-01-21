@@ -3,8 +3,10 @@ package compilador.traductor;
 import java.util.ArrayList;
 
 import pila.interprete.datos.Natural;
-import pila.interprete.instrucciones.*:
+import pila.interprete.instrucciones.*;
 import pila.interprete.datos.*;
+import pila.interprete.excepiones.DatoExc;
+import pila.interprete.excepiones.LectorExc;
 
 import compilador.lexico.Identificador;
 import compilador.lexico.Token;
@@ -137,7 +139,7 @@ public class TraductorCodP extends Traductor{
 			else tipo1=Tipos.BOOL;
 
 			codP1=codPh1;
-			
+			try{
 			switch (op2){
 				case MENOR:
 					switch (tipo1h){
@@ -440,6 +442,7 @@ public class TraductorCodP extends Traductor{
 					}
 					break;
 			}
+			}catch(Exception e){}
 			return new Object[]{tipo1,codP1};
 		}
 		
@@ -488,6 +491,7 @@ public class TraductorCodP extends Traductor{
 			}
 			//tipoh4 fin ------------------------------------
 			codPh4=codPh1;
+			try{
 			switch (op2){
 				case SUMA:
 					switch (tipoh1){
@@ -588,6 +592,7 @@ public class TraductorCodP extends Traductor{
 					codPh4.appendIns(new O());
 					break;
 			}
+			}catch (Exception e){}
 			Object[] resExprNiv1Rec=ExpresionNiv1Rec(tipoh4, codPh4);
 			tipo1=(Tipos)resExprNiv1Rec[0];
 			codP1=(Codigo)resExprNiv1Rec[1];
@@ -642,6 +647,8 @@ public class TraductorCodP extends Traductor{
 			}
 			//tiposh4 fin-------------------------
 			Codigo codPh4=codPh1;
+			
+			try{
 			switch (op2){
 				case MULT:
 					switch (tipoh1){
@@ -746,6 +753,7 @@ public class TraductorCodP extends Traductor{
 					codPh4.appendIns(new O());
 					break;
 			}
+			}catch (Exception e){}
 			Object[] resExprNiv2Rec=ExpresionNiv2Rec(tipoh4, codPh4);
 			tipo1=(Tipos)resExprNiv2Rec[0];
 			codP1=(Codigo)resExprNiv2Rec[1];
@@ -775,6 +783,7 @@ public class TraductorCodP extends Traductor{
 			
 			
 			codP1 = codPh1;
+			try{
 			switch (op2){
 			case SHL:
 				codP1.appendCod(codP3);
@@ -784,13 +793,16 @@ public class TraductorCodP extends Traductor{
 				codP1.appendCod(codP3);
 				codP1.appendIns(new Shr());
 				break;
-			}
+			}}
+			catch(Exception e){}
+			return new Object[]{tipo1,codP1};
 		}
+		
 	}
 	
-	protected Object[] expresionNiv4_conOp(Operaciones op2){
-		Tipos tipo1;
-		Codigo codP1;
+	protected Object[] ExpresionNiv4_conOp(Operaciones op2){
+		Tipos tipo1=null;
+		Codigo codP1=null;
 		Object[] resExprNiv4=ExpresionNiv4();
 		Tipos tipo3 = (Tipos)resExprNiv4[0];
 		Codigo codP3 = (Codigo)resExprNiv4[1];
@@ -826,6 +838,7 @@ public class TraductorCodP extends Traductor{
 		}
 		
 		codP1=codP3;
+		try{
 		switch (op2){
 		case NOT:
 			codP1.appendIns(new No());
@@ -846,8 +859,90 @@ public class TraductorCodP extends Traductor{
 			codP1.appendIns(new CastChar());
 			break;
 		}
+		}catch (Exception e){}
 		return new Object[]{tipo1,codP1};
 	}
 
+	
+	//ExpresiónNiv4(out: tipo1, codP1)
+	protected Object[] ExpresionNiv4_valorAbs(){
+		Tipos tipo1=null;
+		Codigo codP1=null;
+		Object[] resExprNiv4=ExpresionNiv4();
+		Tipos tipo2 = (Tipos)resExprNiv4[0];
+		Codigo codP2 = (Codigo)resExprNiv4[1];
+		
+		if (valorAbs()){
+			errores.add(new ErrorTraductor("FATAL: Expresion nivel4: no se cierra el valor abs"));
+			tipo1=Tipos.ERROR;
+			return new Object[]{tipo1,codP2};
+		}
+		
+		if (tipo2 == Tipos.ERROR || tipo2 == Tipos.BOOL || tipo2==Tipos.CHAR)
+			tipo1=Tipos.ERROR;
+		else if (tipo2 == Tipos.REAL)
+			tipo1=Tipos.REAL;
+		else if (tipo2 == Tipos.NATURAL || tipo2 == Tipos.ENTERO)
+			tipo1= Tipos.NATURAL;
+		else tipo1=Tipos.ERROR;		
+		
+		codP1=codP2;
+		try{codP1.appendIns(new Abs());}catch(Exception e){}
+		return new Object[]{tipo1,codP1};
+	}
+
+
+	//Literal(out: tipo1, codP1) → id
+	protected Object[] Literal_Id(Token t) {
+		if (!TablaSimbolos.existe(ts, t.getLex())){
+			errores.add(new ErrorTraductor("Identificador no declarado: "+t.getLex()));
+			return new Object[]{Tipos.ERROR,new Codigo()};
+		}
+		Tipos tipo1 = TablaSimbolos.getTipo(ts, t.getLex());
+		int dir= TablaSimbolos.getDir(ts, t.getLex());
+		Codigo codP1=null;
+		try {
+			codP1 = new Codigo(new ApilarDir(new Entero(dir)));
+		} catch (LectorExc e) {}	
+		
+		return new Object[]{tipo1,codP1};
+	}
+	//Literal(out: tipo1, codP1, codJ1) → litBoo
+	protected Object[] Literal_LitBoo(Token t) {
+		boolean valor;
+		if (t.getLex().equals("true")) valor=true;
+		else valor=false;
+		Apilar i=null;
+		try {
+			i = new Apilar(new Booleano(valor));
+		} catch (Exception e) {}
+		return new Object[]{Tipos.BOOL,new Codigo(i)};
+	}
+
+	protected Object[] Literal_LitCha(Token t) {
+		Apilar i=null;
+		try {
+			i=new Apilar(new Caracter(t.getLex().charAt(1)));
+		} catch (Exception e) {}
+		return new Object[]{Tipos.CHAR,new Codigo(i)};
+	}
+
+	//Literal(out: tipo1, codP1) → litNat
+	protected Object[] Literal_LitNat(Token t) {
+		Apilar i=null;
+		try {
+			i=new Apilar(new Natural(Integer.parseInt(t.getLex())));
+		} catch (Exception e) {}
+		return new Object[]{Tipos.NATURAL,new Codigo(i)};
+	}
+
+	//Literal(out: tipo1, codP1, codJ1) → litFlo
+	protected Object[] Literal_LitFlo(Token t) {
+		Apilar i=null;
+		try {
+			i=new Apilar(new Real(Float.parseFloat(t.getLex())));
+		} catch (Exception e) {}
+		return new Object[]{Tipos.REAL,new Codigo(i)};
+	}
 
 }
