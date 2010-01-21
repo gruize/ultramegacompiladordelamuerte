@@ -14,4 +14,7 @@ public class Token {
     public Token(int n){
         numLinea = n;
     }
+    public Token(){
+        
+    }
 }

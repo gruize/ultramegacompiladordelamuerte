@@ -10,8 +10,8 @@ package compilador.lexico;
  * @author ruben
  */
 public class Or extends Token{
-    public Or(int n){
-        super(n);
+    public Or(){
+        super();
     }
 
 }

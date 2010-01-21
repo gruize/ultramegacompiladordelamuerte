@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class Natural extends Token{
-    public Natural(int n){
-        super(n);
+    public Natural(){
+        super();
     }
 }

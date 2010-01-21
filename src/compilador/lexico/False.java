@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class False extends Token{
-    public False(int n){
-        super(n);
+    public False(){
+        super();
     }
 }

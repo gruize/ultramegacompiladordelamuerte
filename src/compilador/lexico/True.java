@@ -10,7 +10,7 @@ package compilador.lexico;
  * @author ruben
  */
 public class True extends Token{
-    public True(int n){
-        super(n);
+    public True(){
+        super();
     }
 }

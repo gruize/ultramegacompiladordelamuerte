@@ -72,18 +72,18 @@ public class AnalizadorLexico {
 
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
-		palabrasReservadas.put("true",new True(numLinea));
-		palabrasReservadas.put("false",new False(numLinea));
-		palabrasReservadas.put("integer",new Integer(numLinea));
-		palabrasReservadas.put("natural",new Natural(numLinea));
-		palabrasReservadas.put("boolean",new Boolean(numLinea));
-		palabrasReservadas.put("float",new Float(numLinea));
-		palabrasReservadas.put("character",new character(numLinea));
-		palabrasReservadas.put("and",new And(numLinea));
-		palabrasReservadas.put("or",new Or(numLinea));
-		palabrasReservadas.put("not",new Not(numLinea));
-		palabrasReservadas.put("in",new In(numLinea));
-		palabrasReservadas.put("out",new Out(numLinea));
+		palabrasReservadas.put("true",new True());
+		palabrasReservadas.put("false",new False());
+		palabrasReservadas.put("integer",new Integer());
+		palabrasReservadas.put("natural",new Natural());
+		palabrasReservadas.put("boolean",new Boolean());
+		palabrasReservadas.put("float",new Float());
+		palabrasReservadas.put("character",new character());
+		palabrasReservadas.put("and",new And());
+		palabrasReservadas.put("or",new Or());
+		palabrasReservadas.put("not",new Not());
+		palabrasReservadas.put("in",new In());
+		palabrasReservadas.put("out",new Out());
 	}
 
 
@@ -554,7 +554,8 @@ public class AnalizadorLexico {
 	public static void main(String [] args) throws FileNotFoundException, IOException {
 		@SuppressWarnings("unused")
 		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba.txt");
-	}
+        AnalizadorLexico.numLinea++;
+    }
 
 }
 
