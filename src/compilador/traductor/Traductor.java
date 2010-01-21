@@ -1,8 +1,14 @@
 package compilador.traductor;
 
 import java.util.ArrayList;
+
+import pila.Instruccion;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
+import pila.interprete.instrucciones.*;
 import compilador.lexico.*;
 import compilador.tablaSimbolos.TablaSimbolos;
+import compilador.tablaSimbolos.InfoTs.Tipos;
 /**
  * Esta clase contiene las funciones de traducción que sólo dependen de la
  * gramática y no del código  que se va a generar.
@@ -17,6 +23,12 @@ public abstract class Traductor {
 	protected int numVars;
 	protected int i_token;
 	protected ArrayList<ErrorTraductor> errores;
+	
+
+	protected enum Operaciones{SUMA,RESTA,MULT,DIV,MENOR,MAYOR,MENORIG,MAYORIG,IGUAL,
+		DISTINTO,OR,AND,NOT,MOD,VALORABS,SHL,SHR,NEG,CASTENT,
+		CASTREAL,CASTCHAR,CASTNAT}
+	protected enum Fallo{NO,FALTAL,NO_FATAL}
 	
 	public Traductor(ArrayList<Token> tokens){
 		arrayTokens=tokens;
@@ -101,19 +113,40 @@ public abstract class Traductor {
 		return error;
 	}
 	
+	protected boolean dosPuntosIgual(){
+		Token t=sigToken();
+		boolean error=false;
+		if (!(t instanceof Dos_puntos_ig)){
+			error=true;
+			i_token--; //tal vez hemos leído un token que no había que leer
+		}
+		return error;
+	}
+	
+	protected boolean valorAbs(){
+		Token t=sigToken();
+		boolean error=false;
+		if (!(t instanceof Absoluto)){
+			error=true;
+			i_token--; //tal vez hemos leído un token que no había que leer
+		}
+		return error;
+	}
+	
 	//-----------------------------------------
 	//-------implementación--------------------
 	
 	//Programa(out: error1, cod1)
 	protected Object[] Programa(){
 		boolean error1=false;
-		String cod1="";
+		Codigo cod1=null;
 		error1|=Declaraciones();
 		if (!error1){
+			//si no hay error procesamos las instrucciones
 			error1|=ampersand();
 			Object[] resInst= Instrucciones();
 			error1 |= (Boolean)resInst[0];
-			cod1=(String)resInst[1];
+			cod1=(Codigo)resInst[1];
 		}
 		if (error1) errores.add(new ErrorTraductor("Error programa"));
 		return new Object[]{error1,cod1};
@@ -124,7 +157,7 @@ public abstract class Traductor {
 		Object[] decRes = Declaracion();
 		boolean errorh3 = (Boolean)decRes[0];
 		String idh3 = (String)decRes[1];
-		String tipoh3 = (String)decRes[2];
+		Tipos tipoh3 = (Tipos)decRes[2];
 		boolean error3 = DeclaracionesFact(idh3,tipoh3,errorh3);
 		return error3;
 	}
@@ -132,7 +165,7 @@ public abstract class Traductor {
 	//Declaración(out: error1, id1, tipo1) → id : tipo
 	private Object[] Declaracion(){
 		String id1=null;
-		String tipo1=null;
+		Tipos tipo1=null;
 		boolean error1=false;
 		Token t=sigToken();
 		if (!(t instanceof Identificador)){
@@ -151,18 +184,21 @@ public abstract class Traductor {
 			error1=true;
 			return new Object[]{error1 || error2 ,id1,tipo1};	
 		}
-		else tipo1=t.getLex();
+		else {
+			tipo1=dameTipo(t.getLex());
+		}
 		return new Object[]{false ,id1,tipo1};	
 		
 		
 	}
 	
 	//DeclaracionesFact(in: idh1, tipoh1, errorh1; out: error1) →
-	protected boolean DeclaracionesFact(String idh1,String tipoh1,boolean errorh1){
+	protected boolean DeclaracionesFact(String idh1,Tipos tipoh1,boolean errorh1){
 		boolean error1=errorh1;
-		if (!puntoYComa() && !error1){//no lambda
-			boolean error2= Declaraciones();
-			error1 |= error2 || TablaSimbolos.existe(ts, idh1);
+		boolean error2=false;;
+		if (!puntoYComa()){//no lambda
+			error2= Declaraciones();
+			error1 |= TablaSimbolos.existe(ts, idh1);
 			ts = TablaSimbolos.inserta(ts, idh1, tipoh1, numVars);
 			numVars++;
 		}
@@ -170,38 +206,49 @@ public abstract class Traductor {
 			ts = TablaSimbolos.inserta(TablaSimbolos.creaTS(),idh1,tipoh1,0);
 			numVars=1;
 		}
-		else error1=true;
-		return error1;
+		else {
+			errores.add(new ErrorTraductor("Error en declaraciones: construcción incorrecta."));
+			error1=true;
+			return error1;
+		}
+		
+		if (error1) errores.add(new ErrorTraductor("Identificador repetido"));
+		
+		return error1 || error2;
 	}
 	
 	//Instrucciones(out: error1,cod1) → 
 	protected Object[] Instrucciones(){
 		boolean error1;
-		String cod1;
+		Codigo cod1;
 		Object[] resIns= Instruccion();
 		boolean error2 = (Boolean)resIns[0];
-		String cod2 = (String)resIns[1];
+		Codigo cod2 = (Codigo)resIns[1];
 		Object[] resInsFact = InstruccionesFact(error2,cod2);
 		error1 = (Boolean)resInsFact[0];
-		cod1 = (String)resInsFact[1];
+		cod1 = (Codigo)resInsFact[1];
 		return new Object[]{error1,cod1};
 	}
 	
 	//InstruccionesFact(in: errorh1,codh1; out: error1,cod1) →
-	protected Object[] InstruccionesFact(boolean errorh1, String codh1 ){
+	protected Object[] InstruccionesFact(boolean errorh1, Codigo codh1 ){
 		boolean error1=errorh1;
-		String cod1="";
-		if (!puntoYComa() && !error1){ //no lambda
+		Codigo cod1=null;
+		if (!puntoYComa()){ //no lambda
 			Object[] resInst = Instrucciones();
 			boolean error2 = (Boolean) resInst[0];
-			String cod2 = (String) resInst[1];
+			Codigo cod2 = (Codigo) resInst[1];
 			error1 |= error2;
-			cod1 = codh1 + cod2;
+			cod1 = codh1;
+			cod1.appendCod(cod2);
 		}
 		else if (!errorh1){ //lambda
 			cod1=codh1;
 		}
-		else error1=true;	
+		else {
+			error1=true;
+			errores.add(new ErrorTraductor("Instrucciones: construccion incorrecta"));
+		}
 		return new Object[]{error1,cod1};
 	}
 	
@@ -209,28 +256,27 @@ public abstract class Traductor {
 	//Instrucción(out: error1,cod1) → 
 	private Object[] Instruccion(){
 		boolean error1=false;
-		String cod1;
 		Object[] resLect= InsLectura();
 		Object[] resEscr= InsEscritura();
 		Object[] resAsig= InsAsignacion();
 		boolean error2L = (Boolean)resLect[0];
 		boolean error2E = (Boolean)resEscr[0];
 		boolean error2A = (Boolean)resAsig[0];
-		String cod2="";
+		Codigo cod2=null;
 		
 		if (!error2L){//ins Lectura
-			cod2=(String)resLect[1];
+			cod2=(Codigo)resLect[1];
 		}
 		else if (!error2E){
-			cod2=(String)resEscr[1];
+			cod2=(Codigo)resEscr[1];
 		}
 		else if (!error2A){
-			cod2=(String)resAsig[1];
+			cod2=(Codigo)resAsig[1];
 		}
 		else {
 			error1=true;
 			errores.add(new ErrorTraductor("Error instrucción " +
-					"no identificada. Token: "+i_token));
+					"no identificada. Token: "+arrayTokens.get(i_token).getLex()));
 		}
 		
 		return new Object[]{error1,cod2};
@@ -242,852 +288,114 @@ public abstract class Traductor {
 	protected abstract Object[] InsAsignacion();
 
 
+	protected Tipos dameTipo(String lex){
+		if (lex.equals("integer")) return Tipos.ENTERO;
+		if (lex.equals("natural")) return Tipos.NATURAL;
+		if (lex.equals("boolean")) return Tipos.BOOL;
+		if (lex.equals("float")) return Tipos.REAL;
+		if (lex.equals("character")) return Tipos.CHAR;
+		return Tipos.ERROR;
+	}
 
-
-	//InsAsignación(out: error1,codP1,codJ1) → 
-//		dosPuntosIgual()
-//		Expresión(out: tipo3,codP3,codJ3)
-//		{
-//		error1 ← (NOT existeID(ts,id.lex)) v (tipo2 = error) v
-//				      (ts[id.lex].tipo = float ᴧ (tipo3 = character v tipo3 = boolean)) v
-//				        (ts[id.lex].tipo = integer ᴧ (tipo3=float v tipo3 = character v  tipo3 = boolean))  v
-//				        (ts[id.lex].tipo = natural ᴧ tipo3 =/= natural)  v
-//				        (ts[id.lex].tipo = character ᴧ tipo3 =/= character)  v
-//				        (ts[id.lex].tipo = boolean ᴧ tipo3 =/= boolean)			
-	//
-//		direccion ← ts[id.lex].dir
-	//
-	//
-	//
-//		codP1 ← codP3 || desapila-dir direccion
-//		codJ1 ← case (ts[id.lex].tipo)
-//				boolean:
-//					codJ3 || i2b || istore direccion
-//				character:
-//					codJ3 || i2c || istore InstAsignación.tsh[id.lex].dir
-//				natural:
-//				entero:
-//					codJ3 || istore direccion
-//				float:
-//					codJ3 || fstore direccion
-	//
-	//
-	//Expresión(out: tipo1,codP1,codJ1) → 
-	//
-//		ExpresiónNiv1(out: tipo2,codP2,codJ2)
-//		{
-//		tipo3h ← tipo2
-//		codPh3 ← codP2
-//		codJh3 ← codJ2
-//		}
-//		ExpresiónFact(in: tipo3h,codPh3,codJh3; out: tipo3,codP3,codJ3)
-//		{
-//		tipo1 ← tipo3
-//		codP1 ← codP3
-//		codJ1 ← codJ3
-//		}
-	//
-	//ExpresiónFact(in: tipo1h,codPh1,codJh1; out: tipo1,codP1,codJ1) → λ
-//		{
-//		tipo1 ← tipo1h
-//		codP1 ← codPh1
-//		codJ1 ← codJh1
-//		}
-	//
-	//ExpresiónFact(in: tipo1h,codPh1,codJh1; out: tipo1,codP1,codJ1) → 
-//		OpNiv0(out: op2)
-//		ExpresiónNiv1(out: tipo3,codP3,codJ3)
-//		{
-//		tipo1 ←  si (tipo1h = error v tipo3 = error) v
-//			 	      ( tipo1h = character ᴧ tipo3 =/= character) v
-//				      ( tipo1h =/= character ᴧ tipo3 = character)
-//			 	      (tipo1h = boolean ᴧ tipo3 =/= boolean) v
-//				      ( tipo1h =/= boolean ᴧ tipo3 = boolean))
-//				              error
-//				  sino  boolean
-	//
-	//
-//		codP1 ← 
-//			case (op2)
-//				menor:
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || menor
-//							sino
-//							       codPh1 || codP3 || CastFloat || menor
-//						entero:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || menor
-//							sino si (tipo3 = natural)
-//							       codPh1 || codP3 || CastInt || menor
-//							sino
-//							       codPh1 || codP3 || menor
-//						natural:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || menor
-//							sino si (tipo3 = entero)
-//							       codPh1 || CastInt || codP3 || menor
-//							sino
-//							       codPh1 || codP3 || menor
-//						otro:
-//							codPh1 || codP3 || menor
-//				mayor
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || mayor
-//							sino
-//							       codPh1 || codP3 || CastFloat || mayor
-//						entero:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || mayor
-//							sino si (tipo3 = natural)
-//							       codPh1 || codP3 || CastInt || mayor
-//							sino
-//							       codPh1 || codP3 || mayor
-//						natural:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || mayor
-//							sino si (tipo3 = entero)
-//							       codPh1 || CastInt || codP3 || mayor
-//							sino
-//							       codPh1 || codP3 || mayor
-//						otro:
-//							codPh1 || codP3 ||  mayor
-//				menor-ig
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || menorIg
-//							sino
-//							       codPh1 || codP3 || CastFloat || menorIg
-//						entero:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || menorIg
-//							sino si (tipo3 = natural)
-//							       codPh1 || codP3 || CastInt || menorIg
-//							sino
-//							       codPh1 || codP3 || menorIg
-//						natural:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || menorIg
-//							sino si (tipo3 = entero)
-//							       codPh1 || CastInt || codP3 || menorIg
-//							sino
-//							       codPh1 || codP3 || menorIg
-//						otro:
-//							codPh1 || codP3 ||  menorIg
-//				mayor-ig
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || mayorIg
-//							sino
-//							       codPh1 || codP3 || CastFloat || mayorIg
-//						entero:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || mayorIg
-//							sino si (tipo3 = natural)
-//							       codPh1 || codP3 || CastInt || mayorIg
-//							sino
-//							       codPh1 || codP3 || mayorIg
-//						natural:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || mayorIg
-//							sino si (tipo3 = entero)
-//							       codPh1 || CastInt || codP3 || mayorIg
-//							sino
-//							       codPh1 || codP3 || mayorIg
-//						otro:
-//							codPh1 || codP3 ||  mayorIg
-//				igual
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || igual
-//							sino
-//							       codPh1 || codP3 || CastFloat || igual
-//						entero:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || igual
-//							sino si (tipo3 = natural)
-//							       codPh1 || codP3 || CastInt || igual
-//							sino
-//							       codPh1 || codP3 || igual
-//						natural:
-//							si (tipo3 = float)
-//							       codPh1 || CastFloat || codP3 || igual
-//							sino si (tipo3 = entero)
-//							       codPh1 || CastInt || codP3 || igual
-//							sino
-//							       codPh1 || codP3 || igual
-//						otro:
-//							codPh1 || codP3 ||  igual
-//				no-igual
-//					case (tipo1h)
-//						float:
-//							si (tipo3 = float)
-//							       codPh1 || codP3 || no-igual
-//							sino
-//							       codPh1 || codP3 || CastFloat || no-igual
-//						entero:
-//							si (tipo3 = float)
-//							      codPh1 || CastFloat || codP3 || no-igual
-//							sino si (tipo3 = natural)
-//							      codPh1 || codP3 || CastInt || no-igual
-//							sino
-//							      codPh1 || codP3 || no-igual
-//						natural:
-//							si (tipo3 = float)
-//							      codPh1 || CastFloat || codP3 || no-igual
-//							sino si (tipo3 = entero)
-//							      codPh1 || CastInt || codP3 || no-igual
-//							sino
-//							      codPh1 || codP3 || no-igual
-//						otro:
-//							codPh1 || codP3 ||  no-igual
-	//
-//		codJ1 ←  
-//			case (op)
-//				menor:
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_ge +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_ge +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_ge +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmpge +7
-//							iconst_1
-//							goto +4
-//							iconst_0
-//				mayor
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_le +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_le +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_le +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmple +7
-//							iconst_1
-//							goto +4
-//							iconst_0
-//				menor-ig
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_gt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_gt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_gt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmpgt +7
-//							iconst_1
-//							goto +4
-//							iconst_0
-//				mayor-ig
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_lt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_lt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_lt +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmplt +7
-//							iconst_1
-//							goto +4
-//							iconst_0
-//				igual
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_ne +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_ne +7
-//							iconst_1
-//							goto +4
-//							iconst_0  
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_ne +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0  
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmpne +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0
-//				no-igual
-//					si (tipo1h = float)
-//						si (tipo3 = float)
-//							codJh1 || 
-//							codJ3 || 
-//							fcmpg || 
-//							if_eq +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							i2f ||
-//							fcmpg ||
-//							if_eq +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0
-//					sino
-//						si(tipo3 = float)
-//							codJh1 ||
-//							i2f ||
-//							codJ3 ||
-//							fcmpg ||
-//							if_eq +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0
-//						sino
-//							codJh1 ||
-//							codJ3 ||
-//							if_icmpeq +7 ||
-//							iconst_1 ||
-//							goto +4 ||
-//							iconst_0
-//		}
-	//
+	//Expresión(out: tipo1,cod1) → 
+	protected Object[] Expresion(){
+		Tipos tipo1=null;
+		Codigo cod1=null;
+		Object[] resExprN1=ExpresionNiv1();
+		Tipos tipo2=(Tipos)resExprN1[0];
+		Codigo codP2=(Codigo)resExprN1[1];
+		Object[] resExprFact= ExpresionFact(tipo2,codP2);
+		tipo1=(Tipos)resExprFact[0];
+		cod1=(Codigo)resExprFact[1];
+		return new Object[]{tipo1,cod1};
+	}
+	
+	//ExpresiónFact(in: tipo1h,codPh1; out: tipo1,codP1) →
+	protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codh1);
+	
 	//ExpresiónNiv1(out: tipo1, codP1, codJ1) → 
-	//	
-//		ExpresiónNiv2(out:  tipo2, codP2, codJ2) 
-//		{
-//		tipoh3 ← tipo2
-//		codPh3 ← codP2
-//		codJh3 ← codJ2
-//		}
-//		ExpresiónNiv1Rec(in: tipoh3, codPh3, codJh3; out: tipo3, codP3,codJ3)
-//		{	
-//		tipo1 ← tipo3
-//		codP1 ← codP3
-//		codJ1 ← codJ3
-//		}
-	//
-	//ExpresiónNiv1Rec(in: tipoh1, codPh1, codJh1; out: tipo1, codP1,codJ1) → λ
-//		{
-//		tipo1 ← tipoh1
-//		codP1 ← codPh1
-//		codJ1 ← codJh1
-//		}
-	//ExpresiónNiv1Rec(in: tipoh1, codPh1, codJh1; out: tipo1, codP1,codJ1) → 
-//		OpNiv1 (out: op2)
-//		ExpresiónNiv2 (out: tipo3, codP3, codJ3)
-//		{
-//		tipoh4 = 
-//			si (tipoh1 = error v tipo3 = error v
-//			     tipoh1 = char v tipo3 = char v
-//			     (tipoh1 = boolean ᴧ tipo3 =/= boolean) v
-//		                   (tipoh1 =/= boolean ᴧ tipo3 = boolean))
-//				error
-//			sino case (op2)
-//				suma,resta: 
-//				         si (tipoh1=float v tipo3 = float)
-//					float
-//				         sino si (tipoh1 =integer v tipo3 = integer)
-//					 integer
-//				         sino si (tipoh1 =natural ᴧ tipo3 = natural)
-//					 natural
-//				                 sino error
-//				o:  
-//				         si (tipoh1 = boolean ᴧ tipo3 = boolean)
-//					    boolean
-//				         sino error
-	//	
-//		codPh4 ←  case (op2)
-//				suma:
-//					case (tipoh1)
-//						float:
-//							si(tipo3 = float)
-//								codPh1 || codP3 || sumar
-//							sino 
-//								codPh1 || codP3 || CastFloat || sumar
-//						entero:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || sumar
-//							sino si (tipo3 = natural)
-//								codPh1 || codP3 || CastInt || sumar
-//							sino 
-//								codPh1 || codP3 || sumar
-//						natural:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || sumar
-//							sino si (tipo3 = entero)
-//								codPh1 || CastInt || codP3 ||  sumar
-//							sino 
-//								codPh1 || codP3 || sumar
-//				resta:
-//					case (tipoh1)
-//						float:
-//							si(ExpresionNiv2 .tipo = float)
-//								codPh1 || codP3 || restar
-//							sino 
-//								codPh1 || codP3 || CastFloat || restar
-//						entero:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || restar
-//							sino si (tipo3 = natural)
-//								codPh1 || codP3 || CastInt || restar
-//							sino 
-//								codPh1 || codP3 || restar
-//						natural:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || restar
-//							sino si (tipo3 = entero)
-//								codPh1 || CastInt || codP3 ||  restar
-//							sino 
-//								codPh1 || codP3 || restar
-//				o:
-//					codPh1 || codP3 || o		
-	//
-//		codJh4 =
-//			case (op2)
-//				suma:
-//					si (tipoh1 = float)
-//						si(tipo3 = float)
-//							 codJh1 || codJ3 || fadd
-//						sino
-//							 codJh1 || codJ3 || i2f || fadd
-//					sino
-//						si(tipo3 = float)
-//							 codJh1 || i2f || codJ3 || fadd
-//						sino
-//							 codJh1 || codJ3 || iadd
-//				resta:
-//					si (tipoh1 = float)
-//						si(tipo3 = float)
-//							 codJh1 || codJ3 || fsub
-//						sino
-//							 codJh1 || codJ3 || i2f || fsub
-//					sino
-//						si(tipo3 = float)
-//							 codJh1 || i2f || codJ3 || fsub
-//						sino
-//							 codJh1 || codJ3 || isub
-//				o:
-//					codJh1 ||
-//					ifne +7 ||
-//					codJ3 ||
-//					ifeq +7 ||
-//					iconst_1 ||
-//					goto +4 ||
-//					iconst_0
-//		}
-//		ExpresiónNiv1Rec(in: tipoh4, codPh4, codJh4; out: tipo4, codP4,codJ4)
-//		{
-//		tipo1 ← tipo4
-//		codP1 ← codP4
-//		codJ1 ← codJ4
-//		}
-	//
-	//
-	//ExpresiónNiv2(out: tipo1, codP1, codJ1) → 
-//		ExpresiónNiv3(out: tipo2, codP2, codJ2)
-//		{
-//		tipoh3 ← tipo2
-//		codPh3 ← codP2
-//		codJh3 ← codJ2
-//		}
-//		ExpresiónNiv2Rec(in: tipoh3, codPh3, codJh3; out: tipo3, codP3, codJ3)
-//		{
-//		tipo1 ← tipo3
-//		codP1 ← codP3
-//		codJ1 ← codJ3
-//		}
-	//
-	//ExpresiónNiv2Rec(in: tipoh1, codPh1, codJh1; out: tipo1, codP1, codJ1) → λ
-//		{
-//		tipo1 ← tipoh1
-//		codP1 ← codPh1
-//		codJ1 ← codJh1
-//		}
-	//
-	//ExpresiónNiv2Rec(in: tipoh1, codPh1, codJh1; out: tipo1, codP1, codJ1) → 
-//		OpNiv2(out: op2)
-//		ExpresiónNiv3(out: tipo3, codP3, codJ3)
-//		{
-//		tipoh4 = 
-//			si (tipoh1 = error v tipo3 = error v
-//	                      tipoh1 = character v tipo3 = character v
-//			    (tipoh1 = boolean ᴧ tipo3 =/= boolean v
-//			    (tipoh1 =/= boolean ᴧ tipo3 = boolean))
-//			          error
-//			sino case (op2)
-//				multiplica,divide: 
-//				         si (tipoh1=float v tipo3 = float)
-//					    float
-//				         sino si (tipoh1 =integer v tipo3 = integer)
-//						integer
-//				         sino si (tipoh1 =natural ᴧ tipo3=natural)
-//					  natural
-//				       sino error
-//				modulo:
-//				         si (tipo3 = natural ᴧ
-//					(tipoh1=natural v tipoh1=integer))	
-//					      tipoh1
-//				         sino     error
-//				y:  
-//				         si (tipoh1 = boolean ᴧ tipo3 = boolean)
-//					    boolean
-//				         sino error
-	//	
-//		codPh4 ←  
-//			case(op2)
-//				Multiplica:
-//					case (tipoh1)
-//						float:
-//							si(tipo3 = float)
-//								codPh1 || codP3 || Mul
-//							sino 
-//								codPh1 || codP3 || CastFloat || Mul
-//						entero:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || Mul
-//							sino si (tipo3 = natural)
-//								codPh1 || codP3 || CastInt || Mul
-//							sino 
-//								codPh1 || codP3 || Mul
-//						natural:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || Mul
-//							sino si (tipo3 = entero)
-//								codPh1 || CastInt || codP3 ||  Mul
-//							sino 
-//								codPh1 || codP3 || Mul
-//				Divide:
-//					case (tipoh1)
-//						float:
-//							si(tipo3 = float)
-//								codPh1 || codP3 || Div
-//							sino 
-//								codPh1 || codP3 || CastFloat || Div
-//						entero:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || Div
-//							sino si (tipo3 = natural)
-//								codPh1 || codP3 || CastInt || Div
-//							sino 
-//								codPh1 || codP3 || Div
-//						natural:
-//							si (tipo3 = float)
-//								codPh1 || CastFloat || codP3 || Div
-//							sino si (tipo3 = entero)
-//								codPh1 || CastInt || codP3 ||  Div
-//							sino 
-//								codPh1 || codP3 || Div
-//				Modulo:
-//					codPh1 || codP3 || Mod
-//				y:
-//					codPh1 || codP3 || Y
-	//
-//		codJh4 ← 
-//			case(op2)
-//				Multiplica:
-//					si(tipoh1 = float)
-//						si(tipo3 = float)
-//							codJh1 || codJ3 || fmul
-//						sino
-//							codJh1 || codJ3 || i2f || fmul
-//					sino
-//						si(tipo3 = float)
-//							codJh1 || i2f || codJ3|| fmul
-//						sino
-//							codJh1 || codJ3|| imul
-//				Divide:
-//					si(tipoh1 = float)
-//						si(tipo3 = float)
-//							codJh1 || codJ3 || fdiv
-//						sino
-//							codJh1 || codJ3 || i2f || fdiv
-//					sino
-//						si(tipo3 = float)
-//							codJh1 || i2f || codJ3|| fdiv
-//						sino
-//							codJh1 || codJ3|| idiv
-//				Modulo:
-//					codJh1 || codJ3 || imod
-//				y:
-//					codJh1 ||
-//					ifeq +11 ||
-//					codJ3 ||
-//					ifeq +7 ||
-//					iconst_1 ||
-//					goto +4 ||
-//					iconst_0
-//		}
-//		ExpresiónNiv2Rec(in: tipoh4, codPh4, codJh4; out: tipo4, codP4, codJ4)
-//		{
-//		tipo1 ← tipo4
-//		codP1 ← codP4
-//		codJ1 ← codJ4
-//		}
-	//
-	//
-	//
-	//ExpresiónNiv3(out: tipo1, codP1, codJ1) → 
-//		ExpresiónNiv4( out: tipo2, codP2, codJ2)
-//		{
-//		tipoh3 ← tipo2
-//		codPh3 ← codP2
-//		codJh3 ← codJ2
-//		}
-//		ExpresiónNiv3Fact(in: tipoh3, codPh3, codJh3; out: tipo3, codP3, codJ3)
-//		{
-//		tipo1 ← tipo3
-//		codP1 ← codP3
-//		codJ1 ← codJ3
-//		}
-	//ExpresiónNiv3Fact(in: tipoh1, codPh1, codJh1; out: tipo1, codP1, codJ1) → λ
-//		{
-//		tipo1 ← tipoh1
-//		codP1 ← codPh1
-//		codJ1 ← codJh1
-//		}
-	//
-	//ExpresiónNiv3Fact(in: tipoh1, codPh1, codJh1; out: tipo1, codP1, codJ1)  → 
-//		OpNiv3(out: op2)
-//		ExpresiónNiv3(out: tipo3, codP3, codJ3)
-//		{
-//		tipo1 ←  
-//			si (tipoh1 = error v tipo3 = error v
-//	                                 tipoh1 =/= natural v tipo3 =/= natural)
-//			       error
-//			sino natural
-	//
-//		codP1 ←  
-//			case (op2)
-//				shl:
-//					codPh1 || codP3 || shl
-//				shr:
-//					codPh1 || codP3 || shr
-	//
-//		codJ1 ← 
-//			case (op2)
-//				shl:
-//					codJh1 || codJ3 || ishl
-//				shr:
-//					codJh1 || codJ3 || ishr
-//		}
-	//
-	//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
-//		OpNiv4(out: op2)
-//		ExpresiónNiv4(out tipo3, codP3, codJ3)
-//		{
-//		tipo1 ←  
-//			si (tipo3 = error)
-//			          error
-//			sino case (op2)
-//				no: 
-//				         si (tipo3=boolean)
-//					    boolean
-//				         sino   error
-//				menos:
-//				         si (tipo3=float)
-//					    float
-//				         sino si (tipo3=integer v tipo3 = natural)
-//						integer
-//					   sino error
-//				cast-float:
-//				         si (tipo3=/=boolean)
-//					    float
-//				         sino error
-//				cast-int:
-//				         si (tipo3=/=boolean)
-//					    integer
-//				         sino error
-//				cast-nat:
-//			   	         si (tipo3=natural v tipo3=character)
-//					   natural
-//				         sino error
-//				cast-char:
-//				         si (tipo3=natural v tipo3=character)
-//					   character
-//				         sino error
-	//
-	//
-//		codP1 ←  
-//			case (op2)
-//				no:
-//					codP3 || no
-//				negativo:
-//					codP3 || negativo
-//				cast-float:
-//					codP3 || CastFloat
-//				cast-int:
-//					codP3 || CastInt
-//				cast-nat:
-//					codP3 || CastNat
-//				cast-char:
-//					codP3 || CastChar
-	//	
-//		codJ1 ← 
-//			case (op2)
-//				no:
-//					codJ3||
-//					ifeq +7 ||
-//					iconst_0 ||
-//					goto +4 || 
-//					iconst_1
-//				negativo:
-//					case (tipo3)
-//						entero:
-//							codJ3 || ineg
-//						float:
-//							codJ3 || fneg
-//				cast-float:
-//					case (tipo3)
-//						character:
-//						natural:
-//						entero:
-//							codJ3 || i2f
-//						float:
-//							codJ3
-//				cast-int:
-//					case (tipo3)
-//						character:
-//						natural:
-//						entero:
-//							codJ3
-//						float:
-//							codJ3 || f2i
-//				cast-nat:
-//					case (tipo3)
-//						character:
-//						natural:
-//						entero:
-//							codJ3
-//						float:
-//							codJ3 || f2i
-//				cast-char:
-//					case (tipo3)
-//						character:
-//						natural:
-//						entero:
-//							codJ3
-//						float:
-//							codJ3 || f2i
-//		}
-	//
-	//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
+	protected Object[] ExpresionNiv1(){
+		Tipos tipo1=null;
+		Codigo cod1=null;
+		Object[] resExprN2=ExpresionNiv2();
+		Tipos tipo2=(Tipos)resExprN2[0];
+		Codigo codP2=(Codigo)resExprN2[1];
+		Object[] resExprFact= ExpresionNiv1Rec(tipo2,codP2);
+		tipo1=(Tipos)resExprFact[0];
+		cod1=(Codigo)resExprFact[1];
+		return new Object[]{tipo1,cod1};
+	}
+
+	//ExpresiónNiv1Rec(in: tipoh1, codh1; out: tipo1, cod1)
+	protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1,Codigo codh1);
+
+	
+	//ExpresiónNiv2(out: tipo1, cod1) →
+	protected Object[] ExpresionNiv2(){
+		Tipos tipo1=null;
+		Codigo cod1=null;
+		Object[] resExprNiv3=ExpresionNiv3();
+		Tipos tipoh3=(Tipos)resExprNiv3[0];
+		Codigo codPh3=(Codigo)resExprNiv3[1];
+		Object[] resExprNiv2Rec = ExpresionNiv2Rec(tipoh3,codPh3);
+		tipo1=(Tipos)resExprNiv2Rec[0];
+		cod1=(Codigo)resExprNiv2Rec[1];
+		return new Object[]{tipo1,cod1};
+	}
+
+	
+	//ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, codP1)
+	protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codh1);
+
+	
+	//ExpresiónNiv3(out: tipo1, codJ1) → 
+	protected Object[] ExpresionNiv3(){
+		Tipos tipo1=null;
+		Codigo cod1=null;
+		Object[] resExprN4=ExpresionNiv4();
+		Tipos tipoh3=(Tipos)resExprN4[0];
+		Codigo codh3=(Codigo)resExprN4[1];
+		Object[] resExprN4Fact = ExpresionNiv3Fact(tipoh3,codh3);
+		tipo1=(Tipos)resExprN4Fact[0];
+		cod1=(Codigo)resExprN4Fact[1];
+		return new Object[]{tipo1,cod1};
+	}
+	
+	//ExpresiónNiv3Fact(in: tipoh1, codh1; out: tipo1, cod1)
+	protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codh1);
+
+	protected Object[] ExpresionNiv4(){
+		Operaciones op2=OpNiv4();
+		if (op2!=null)
+			return ExpresionNiv4_conOp(op2);
+		if (!valorAbs())
+			return ExpresionNiv4_valorAbs();
+		if (!abrePar())
+			return ExpresionNiv4_abrePar();
+		return ExpresionNiv4_Literal();
+	}
+	
+	protected abstract Object[] ExpresionNiv4_conOp(Operaciones op2);
+	protected abstract Object[] ExpresionNiv4_valorAbs();
+	
+	
+	//ExpresiónNiv4(out: tipo1, cod1)
+	protected Object[] ExpresionNiv4_abrePar(){
+		Object[] resExpr=Expresion();
+		Tipos tipo1=(Tipos)resExpr[0];
+		Codigo cod1=(Codigo)resExpr[1];
+		if (cierraPar()){
+			errores.add(new ErrorTraductor("FATAL: Expresion nivel4: no se cierra paréntesis"));
+			tipo1=Tipos.ERROR;
+		}
+		return new Object[]{tipo1,cod1};
+	}
+	
+	protected Object[] ExpresionNiv4_Literal(){
+		return Literal();
+	}
+
+//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
 //		barraVertical()
 //		Expresión(out: tipo2, codP2, codJ2)
 //		barraVertical()
@@ -1103,39 +411,13 @@ public abstract class Traductor {
 	//	
 	//
 //		codP1 ← codP2 || abs
-//		codJ1 ←  
-//			case (tipo2)
-//				float:
-//					codJ2 ||
-//					dup ||
-//					fconst_0 ||
-//					fcmpg ||
-//					ifge +4
-//					fneg
-//				otro:
-//					codJ2 ||
-//					dup ||
-//					ifge +4
-//					fneg
-//		}
+
 	//
-	//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
-//		abrePar()
-//		Expresión(out: tipo2, codP2, codJ2)
-//		cierraPar()
-//		{
-//		tipo1 ← tipo2
-//		codP1 ← codP2
-//		codJ1 ← codJ2
-//		}
-	//
-	//ExpresiónNiv4(out: tipo1, codP1, codJ1) → 
-//		Literal(out: tipo2, codP2, codJ2)
-//		{
-//		tipo1 ← tipo2
-//		codP1 ← codP2
-//		codJ1 ← codJ2
-//		}
+
+	
+	
+	
+	
 	//
 	//Literal(out: tipo1, codP1, codJ1) → id
 //		{
