@@ -228,7 +228,7 @@ public abstract class Traductor {
 		Codigo cod1=null;
 		error1|=Declaraciones();
 		//ERROR fatal si no hay ampersand
-		if (!ampersand()) throw new Exception("FATAL: & no encontrado");
+		if (!ampersand()) throw new Exception("FATAL: & no encontrado"+textoError());
 		Object[] resInst= Instrucciones();
 		error1 |= (Boolean)resInst[0];
 		cod1=(Codigo)resInst[1];
