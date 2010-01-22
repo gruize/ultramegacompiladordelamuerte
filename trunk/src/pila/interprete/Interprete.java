@@ -1,17 +1,17 @@
 package pila.interprete;
 
-import pila.interprete.datos.DatoPila;
-import pila.interprete.excepiones.InstruccionExc;
-import pila.interprete.excepiones.LectorExc;
-import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import pila.Instruccion;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.InstruccionExc;
+import pila.interprete.excepiones.LectorExc;
+import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
  * El interprete es la "maquina virtual" que carga un

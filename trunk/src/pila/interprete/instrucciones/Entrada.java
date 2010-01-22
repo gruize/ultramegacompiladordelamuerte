@@ -7,6 +7,7 @@ package pila.interprete.instrucciones;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
 import pila.interprete.Interprete;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
