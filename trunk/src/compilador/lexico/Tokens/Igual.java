@@ -1,0 +1,16 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package compilador.lexico.Tokens;
+
+/**
+ *
+ * @author usuario_local
+ */
+public class Igual extends Token{
+    public Igual(int n){
+        super(n);
+    }
+}
