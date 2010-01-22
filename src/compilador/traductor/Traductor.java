@@ -2,14 +2,6 @@ package compilador.traductor;
 
 import java.util.ArrayList;
 
-import pila.interprete.instrucciones.Igual;
-import pila.interprete.instrucciones.Mayor;
-import pila.interprete.instrucciones.Menor;
-import pila.interprete.instrucciones.Modulo;
-import pila.interprete.instrucciones.Shl;
-import pila.interprete.instrucciones.Shr;
-import pila.interprete.instrucciones.Suma;
-
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
 import compilador.lexico.Tokens.Cast_char;
