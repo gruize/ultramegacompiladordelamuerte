@@ -2,8 +2,9 @@ package pila.interprete.instrucciones;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import pila.interprete.*;
-import pila.*;
+
+import pila.Instruccion;
+import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;

@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import pila.EscritorBytecode;
 import pila.Instruccion;
-import pila.interprete.datos.DatoPila;
 import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**

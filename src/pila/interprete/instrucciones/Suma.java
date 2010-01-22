@@ -1,9 +1,10 @@
 package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
+
 import pila.Dato;
-import pila.interprete.datos.DatoPila;
 import pila.interprete.Interprete;
+import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;

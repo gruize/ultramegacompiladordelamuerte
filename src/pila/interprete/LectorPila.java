@@ -1,21 +1,21 @@
 package pila.interprete;
 
-import pila.interprete.datos.DatoPila;
-import pila.interprete.excepiones.DatoExc;
-import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import pila.Instruccion;
 import pila.LectorBytecode;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
+import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.Abs;
 import pila.interprete.instrucciones.Apilar;
@@ -29,6 +29,7 @@ import pila.interprete.instrucciones.DesapilarDir;
 import pila.interprete.instrucciones.Divide;
 import pila.interprete.instrucciones.Entrada;
 import pila.interprete.instrucciones.Igual;
+import pila.interprete.instrucciones.InstruccionInterprete;
 import pila.interprete.instrucciones.Mayor;
 import pila.interprete.instrucciones.MayorIg;
 import pila.interprete.instrucciones.Menor;
