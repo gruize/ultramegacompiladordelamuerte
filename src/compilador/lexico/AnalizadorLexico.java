@@ -1,5 +1,46 @@
 package compilador.lexico;
 
+import compilador.lexico.Tokens.Dos_puntos;
+import compilador.lexico.Tokens.Menor_ig;
+import compilador.lexico.Tokens.Division;
+import compilador.lexico.Tokens.Modulo;
+import compilador.lexico.Tokens.Natural;
+import compilador.lexico.Tokens.character;
+import compilador.lexico.Tokens.Multiplicacion;
+import compilador.lexico.Tokens.Float;
+import compilador.lexico.Tokens.Cast_int;
+import compilador.lexico.Tokens.Absoluto;
+import compilador.lexico.Tokens.True;
+import compilador.lexico.Tokens.Cast_nat;
+import compilador.lexico.Tokens.Boolean;
+import compilador.lexico.Tokens.Not;
+import compilador.lexico.Tokens.Distinto;
+import compilador.lexico.Tokens.Punto_coma;
+import compilador.lexico.Tokens.Suma;
+import compilador.lexico.Tokens.Parentesis_c;
+import compilador.lexico.Tokens.LitNat;
+import compilador.lexico.Tokens.LitFlo;
+import compilador.lexico.Tokens.Signo_menos;
+import compilador.lexico.Tokens.Dos_puntos_ig;
+import compilador.lexico.Tokens.Cast_float;
+import compilador.lexico.Tokens.Token;
+import compilador.lexico.Tokens.Integer;
+import compilador.lexico.Tokens.Shl;
+import compilador.lexico.Tokens.False;
+import compilador.lexico.Tokens.Menor;
+import compilador.lexico.Tokens.Or;
+import compilador.lexico.Tokens.Separador;
+import compilador.lexico.Tokens.LitCha;
+import compilador.lexico.Tokens.Parentesis_a;
+import compilador.lexico.Tokens.Identificador;
+import compilador.lexico.Tokens.Mayor;
+import compilador.lexico.Tokens.In;
+import compilador.lexico.Tokens.And;
+import compilador.lexico.Tokens.Cast_char;
+import compilador.lexico.Tokens.Mayor_ig;
+import compilador.lexico.Tokens.Out;
+import compilador.lexico.Tokens.Igual;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
@@ -117,41 +158,48 @@ public class AnalizadorLexico {
 		buff = sigCar();
 		estado = est;
 	}
-	public void error(){
+	public void error() throws IOException{
 		String sal="";
 		switch(estado){
-		case INICIAL: sal="No existe el token"+ buff; break;
-		case CASTING_INT1:
-		case CASTING_INT2:
-		case CASTING_INT3: sal= "Casting (int) mal escrito"; break;
-		case CASTING_NAT1:
-		case CASTING_NAT2:
-		case CASTING_NAT3: sal= "Casting (nat) mal escrito"; break;
-		case CASTING_FLOAT1:
-		case CASTING_FLOAT2:
-		case CASTING_FLOAT3:
-		case CASTING_FLOAT4:
-		case CASTING_FLOAT5: sal= "Casting (float) mal escrito"; break;
-		case CASTING_CHAR1:
-		case CASTING_CHAR2:
-		case CASTING_CHAR3:
-		case CASTING_CHAR4:  sal= "Casting (char) mal escrito"; break;
-		case DISTINTO1: sal= "No exite el token" + lex; break;
-		case FLOAT1:
-		case FLOAT2:
-		case FLOAT3: sal= "La parte decimal de un float solo tiene numeros"; break;
-		case FLOAT4:
-			switch(buff){
-			case '0': sal= "El exponente de un float no puede empezar por cero"; break;
-			default: sal= "El exponente de un float solo puede llevar numeros"; break;
-			}
-			break;
-		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"; break;
-		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"; break;
-		default:
-		}
-		System.out.println(sal);
-	}
+            case INICIAL: sal="No existe el token"+ buff; break;
+            case CASTING_INT1:
+            case CASTING_INT2:
+            case CASTING_INT3: sal= "Casting (int) mal escrito"; break;
+            case CASTING_NAT1:
+            case CASTING_NAT2:
+    		case CASTING_NAT3: sal= "Casting (nat) mal escrito"; break;
+    		case CASTING_FLOAT1:
+    		case CASTING_FLOAT2:
+    		case CASTING_FLOAT3:
+    		case CASTING_FLOAT4:
+    		case CASTING_FLOAT5: sal= "Casting (float) mal escrito"; break;
+    		case CASTING_CHAR1:
+    		case CASTING_CHAR2:
+    		case CASTING_CHAR3:
+    		case CASTING_CHAR4:  sal= "Casting (char) mal escrito"; break;
+    		case DISTINTO1: sal= "No exite el token" + lex; break;
+            case LIT_NAT1:
+            case LIT_NAT2: sal= "Un numero natural no puede acabar por letra"; break;
+            case LIT_FLO1:
+            case LIT_FLO2:
+            case LIT_FLO3:
+            case LIT_FLO4: sal= "Un numero real no puede acabar por letra"; break;
+        	case FLOAT1:
+    		case FLOAT2: sal= "La parte decimal de un float no puede acabar en 0"; break;
+    		case FLOAT3: sal= "La parte decimal de un float solo tiene numeros"; break;
+    		case FLOAT4:
+    			switch(buff){
+    			case '0': sal= "El exponente de un float no puede empezar por cero"; break;
+    			default: sal= "El exponente de un float solo puede llevar numeros"; break;
+    			}
+    			break;
+    		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"; break;
+    		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"; break;
+    		default:
+    		}
+            transita(INICIAL);
+    		System.out.println(sal);
+    }
 
 	public void terminaEstado(){
 		lex="";
@@ -165,7 +213,7 @@ public class AnalizadorLexico {
 				switch (buff){
 				case '\n': numLinea ++;
 				case '\t':
-				case ' ': transita(INICIAL); break;
+				case ' ': transita(INICIAL); lex =""; break;
 				case ')': transita(PARENTESIS_C); break;
 				case '#': transita(COMENTARIO); break;
 				case '(': transita(PARENTESIS_A); break;
@@ -185,8 +233,8 @@ public class AnalizadorLexico {
 				default:
 					if (Character.isDigit(buff)){
 						switch(buff){
-						case '0': transita(LIT_NAT2); break;
-						default : transita(LIT_NAT1);
+						case '0': transita(LIT_NAT1); break;
+						default : transita(LIT_NAT2);
 						}
 					}
 					else{
@@ -386,18 +434,35 @@ public class AnalizadorLexico {
 			case LIT_NAT1 :
 				switch(buff){
 				case '.': transita(FLOAT1); break;
-				default: arrayTokens.add(new LitNat(lex,numLinea)); terminaEstado();
+				default:
+                    if (Character.isLetter(buff)){
+                        error();
+                        break;
+                    }
+                    else {
+                        arrayTokens.add(new LitNat(lex,numLinea));
+                        terminaEstado();
+                    }
 				}
 				break;
 			case LIT_NAT2 :
 				switch(buff){
 				case '.': transita(FLOAT1); break;
 				default:
-					if (Character.isDigit(buff))
-						transita(LIT_NAT2);
+					if (Character.isDigit(buff)){
+						transita(LIT_NAT2); 
+                        break;
+                    }
 					else
-						arrayTokens.add(new LitNat(lex,numLinea)); terminaEstado();
-				}
+						if (Character.isLetter(buff)){
+                            error();
+                            break;
+                        }
+                        else {
+                            arrayTokens.add(new LitNat(lex,numLinea));
+                            terminaEstado();
+                        }
+                }
 				break;
 			case FLOAT1 :
 				if(Character.isDigit(buff))
@@ -419,8 +484,14 @@ public class AnalizadorLexico {
 						default: transita(LIT_FLO2);
 						}
 					else{
-						arrayTokens.add(new LitFlo(lex,numLinea));
-						terminaEstado();
+                        if (Character.isLetter(buff)){
+                            error();
+                            break;
+                        }
+                        else {
+                            arrayTokens.add(new LitFlo(lex,numLinea));
+                            terminaEstado();
+                        }
 					}
 				}
 				break;
@@ -435,8 +506,14 @@ public class AnalizadorLexico {
 						default: transita(LIT_FLO2);
 						}
 					else{
-						arrayTokens.add(new LitFlo(lex,numLinea));
-						terminaEstado();
+                        if (Character.isLetter(buff)){
+                            error();
+                            break;
+                        }
+                        else {
+                            arrayTokens.add(new LitFlo(lex,numLinea));
+                            terminaEstado();
+                        }
 					}
 				}
 				break;
@@ -472,12 +549,24 @@ public class AnalizadorLexico {
 					error();
 
 			case LIT_FLO3:
-				arrayTokens.add(new LitFlo(lex,numLinea));
-				terminaEstado();
+                if (Character.isLetter(buff)){
+                    error();
+                    break;
+                }
+                else {
+                    arrayTokens.add(new LitFlo(lex,numLinea));
+                    terminaEstado();
+                }
 				break;
 			case LIT_FLO4 :
-				arrayTokens.add(new LitFlo(lex,numLinea));
-				terminaEstado();
+				if (Character.isLetter(buff)){
+                    error();
+                    break;
+                }
+                else {
+                    arrayTokens.add(new LitFlo(lex,numLinea));
+                    terminaEstado();
+                }
 				break;
 			case SEPARADOR:
 				arrayTokens.add(new Separador(numLinea));
@@ -554,7 +643,6 @@ public class AnalizadorLexico {
 	public static void main(String [] args) throws FileNotFoundException, IOException {
 		@SuppressWarnings("unused")
 		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba.txt");
-        AnalizadorLexico.numLinea++;
     }
 
 }
