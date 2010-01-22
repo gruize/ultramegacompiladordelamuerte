@@ -1,6 +1,7 @@
 package compilador.traductor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
@@ -62,11 +63,44 @@ public abstract class Traductor {
 		numVars=0;
 		i_token=0;
 		errores=new ArrayList<ErrorTraductor>();
+		ts = new TablaSimbolos();
 	}
 	
+	
+	public ArrayList<pila.Instruccion> traducir(){
+		try {
+			Object[] resultado=Programa();
+			Codigo codigo=(Codigo)resultado[1];
+			if (!errores.isEmpty()){
+				System.out.println("Traducción acabada con errores no fatales:");
+				imprimirErrores();
+				return null;
+			}
+			return codigo.getCod();
+		}
+		catch (Exception e){
+			System.out.println("Traducción no terminada: Error Fatal:");
+			e.getMessage();
+			return null;
+		}
+	}
+	
+	private void imprimirErrores(){
+		Iterator<ErrorTraductor> it=errores.iterator();
+		while (it.hasNext()){
+			ErrorTraductor e=it.next();
+			System.out.println(e.getDesc());
+		}
+	}
+	
+	//****FUNCIONES AUXILIARES****
+	//Devuelven true si encuentran el token esperado
 	protected Token sigToken(){
-		Token t= arrayTokens.get(i_token);
-		i_token++;
+		Token t;
+		if (i_token < arrayTokens.size()){
+			t= arrayTokens.get(i_token);
+			i_token++;
+		} else t=new Token();
 		return t;
 	}
 	
@@ -77,7 +111,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean dosPuntos(){
@@ -87,7 +121,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean puntoYComa(){
@@ -97,7 +131,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean in(){
@@ -107,7 +141,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean out(){
@@ -117,7 +151,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean abrePar(){
@@ -127,7 +161,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean cierraPar(){
@@ -137,7 +171,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean dosPuntosIgual(){
@@ -147,7 +181,7 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
 	}
 	
 	protected boolean valorAbs(){
@@ -157,30 +191,53 @@ public abstract class Traductor {
 			error=true;
 			i_token--; //tal vez hemos leído un token que no había que leer
 		}
-		return error;
+		return !error;
+	}
+	
+	protected String Identificador(){
+		Token t=sigToken();
+		if (!(t instanceof Identificador)){
+			i_token--;
+			return null;
+		}
+		else return t.getLex();
+	}
+	
+	protected String textoError(){
+		Token t=sigToken();
+		int l=t.getLinea();
+		return " en la línea "+l+".";
+	}
+
+	protected Tipos Tipo(){
+		Token t=sigToken();
+		if (t instanceof compilador.lexico.Tokens.Integer) return Tipos.ENTERO;
+		if (t instanceof Natural) return Tipos.NATURAL;
+		if (t instanceof compilador.lexico.Tokens.Boolean) return Tipos.BOOL;
+		if (t instanceof Float) return Tipos.REAL;
+		if (t instanceof character) return Tipos.CHAR;
+		return Tipos.ERROR;
 	}
 	
 	//-----------------------------------------
 	//-------implementación--------------------
 	
 	//Programa(out: error1, cod1)
-	protected Object[] Programa(){
+	protected Object[] Programa() throws Exception {
 		boolean error1=false;
 		Codigo cod1=null;
 		error1|=Declaraciones();
-		if (!error1){
-			//si no hay error procesamos las instrucciones
-			error1|=ampersand();
-			Object[] resInst= Instrucciones();
-			error1 |= (Boolean)resInst[0];
-			cod1=(Codigo)resInst[1];
-		}
-		if (error1) errores.add(new ErrorTraductor("Error programa"));
+		//ERROR fatal si no hay ampersand
+		if (!ampersand()) throw new Exception("FATAL: & no encontrado");
+		Object[] resInst= Instrucciones();
+		error1 |= (Boolean)resInst[0];
+		cod1=(Codigo)resInst[1];
+		if (error1) errores.add(new ErrorTraductor("Info: Hay errores en el programa"));
 		return new Object[]{error1,cod1};
 	}
 	
 	//Declaraciones (out: error1)→
-	private boolean Declaraciones (){
+	private boolean Declaraciones () throws Exception{
 		Object[] decRes = Declaracion();
 		boolean errorh3 = (Boolean)decRes[0];
 		String idh3 = (String)decRes[1];
@@ -190,64 +247,50 @@ public abstract class Traductor {
 	}
 	
 	//Declaración(out: error1, id1, tipo1) → id : tipo
-	private Object[] Declaracion(){
+	private Object[] Declaracion() throws Exception{
 		String id1=null;
 		Tipos tipo1=null;
 		boolean error1=false;
-		Token t=sigToken();
-		if (!(t instanceof Identificador)){
-			errores.add(new ErrorTraductor("Error identificando id en declaración"));
-			error1=true;
-			return new Object[]{error1 ,id1,tipo1};	
-		}
-		else id1=((Identificador)t).getLex();
-		
-		boolean error2 = dosPuntos();
-		if (error2) return new Object[]{error2 ,id1,tipo1};	
-		
+		id1=Identificador();
+		if (id1==null) 
+			throw new Exception("FATAL: Se esperaba un identificador"+textoError());		
+		if (!dosPuntos()) throw new Exception("FATAL: Se esperaban dos puntos"+textoError());	
 		tipo1 = Tipo();
 		if (tipo1 == Tipos.ERROR){
-			errores.add(new ErrorTraductor("Error identificando tipo en declaración"));
-			error1=true;
-			return new Object[]{error1 || error2 ,id1,tipo1};	
+			errores.add(new ErrorTraductor("Info: Error identificando tipo en declaración"+textoError()));
+			error1=true;	
 		}
-		return new Object[]{false ,id1,tipo1};	
-		
-		
+		return new Object[]{error1 ,id1,tipo1};	
 	}
 	
 	//DeclaracionesFact(in: idh1, tipoh1, errorh1; out: error1) →
-	protected boolean DeclaracionesFact(String idh1,Tipos tipoh1,boolean errorh1){
-		boolean error1=errorh1;
-		boolean error2=false;;
-		if (!puntoYComa()){//no lambda
+	protected boolean DeclaracionesFact(String idh1,Tipos tipoh1,boolean errorh1) throws Exception{
+		boolean error1;
+		boolean error2=false;
+		if (puntoYComa())//no lambda
 			error2= Declaraciones();
-			error1 |= TablaSimbolos.existe(ts, idh1);
+		
+		else numVars=0;
+			
+		if (!errorh1 && !TablaSimbolos.existe(ts, idh1)){
 			ts = TablaSimbolos.inserta(ts, idh1, tipoh1, numVars);
 			numVars++;
 		}
-		else if (!error1) { //interpretamos como vacío
-			ts = TablaSimbolos.inserta(TablaSimbolos.creaTS(),idh1,tipoh1,0);
-			numVars=1;
-		}
-		else {
-			errores.add(new ErrorTraductor("Error en declaraciones: construcción incorrecta."));
-			error1=true;
-			return error1;
-		}
-		
-		if (error1) errores.add(new ErrorTraductor("Identificador repetido"));
-		
-		return error1 || error2;
+		else errores.add(new ErrorTraductor("Error en declaracion o variable ya declarada. Omitiendo"));
+	
+		error1 = errorh1 || error2;
+		return error1;
 	}
 	
 	//Instrucciones(out: error1,cod1) → 
-	protected Object[] Instrucciones(){
+	protected Object[] Instrucciones() throws Exception{
 		boolean error1;
 		Codigo cod1;
+		
 		Object[] resIns= Instruccion();
 		boolean error2 = (Boolean)resIns[0];
 		Codigo cod2 = (Codigo)resIns[1];
+		
 		Object[] resInsFact = InstruccionesFact(error2,cod2);
 		error1 = (Boolean)resInsFact[0];
 		cod1 = (Codigo)resInsFact[1];
@@ -255,30 +298,27 @@ public abstract class Traductor {
 	}
 	
 	//InstruccionesFact(in: errorh1,codh1; out: error1,cod1) →
-	protected Object[] InstruccionesFact(boolean errorh1, Codigo codh1 ){
-		boolean error1=errorh1;
+	protected Object[] InstruccionesFact(boolean errorh1, Codigo codh1 ) throws Exception{
+		boolean error1;
+		boolean error2=false;
 		Codigo cod1=null;
-		if (!puntoYComa()){ //no lambda
+		if (puntoYComa()){ //no lambda
 			Object[] resInst = Instrucciones();
-			boolean error2 = (Boolean) resInst[0];
+			error2 = (Boolean) resInst[0];
 			Codigo cod2 = (Codigo) resInst[1];
-			error1 |= error2;
 			cod1 = codh1;
 			cod1.appendCod(cod2);
 		}
-		else if (!errorh1){ //lambda
+		else //lambda
 			cod1=codh1;
-		}
-		else {
-			error1=true;
-			errores.add(new ErrorTraductor("Instrucciones: construccion incorrecta"));
-		}
+		
+		error1=error2 || errorh1;
 		return new Object[]{error1,cod1};
 	}
 	
 	
 	//Instrucción(out: error1,cod1) → 
-	private Object[] Instruccion(){
+	private Object[] Instruccion() throws Exception{
 		boolean error1=false;
 		Object[] resLect= InsLectura();
 		Object[] resEscr= InsEscritura();
@@ -299,31 +339,18 @@ public abstract class Traductor {
 		}
 		else {
 			error1=true;
-			errores.add(new ErrorTraductor("Error instrucción " +
-					"no identificada. Token: "+arrayTokens.get(i_token)));
+			errores.add(new ErrorTraductor("Error instrucción no identificada"+textoError()));
 		}
-		
 		return new Object[]{error1,cod2};
 	}
 	
+	protected abstract Object[] InsLectura() throws Exception;
+	protected abstract Object[] InsEscritura() throws Exception;
+	protected abstract Object[] InsAsignacion() throws Exception;
 
-	protected abstract Object[] InsLectura();
-	protected abstract Object[] InsEscritura();
-	protected abstract Object[] InsAsignacion();
-
-
-	protected Tipos Tipo(){
-		Token t=sigToken();
-		if (t instanceof compilador.lexico.Tokens.Integer) return Tipos.ENTERO;
-		if (t instanceof Natural) return Tipos.NATURAL;
-		if (t instanceof compilador.lexico.Tokens.Boolean) return Tipos.BOOL;
-		if (t instanceof Float) return Tipos.REAL;
-		if (t instanceof character) return Tipos.CHAR;
-		return Tipos.ERROR;
-	}
 
 	//Expresión(out: tipo1,cod1) → 
-	protected Object[] Expresion(){
+	protected Object[] Expresion() throws Exception{
 		Tipos tipo1=null;
 		Codigo cod1=null;
 		Object[] resExprN1=ExpresionNiv1();
@@ -336,10 +363,10 @@ public abstract class Traductor {
 	}
 	
 	//ExpresiónFact(in: tipo1h,codPh1; out: tipo1,codP1) →
-	protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codh1);
+	protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codh1) throws Exception;
 	
 	//ExpresiónNiv1(out: tipo1, codP1, codJ1) → 
-	protected Object[] ExpresionNiv1(){
+	protected Object[] ExpresionNiv1() throws Exception{
 		Tipos tipo1=null;
 		Codigo cod1=null;
 		Object[] resExprN2=ExpresionNiv2();
@@ -352,11 +379,10 @@ public abstract class Traductor {
 	}
 
 	//ExpresiónNiv1Rec(in: tipoh1, codh1; out: tipo1, cod1)
-	protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1,Codigo codh1);
-
+	protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1,Codigo codh1) throws Exception;
 	
 	//ExpresiónNiv2(out: tipo1, cod1) →
-	protected Object[] ExpresionNiv2(){
+	protected Object[] ExpresionNiv2() throws Exception{
 		Tipos tipo1=null;
 		Codigo cod1=null;
 		Object[] resExprNiv3=ExpresionNiv3();
@@ -367,14 +393,12 @@ public abstract class Traductor {
 		cod1=(Codigo)resExprNiv2Rec[1];
 		return new Object[]{tipo1,cod1};
 	}
-
 	
 	//ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, codP1)
-	protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codh1);
-
+	protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codh1) throws Exception;
 	
 	//ExpresiónNiv3(out: tipo1, codJ1) → 
-	protected Object[] ExpresionNiv3(){
+	protected Object[] ExpresionNiv3() throws Exception{
 		Tipos tipo1=null;
 		Codigo cod1=null;
 		Object[] resExprN4=ExpresionNiv4();
@@ -387,41 +411,38 @@ public abstract class Traductor {
 	}
 	
 	//ExpresiónNiv3Fact(in: tipoh1, codh1; out: tipo1, cod1)
-	protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codh1);
+	protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codh1) throws Exception;
 
-	protected Object[] ExpresionNiv4(){
+	protected Object[] ExpresionNiv4() throws Exception{
 		Operaciones op2=OpNiv4();
 		if (op2!=null)
 			return ExpresionNiv4_conOp(op2);
-		if (!valorAbs())
+		if (valorAbs())
 			return ExpresionNiv4_valorAbs();
-		if (!abrePar())
+		if (abrePar())
 			return ExpresionNiv4_abrePar();
 		return ExpresionNiv4_Literal();
 	}
 	
-	protected abstract Object[] ExpresionNiv4_conOp(Operaciones op2);
-	protected abstract Object[] ExpresionNiv4_valorAbs();
+	protected abstract Object[] ExpresionNiv4_conOp(Operaciones op2) throws Exception;
+	protected abstract Object[] ExpresionNiv4_valorAbs() throws Exception;
 	
 	
 	//ExpresiónNiv4(out: tipo1, cod1)
-	protected Object[] ExpresionNiv4_abrePar(){
+	protected Object[] ExpresionNiv4_abrePar() throws Exception{
 		Object[] resExpr=Expresion();
 		Tipos tipo1=(Tipos)resExpr[0];
 		Codigo cod1=(Codigo)resExpr[1];
-		if (cierraPar()){
-			errores.add(new ErrorTraductor("FATAL: Expresion nivel4: no se cierra paréntesis"));
-			tipo1=Tipos.ERROR;
-		}
+		if (!cierraPar()) throw new Exception("FATAL: Se esperaba cerrar paréntesis"+textoError());
 		return new Object[]{tipo1,cod1};
 	}
 	
-	protected Object[] ExpresionNiv4_Literal(){
+	protected Object[] ExpresionNiv4_Literal() throws Exception{
 		return Literal();
 	}
 
 	//Literal(out: tipo1, cod1)
-	protected Object[] Literal(){
+	protected Object[] Literal() throws Exception{
 		Token t=sigToken();
 		if (t instanceof Identificador){
 			return Literal_Id(t);
@@ -441,19 +462,18 @@ public abstract class Traductor {
 		else if (t instanceof LitCha){
 			return Literal_LitCha(t);
 		}
-		else {
-			i_token--;
-			return new Object[]{Tipos.ERROR,new Codigo()};
-		}
+		else throw new Exception("Error: se esperaba un literal"+textoError());
+		//estamos en el nivel más bajo, esta es la última comprobación de lo que algo puede ser
+		//por tanto se puede lanzar la excepción porque no hay nada que hacer si esto no es un literal.
 		
 	}
 	
-	protected abstract Object[] Literal_Id(Token t);
-	protected abstract Object[] Literal_LitNat(Token t);
-	protected abstract Object[] Literal_LitTrue();
-	protected abstract Object[] Literal_LitFalse();
-	protected abstract Object[] Literal_LitCha(Token t);
-	protected abstract Object[] Literal_LitFlo(Token t);
+	protected abstract Object[] Literal_Id(Token t)throws Exception;
+	protected abstract Object[] Literal_LitNat(Token t)throws Exception;
+	protected abstract Object[] Literal_LitTrue()throws Exception;
+	protected abstract Object[] Literal_LitFalse()throws Exception;
+	protected abstract Object[] Literal_LitCha(Token t)throws Exception;
+	protected abstract Object[] Literal_LitFlo(Token t)throws Exception;
 	
 	protected Operaciones OpNiv0(){
 		Token t=sigToken();
