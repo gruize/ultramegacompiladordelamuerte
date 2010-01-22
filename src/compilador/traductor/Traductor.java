@@ -2,18 +2,46 @@ package compilador.traductor;
 
 import java.util.ArrayList;
 
-import pila.Instruccion;
-import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Entero;
-import pila.interprete.instrucciones.*;
-import compilador.lexico.*;
-import compilador.lexico.Igual;
-import compilador.lexico.Mayor;
-import compilador.lexico.Menor;
-import compilador.lexico.Modulo;
-import compilador.lexico.Shl;
-import compilador.lexico.Shr;
-import compilador.lexico.Suma;
+import pila.interprete.instrucciones.Igual;
+import pila.interprete.instrucciones.Mayor;
+import pila.interprete.instrucciones.Menor;
+import pila.interprete.instrucciones.Modulo;
+import pila.interprete.instrucciones.Shl;
+import pila.interprete.instrucciones.Shr;
+import pila.interprete.instrucciones.Suma;
+
+import compilador.lexico.Tokens.Absoluto;
+import compilador.lexico.Tokens.And;
+import compilador.lexico.Tokens.Cast_char;
+import compilador.lexico.Tokens.Cast_float;
+import compilador.lexico.Tokens.Cast_int;
+import compilador.lexico.Tokens.Cast_nat;
+import compilador.lexico.Tokens.Distinto;
+import compilador.lexico.Tokens.Division;
+import compilador.lexico.Tokens.Dos_puntos;
+import compilador.lexico.Tokens.Dos_puntos_ig;
+import compilador.lexico.Tokens.False;
+import compilador.lexico.Tokens.Float;
+import compilador.lexico.Tokens.Identificador;
+import compilador.lexico.Tokens.In;
+import compilador.lexico.Tokens.LitCha;
+import compilador.lexico.Tokens.LitFlo;
+import compilador.lexico.Tokens.LitNat;
+import compilador.lexico.Tokens.Mayor_ig;
+import compilador.lexico.Tokens.Menor_ig;
+import compilador.lexico.Tokens.Multiplicacion;
+import compilador.lexico.Tokens.Natural;
+import compilador.lexico.Tokens.Not;
+import compilador.lexico.Tokens.Or;
+import compilador.lexico.Tokens.Out;
+import compilador.lexico.Tokens.Parentesis_a;
+import compilador.lexico.Tokens.Parentesis_c;
+import compilador.lexico.Tokens.Punto_coma;
+import compilador.lexico.Tokens.Separador;
+import compilador.lexico.Tokens.Signo_menos;
+import compilador.lexico.Tokens.Token;
+import compilador.lexico.Tokens.True;
+import compilador.lexico.Tokens.character;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 /**
@@ -180,19 +208,16 @@ public abstract class Traductor {
 			error1=true;
 			return new Object[]{error1 ,id1,tipo1};	
 		}
-		else id1=t.getLex();
+		else id1=((Identificador)t).getLex();
 		
 		boolean error2 = dosPuntos();
 		if (error2) return new Object[]{error2 ,id1,tipo1};	
 		
-		t=sigToken();
-		if (!(t instanceof Tipo)){
+		tipo1 = Tipo();
+		if (tipo1 == Tipos.ERROR){
 			errores.add(new ErrorTraductor("Error identificando tipo en declaración"));
 			error1=true;
 			return new Object[]{error1 || error2 ,id1,tipo1};	
-		}
-		else {
-			tipo1=dameTipo(t.getLex());
 		}
 		return new Object[]{false ,id1,tipo1};	
 		
@@ -283,7 +308,7 @@ public abstract class Traductor {
 		else {
 			error1=true;
 			errores.add(new ErrorTraductor("Error instrucción " +
-					"no identificada. Token: "+arrayTokens.get(i_token).getLex()));
+					"no identificada. Token: "+arrayTokens.get(i_token)));
 		}
 		
 		return new Object[]{error1,cod2};
@@ -295,12 +320,13 @@ public abstract class Traductor {
 	protected abstract Object[] InsAsignacion();
 
 
-	protected Tipos dameTipo(String lex){
-		if (lex.equals("integer")) return Tipos.ENTERO;
-		if (lex.equals("natural")) return Tipos.NATURAL;
-		if (lex.equals("boolean")) return Tipos.BOOL;
-		if (lex.equals("float")) return Tipos.REAL;
-		if (lex.equals("character")) return Tipos.CHAR;
+	protected Tipos Tipo(){
+		Token t=sigToken();
+		if (t instanceof compilador.lexico.Tokens.Integer) return Tipos.ENTERO;
+		if (t instanceof Natural) return Tipos.NATURAL;
+		if (t instanceof compilador.lexico.Tokens.Boolean) return Tipos.BOOL;
+		if (t instanceof Float) return Tipos.REAL;
+		if (t instanceof character) return Tipos.CHAR;
 		return Tipos.ERROR;
 	}
 
@@ -414,8 +440,11 @@ public abstract class Traductor {
 		else if (t instanceof LitFlo){
 			return Literal_LitFlo(t);
 		}
-		else if (t instanceof LitBoo){
-			return Literal_LitBoo(t);
+		else if (t instanceof True){
+			return Literal_LitTrue();
+		}
+		else if (t instanceof False){
+			return Literal_LitFalse();
 		}
 		else if (t instanceof LitCha){
 			return Literal_LitCha(t);
@@ -429,17 +458,18 @@ public abstract class Traductor {
 	
 	protected abstract Object[] Literal_Id(Token t);
 	protected abstract Object[] Literal_LitNat(Token t);
-	protected abstract Object[] Literal_LitBoo(Token t);
+	protected abstract Object[] Literal_LitTrue();
+	protected abstract Object[] Literal_LitFalse();
 	protected abstract Object[] Literal_LitCha(Token t);
 	protected abstract Object[] Literal_LitFlo(Token t);
 	
 	protected Operaciones OpNiv0(){
 		Token t=sigToken();
-		if (t instanceof Menor) return Operaciones.MENOR;
-		if (t instanceof Mayor) return Operaciones.MAYOR;
+		if (t instanceof compilador.lexico.Tokens.Menor) return Operaciones.MENOR;
+		if (t instanceof compilador.lexico.Tokens.Mayor) return Operaciones.MAYOR;
 		if (t instanceof Menor_ig) return Operaciones.MENORIG;
 		if (t instanceof Mayor_ig) return Operaciones.MAYORIG;
-		if (t instanceof Igual) return Operaciones.IGUAL;
+		if (t instanceof compilador.lexico.Tokens.Igual) return Operaciones.IGUAL;
 		if (t instanceof Distinto) return Operaciones.DISTINTO;
 		i_token--;
 		return null;
@@ -447,7 +477,7 @@ public abstract class Traductor {
 	
 	protected Operaciones OpNiv1(){
 		Token t=sigToken();
-		if (t instanceof Suma) return Operaciones.SUMA;
+		if (t instanceof compilador.lexico.Tokens.Suma) return Operaciones.SUMA;
 		if (t instanceof Signo_menos) return Operaciones.RESTA;
 		if (t instanceof Or) return Operaciones.OR;
 		i_token--;
@@ -459,7 +489,7 @@ public abstract class Traductor {
 		Token t=sigToken();		
 		if (t instanceof Multiplicacion) return Operaciones.MULT;
 		if (t instanceof Division) return Operaciones.DIV;
-		if (t instanceof Modulo) return Operaciones.MOD;
+		if (t instanceof compilador.lexico.Tokens.Modulo) return Operaciones.MOD;
 		if (t instanceof And) return Operaciones.AND;
 		i_token--;
 		return null;
@@ -467,8 +497,8 @@ public abstract class Traductor {
 	
 	protected Operaciones OpNiv3(){
 		Token t=sigToken();		
-		if (t instanceof Shl) return Operaciones.SHL;
-		if (t instanceof Shr)return Operaciones.SHR;
+		if (t instanceof compilador.lexico.Tokens.Shl) return Operaciones.SHL;
+		if (t instanceof compilador.lexico.Tokens.Shr)return Operaciones.SHR;
 		i_token--;
 		return null;
 	}

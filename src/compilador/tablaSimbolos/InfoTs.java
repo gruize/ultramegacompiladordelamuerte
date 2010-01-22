@@ -1,6 +1,5 @@
 package compilador.tablaSimbolos;
 
-import pila.interprete.datos.DatoPila;
 
 public class InfoTs {
 	public enum Tipos{ERROR,ENTERO,NATURAL,REAL,CHAR,BOOL}

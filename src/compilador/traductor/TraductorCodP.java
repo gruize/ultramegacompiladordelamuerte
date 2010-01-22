@@ -2,14 +2,39 @@ package compilador.traductor;
 
 import java.util.ArrayList;
 
+import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Caracter;
+import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
-import pila.interprete.instrucciones.*;
-import pila.interprete.datos.*;
-import pila.interprete.excepiones.DatoExc;
+import pila.interprete.datos.Real;
 import pila.interprete.excepiones.LectorExc;
+import pila.interprete.instrucciones.Abs;
+import pila.interprete.instrucciones.Apilar;
+import pila.interprete.instrucciones.ApilarDir;
+import pila.interprete.instrucciones.CastChar;
+import pila.interprete.instrucciones.CastFloat;
+import pila.interprete.instrucciones.CastInt;
+import pila.interprete.instrucciones.CastNat;
+import pila.interprete.instrucciones.DesapilarDir;
+import pila.interprete.instrucciones.Entrada;
+import pila.interprete.instrucciones.Igual;
+import pila.interprete.instrucciones.Mayor;
+import pila.interprete.instrucciones.MayorIg;
+import pila.interprete.instrucciones.Menor;
+import pila.interprete.instrucciones.MenorIg;
+import pila.interprete.instrucciones.Menos;
+import pila.interprete.instrucciones.Modulo;
+import pila.interprete.instrucciones.No;
+import pila.interprete.instrucciones.NoIgual;
+import pila.interprete.instrucciones.O;
+import pila.interprete.instrucciones.Resta;
+import pila.interprete.instrucciones.Salida;
+import pila.interprete.instrucciones.Shl;
+import pila.interprete.instrucciones.Shr;
+import pila.interprete.instrucciones.Suma;
 
-import compilador.lexico.Identificador;
-import compilador.lexico.Token;
+import compilador.lexico.Tokens.Identificador;
+import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 
@@ -34,7 +59,7 @@ public class TraductorCodP extends Traductor{
 			return new Object[]{true,codP1};
 		}
 		Token t=sigToken();
-		if (!(t instanceof Identificador) || !TablaSimbolos.existe(ts, t.getLex())){
+		if (!(t instanceof Identificador) || !TablaSimbolos.existe(ts, ((Identificador)t).getLex())){
 			errores.add(new ErrorTraductor("Error instrucción lectura: identificador "
 											+t.getLex()+" no reconocido"));
 			errorNoFatal=true; // no fatal
@@ -907,11 +932,9 @@ public class TraductorCodP extends Traductor{
 		
 		return new Object[]{tipo1,codP1};
 	}
-	//Literal(out: tipo1, codP1, codJ1) → litBoo
-	protected Object[] Literal_LitBoo(Token t) {
-		boolean valor;
-		if (t.getLex().equals("true")) valor=true;
-		else valor=false;
+	//Literal(out: tipo1, codP1, codJ1) → LitTrue
+	protected Object[] Literal_LitTrue() {
+		boolean valor=true;
 		Apilar i=null;
 		try {
 			i = new Apilar(new Booleano(valor));
@@ -919,6 +942,16 @@ public class TraductorCodP extends Traductor{
 		return new Object[]{Tipos.BOOL,new Codigo(i)};
 	}
 
+	//Literal(out: tipo1, codP1, codJ1) → LitFalse
+	protected Object[] Literal_LitFalse() {
+		boolean valor=false;
+		Apilar i=null;
+		try {
+			i = new Apilar(new Booleano(valor));
+		} catch (Exception e) {}
+		return new Object[]{Tipos.BOOL,new Codigo(i)};
+	}
+	
 	protected Object[] Literal_LitCha(Token t) {
 		Apilar i=null;
 		try {
