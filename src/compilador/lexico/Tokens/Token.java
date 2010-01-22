@@ -28,7 +28,7 @@ public class Token {
     public String getLex(){
     	return lex;
     }
-    public int numLinea(){
+    public int getLinea(){
     	return numLinea;
     }
 }
