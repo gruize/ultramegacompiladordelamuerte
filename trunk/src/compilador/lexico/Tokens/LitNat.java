@@ -10,9 +10,7 @@ package compilador.lexico.Tokens;
  * @author ruben
  */
 public class LitNat extends Token{
-    String lex;
     public LitNat(String l,int n){
-        super(n);
-        lex = l;
+        super(l,n);
     }
 }

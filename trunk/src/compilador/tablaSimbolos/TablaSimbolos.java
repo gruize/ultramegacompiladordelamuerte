@@ -4,8 +4,6 @@ import java.util.Hashtable;
 
 import compilador.tablaSimbolos.InfoTs.Tipos;
 
-import pila.interprete.datos.DatoPila;
-
 /**
  * Tabla de simbolos para cada ámbito
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
