@@ -23,8 +23,6 @@ import pila.interprete.excepiones.LectorExc;
  * @author Laura Reyero
  */
 public class Entrada extends InstruccionInterprete{
-    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
     public Entrada() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA);
         throw new LectorExc("La instrucción de entrada necesita " +
@@ -42,7 +40,7 @@ public class Entrada extends InstruccionInterprete{
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             DatoPila datoLeido = null;
-            String leido = reader.readLine();
+            String leido = interprete.getReader().readLine();
             if(interprete.getMemoria()[getDato().toNatural()] == null)
                 throw new InstruccionExc(this,"Dirección de memoria "
                         +getDato().toNatural()+" no iniciada");
