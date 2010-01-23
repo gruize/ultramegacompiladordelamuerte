@@ -1,8 +1,15 @@
 package pila.interprete;
 
+import java.io.BufferedReader;
+import pila.interprete.excepiones.InstruccionExc;
+import pila.interprete.excepiones.LectorExc;
+import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,13 +47,16 @@ public class Interprete {
     private boolean modoDepuracion;
     private StringBuilder sb; //para mostrar la pila, mas eficiente para jugar con el que un String
 
+    private BufferedReader reader;
+    private PrintWriter writer;
+
     /**
      * Crea un interprete con tantas posiciones de memoria
      * como se le indique
      * @param longMem el tamaño de la memoria
      * @param depuracion
      */
-    public Interprete(int longMem, boolean depuracion) {
+    public Interprete(int longMem, boolean depuracion, InputStream entrada, PrintWriter salida) {
         programa = null;
         pila = null;
         memoria = new DatoPila[longMem];
@@ -55,6 +65,12 @@ public class Interprete {
             sb = new StringBuilder(100);
         else
             sb = null;
+        reader = new BufferedReader(new InputStreamReader(entrada));
+        writer = salida;
+    }
+
+    public Interprete(int longMem, boolean depuracion) {
+        this(longMem,depuracion,System.in,new PrintWriter(System.out));
     }
 
     /**
@@ -64,6 +80,10 @@ public class Interprete {
      */
     public Interprete(boolean depuracion) {
         this(100,depuracion);
+    }
+
+    public Interprete(boolean depuracion, InputStream entrada, PrintWriter salida) {
+        this(100,depuracion,entrada,salida);
     }
 
     /**
@@ -128,7 +148,7 @@ public class Interprete {
                 System.out.println();
             }
             if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))
-                cp++;
+                setCp(cp+1);
         }
     }
 
@@ -174,5 +194,19 @@ public class Interprete {
      */
     public DatoPila[] getMemoria() {
         return memoria;
+    }
+
+    /**
+     * @return the reader
+     */
+    public BufferedReader getReader() {
+        return reader;
+    }
+
+    /**
+     * @return the writer
+     */
+    public PrintWriter getWriter() {
+        return writer;
     }
 }

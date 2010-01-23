@@ -37,19 +37,19 @@ public class Salida extends InstruccionInterprete{
             DatoPila d1 = pila.pop();
             switch (d1.getTipoDato()) {
                 case DatoPila.BOOL_T:
-                    System.out.println(d1.toBoolean());
+                    interprete.getWriter().println(d1.toBoolean());
                     break;
                 case DatoPila.CHAR_T:
-                    System.out.println(d1.toChar());
+                    interprete.getWriter().println(d1.toChar());
                     break;
                 case DatoPila.NAT_T:
-                    System.out.println(d1.toNatural());
+                    interprete.getWriter().println(d1.toNatural());
                     break;
                 case DatoPila.INT_T:
-                    System.out.println(d1.toInt());
+                    interprete.getWriter().println(d1.toInt());
                     break;
                 case DatoPila.FLOAT_T:
-                    System.out.println(d1.toFloat());
+                    interprete.getWriter().println(d1.toFloat());
                     break;
             }
         } catch (DatoExc ex) {
