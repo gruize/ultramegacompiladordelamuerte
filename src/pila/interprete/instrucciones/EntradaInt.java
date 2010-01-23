@@ -24,7 +24,7 @@ public class EntradaInt extends InstruccionInterprete{
 
     public EntradaInt(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_INT, d);
-        if(d.getTipoDato() != DatoPila.INT_T)
+        if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
                     "argumento entero");
     }
@@ -34,9 +34,6 @@ public class EntradaInt extends InstruccionInterprete{
         try {
             DatoPila datoLeido = null;
             String leido = interprete.getReader().readLine();
-            if(interprete.getMemoria()[getDato().toNatural()] == null)
-                throw new InstruccionExc(this,"Dirección de memoria "
-                       +getDato().toNatural()+" no iniciada");
             int i = Integer.valueOf(leido);
             if(i < 0)
                 throw new InstruccionExc(this,"El dato leído ("

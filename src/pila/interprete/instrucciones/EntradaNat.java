@@ -35,9 +35,6 @@ public class EntradaNat extends InstruccionInterprete{
 
             DatoPila datoLeido = null;
             String leido = interprete.getReader().readLine();
-            if(interprete.getMemoria()[getDato().toNatural()] == null)
-                throw new InstruccionExc(this,"Dirección de memoria "
-                       +getDato().toNatural()+" no iniciada");
             int i = Integer.valueOf(leido);
             if(i < 0)
                 throw new InstruccionExc(this,"El dato leído ("

@@ -24,7 +24,7 @@ public class EntradaBool extends InstruccionInterprete {
 
     public EntradaBool(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_BOOL, d);
-        if (d.getTipoDato() != DatoPila.BOOL_T) {
+        if (d.getTipoDato() != DatoPila.NAT_T) {
             throw new LectorExc("La instrucción requiere un " +
                     "argumento booleano");
         }
@@ -35,10 +35,6 @@ public class EntradaBool extends InstruccionInterprete {
         try {
             DatoPila datoLeido = null;
             String leido = interprete.getReader().readLine();
-            if (interprete.getMemoria()[getDato().toNatural()] == null) {
-                throw new InstruccionExc(this, "Dirección de memoria " +
-                        getDato().toNatural() + " no iniciada");
-            }
             boolean b;
             if (leido.equals("true")) {
                 b = true;

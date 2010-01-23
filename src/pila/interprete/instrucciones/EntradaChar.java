@@ -24,7 +24,7 @@ public class EntradaChar extends InstruccionInterprete{
 
     public EntradaChar(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_CHAR, d);
-        if(d.getTipoDato() != DatoPila.CHAR_T)
+        if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
                     "argumento caracter");
     }
@@ -32,17 +32,10 @@ public class EntradaChar extends InstruccionInterprete{
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-
             DatoPila datoLeido = null;
             String leido = interprete.getReader().readLine();
-            if(interprete.getMemoria()[getDato().toNatural()] == null)
-                throw new InstruccionExc(this,"Dirección de memoria "
-                       +getDato().toNatural()+" no iniciada");
             datoLeido = new Caracter(leido.charAt(0));
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
-        } catch (InstruccionExc ex) {
-            throw ex;
-            
+            interprete.getMemoria()[getDato().toNatural()] = datoLeido;           
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }

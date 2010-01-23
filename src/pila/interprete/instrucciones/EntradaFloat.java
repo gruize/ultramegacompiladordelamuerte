@@ -24,7 +24,7 @@ public class EntradaFloat extends InstruccionInterprete{
 
     public EntradaFloat(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_FLOAT, d);
-        if(d.getTipoDato() != DatoPila.FLOAT_T)
+        if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
                     "argumento real");
     }
@@ -35,15 +35,9 @@ public class EntradaFloat extends InstruccionInterprete{
 
             DatoPila datoLeido = null;
             String leido = interprete.getReader().readLine();
-            if(interprete.getMemoria()[getDato().toNatural()] == null)
-                throw new InstruccionExc(this,"Dirección de memoria "
-                       +getDato().toNatural()+" no iniciada");
             float i = Float.valueOf(leido);          
             datoLeido = new Real(i);
             interprete.getMemoria()[getDato().toNatural()] = datoLeido;
-        } catch (InstruccionExc ex) {
-            throw ex;
-            
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }
