@@ -67,21 +67,21 @@ public abstract class Traductor {
 	}
 	
 	
-	public ArrayList<pila.Instruccion> traducir(){
+	public ArrayList<pila.Instruccion> traducir() throws Exception{
 		try {
 			Object[] resultado=Programa();
 			Codigo codigo=(Codigo)resultado[1];
 			if (!errores.isEmpty()){
 				System.out.println("Traducción acabada con errores no fatales:");
 				imprimirErrores();
-				return null;
+				throw new Exception("Traducción acabada con errores no fatales:");
 			}
 			return codigo.getCod();
 		}
 		catch (Exception e){
 			System.out.println("Traducción no terminada: Error Fatal:");
-			e.getMessage();
-			return null;
+			System.out.println(e.getMessage());
+			throw new Exception("Traducción acabada con errores fatales");
 		}
 	}
 	

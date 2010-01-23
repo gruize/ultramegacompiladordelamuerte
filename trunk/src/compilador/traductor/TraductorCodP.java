@@ -36,7 +36,7 @@ public class TraductorCodP extends Traductor{
 		}
 		else {
 			Natural n=new Natural(TablaSimbolos.getDir(ts, id));
-			codP1=new Codigo(new EntradaBool(n));
+			codP1=new Codigo(new Entrada(n));
 		}
 		
 		if (!cierraPar()) throw new Exception("FATAL: Se esperaba cierra paréntesis"+textoError());
