@@ -19,7 +19,7 @@ import compilador.lexico.Tokens.Distinto;
 import compilador.lexico.Tokens.Division;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
-import compilador.lexico.Tokens.False;
+import compilador.lexico.Tokens.LitFalse;
 import compilador.lexico.Tokens.Float;
 import compilador.lexico.Tokens.Identificador;
 import compilador.lexico.Tokens.Igual;
@@ -46,7 +46,7 @@ import compilador.lexico.Tokens.Shl;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
-import compilador.lexico.Tokens.True;
+import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.character;
 
 /**
@@ -113,8 +113,8 @@ public class AnalizadorLexico {
 
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
-		palabrasReservadas.put("true",new True());
-		palabrasReservadas.put("false",new False());
+		palabrasReservadas.put("true",new LitTrue());
+		palabrasReservadas.put("false",new LitFalse());
 		palabrasReservadas.put("integer",new Integer());
 		palabrasReservadas.put("natural",new Natural());
 		palabrasReservadas.put("boolean",new Boolean());

@@ -9,8 +9,8 @@ package compilador.lexico.Tokens;
  *
  * @author ruben
  */
-public class False extends Token{
-    public False(){
+public class LitTrue extends Token{
+    public LitTrue(){
         super();
     }
 }

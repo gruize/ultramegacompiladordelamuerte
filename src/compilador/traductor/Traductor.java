@@ -13,7 +13,7 @@ import compilador.lexico.Tokens.Distinto;
 import compilador.lexico.Tokens.Division;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
-import compilador.lexico.Tokens.False;
+import compilador.lexico.Tokens.LitFalse;
 import compilador.lexico.Tokens.Float;
 import compilador.lexico.Tokens.Identificador;
 import compilador.lexico.Tokens.In;
@@ -33,7 +33,7 @@ import compilador.lexico.Tokens.Punto_coma;
 import compilador.lexico.Tokens.Separador;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Token;
-import compilador.lexico.Tokens.True;
+import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.character;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
@@ -453,10 +453,10 @@ public abstract class Traductor {
 		else if (t instanceof LitFlo){
 			return Literal_LitFlo(t);
 		}
-		else if (t instanceof True){
+		else if (t instanceof LitTrue){
 			return Literal_LitTrue();
 		}
-		else if (t instanceof False){
+		else if (t instanceof LitFalse){
 			return Literal_LitFalse();
 		}
 		else if (t instanceof LitCha){
