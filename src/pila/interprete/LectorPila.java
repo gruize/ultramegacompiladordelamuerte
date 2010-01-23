@@ -17,36 +17,7 @@ import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
-import pila.interprete.instrucciones.Abs;
-import pila.interprete.instrucciones.Apilar;
-import pila.interprete.instrucciones.ApilarDir;
-import pila.interprete.instrucciones.CastChar;
-import pila.interprete.instrucciones.CastFloat;
-import pila.interprete.instrucciones.CastInt;
-import pila.interprete.instrucciones.CastNat;
-import pila.interprete.instrucciones.Desapilar;
-import pila.interprete.instrucciones.DesapilarDir;
-import pila.interprete.instrucciones.Divide;
-import pila.interprete.instrucciones.Entrada;
-import pila.interprete.instrucciones.Igual;
-import pila.interprete.instrucciones.InstruccionInterprete;
-import pila.interprete.instrucciones.Mayor;
-import pila.interprete.instrucciones.MayorIg;
-import pila.interprete.instrucciones.Menor;
-import pila.interprete.instrucciones.MenorIg;
-import pila.interprete.instrucciones.Menos;
-import pila.interprete.instrucciones.Modulo;
-import pila.interprete.instrucciones.Multiplica;
-import pila.interprete.instrucciones.No;
-import pila.interprete.instrucciones.NoIgual;
-import pila.interprete.instrucciones.O;
-import pila.interprete.instrucciones.Parar;
-import pila.interprete.instrucciones.Resta;
-import pila.interprete.instrucciones.Salida;
-import pila.interprete.instrucciones.Shl;
-import pila.interprete.instrucciones.Shr;
-import pila.interprete.instrucciones.Suma;
-import pila.interprete.instrucciones.Y;
+import pila.interprete.instrucciones.*;
 
 public class LectorPila implements LectorBytecode {
 
@@ -99,13 +70,6 @@ public class LectorPila implements LectorBytecode {
         byte tipoIns = dis.readByte();
         InstruccionInterprete inst;
         switch(tipoIns) {
-            /*
-             * Gonzalo: Quito esto porque no existe esta instruccion. Ponerlo si
-             * decidis implementarla
-            case (byte) 0:
-                inst = new Error();
-                break;
-             */
             default:
                 throw new IOException("Instrucción inválida");
             case InstruccionInterprete.CODIGO_APILAR:
@@ -189,11 +153,23 @@ public class LectorPila implements LectorBytecode {
             case InstruccionInterprete.CODIGO_ABS:
                 inst = new Abs();
                 break;
-            case InstruccionInterprete.CODIGO_ENTRADA:
-                inst = new Entrada(leerDato(dis));
-                break;
             case InstruccionInterprete.CODIGO_SALIDA:
                 inst = new Salida();
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA_BOOL:
+                inst = new EntradaBool(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA_CHAR:
+                inst = new EntradaChar(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA_INT:
+                inst = new EntradaInt(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA_FLOAT:
+                inst = new EntradaFloat(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_ENTRADA_NAT:
+                inst = new EntradaNat(leerDato(dis));
                 break;
         }
         return inst;

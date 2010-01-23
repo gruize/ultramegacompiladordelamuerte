@@ -43,8 +43,12 @@ public abstract class InstruccionInterprete implements Instruccion {
     public static final byte CODIGO_CASTFLOAT = (byte) 24;
     public static final byte CODIGO_CASTNAT = (byte) 25;
     public static final byte CODIGO_ABS = (byte) 26;
-    public static final byte CODIGO_ENTRADA = (byte) 27;
-    public static final byte CODIGO_SALIDA = (byte) 28;
+    public static final byte CODIGO_SALIDA = (byte) 27;
+    public static final byte CODIGO_ENTRADA_BOOL = (byte) 28;
+    public static final byte CODIGO_ENTRADA_CHAR = (byte) 29;
+    public static final byte CODIGO_ENTRADA_FLOAT = (byte) 30;
+    public static final byte CODIGO_ENTRADA_INT = (byte) 31;
+    public static final byte CODIGO_ENTRADA_NAT = (byte) 32;
 
 
     private DatoPila dato;

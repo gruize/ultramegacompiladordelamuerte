@@ -63,6 +63,8 @@ public class Modulo extends InstruccionInterprete{
                 }
                 pila.addFirst(res);
 
+            } catch (ArithmeticException e) {
+                throw new InstruccionExc(this, "Imposible realizar la operacion 'modulo de cero'.");
             } catch (DatoExc ex) {
                 throw new InstruccionExc(this, ex.getMessage());
             }

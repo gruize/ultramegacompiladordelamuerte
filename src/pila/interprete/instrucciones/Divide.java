@@ -45,6 +45,7 @@ public class Divide extends InstruccionInterprete{
         DatoPila res;
         byte t1 = d1.getTipoDato();
         byte t2 = d2.getTipoDato();
+        
         if (t1 != t2){
             throw new InstruccionExc(this,"Operandos inválidos ("
                     + d1.toString()+" - "+ d2.toString()+")");
@@ -66,6 +67,8 @@ public class Divide extends InstruccionInterprete{
                 }
                 pila.addFirst(res);
 
+            } catch (ArithmeticException e) {
+                throw new InstruccionExc(this, "Imposible realizar la operacion 'dividir por cero'.");
             } catch (DatoExc ex) {
                 //realmente este error no deberia darse nunca, puesto que se
                 //comprueba en el if(t1 != t2)
