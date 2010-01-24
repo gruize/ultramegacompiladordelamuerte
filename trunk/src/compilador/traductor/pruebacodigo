@@ -1,6 +1,6 @@
-a : integer;
-b : integer;
+a : boolean;
+b : natural;
+c : natural;
 &
-a = 5;
-b = 10;
-a = a + b;
+a := true or false;
+b:= c+b
