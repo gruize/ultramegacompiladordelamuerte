@@ -6,19 +6,18 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import pila.EscritorBytecode;
 import pila.Instruccion;
 import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
  *
  */
-public class EscritorPila implements EscritorBytecode {
+public class EscritorPila {
 
-    public void escribirPrograma(ArrayList<Instruccion> programa, File f) throws Exception{
+    public void escribirPrograma(ArrayList<InstruccionInterprete> programa, File f) throws Exception{
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(f));
-        for(Iterator<Instruccion> it = programa.iterator(); it.hasNext();) {
-            ((InstruccionInterprete)it.next()).escribete(dos);
+        for(Iterator<InstruccionInterprete> it = programa.iterator(); it.hasNext();) {
+            (it.next()).escribete(dos);
         }
     }
 

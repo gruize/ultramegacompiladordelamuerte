@@ -21,12 +21,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import pila.EscritorBytecode;
-import pila.Instruccion;
-import pila.LectorBytecode;
 import pila.interprete.EscritorPila;
 import pila.interprete.Interprete;
 import pila.interprete.LectorPila;
+import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
  *
@@ -55,16 +53,16 @@ public class InterpretePanel extends javax.swing.JPanel {
             if(f == null || !f.canRead())
                 throw new IOException("Archivo inválido o ilegible");
 
-            LectorBytecode lb;
+            LectorPila lb;
             if(true) {
                  lb = new LectorPila();
             }
 
-            ArrayList<Instruccion> programa = lb.leerPrograma(f);
+            ArrayList<InstruccionInterprete> programa = lb.leerPrograma(f);
 
             textArea.setText("");
-            for(Iterator<Instruccion> it = programa.iterator(); it.hasNext();) {
-                Instruccion ins = it.next();
+            for(Iterator<InstruccionInterprete> it = programa.iterator(); it.hasNext();) {
+                InstruccionInterprete ins = it.next();
                 textArea.append(ins.toString());
                 if(ins.getDato() != null)
                     textArea.append(" "+ins.getDato().toString());
@@ -82,14 +80,14 @@ public class InterpretePanel extends javax.swing.JPanel {
     public void compilar(File f) throws FileNotFoundException, IOException, Exception {
         String texto = textArea.getText();
         TraductorPila traductor;
-        EscritorBytecode escritor;
+        EscritorPila escritor;
         if(lenguajeGroup.getSelection() == propioLengBut)
             throw new UnsupportedOperationException("Not supported yet.");
         else {
             traductor = new TraductorInterprete();
             escritor = new EscritorPila();
         }
-        ArrayList<Instruccion> ar =  traductor.traducirPrograma(texto);
+        ArrayList<InstruccionInterprete> ar =  traductor.traducirPrograma(texto);
         escritor.escribirPrograma(ar, f);
     }
 

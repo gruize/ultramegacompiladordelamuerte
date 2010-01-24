@@ -1,14 +1,13 @@
 
 package pila.jvm;
 
-import compilador.tablaSimbolos.InfoTs.Tipos;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Code;
@@ -17,7 +16,6 @@ import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ArrayType;
 import org.apache.bcel.generic.ClassGen;
 import org.apache.bcel.generic.FieldGen;
-import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 import pila.interprete.datos.DatoPila;
@@ -41,6 +39,8 @@ public class ClassConstructor {
     
     private int parseInt, parseBool, parseFloat, charAtIndex,
             printlnZIndex, printlnFIndex, printlnCIndex, printlnIIndex;
+
+    private HashMap<Object,Integer> constantes; //key puede ser Integer o Float
 
     public ClassConstructor() {
         String className = "Clase";
@@ -228,7 +228,31 @@ public class ClassConstructor {
         return printlnFIndex;
     }
 
+    private int getConstanteIndex(int i) {
+        Integer dir;
+        if(constantes == null) {
+            constantes = new HashMap<Object, Integer>();
+        }
+        dir = constantes.get(i);
+        if(dir == null) { //no teniamos posicion para este valor
+            dir = generator.getConstantPool().addInteger(i);
+            constantes.put(i, dir);
+        }
+        return dir;
+    }
 
+    public int getConstanteIndex(float f) {
+        Integer dir;
+        if(constantes == null) {
+            constantes = new HashMap<Object, Integer>();
+        }
+        dir = constantes.get(f);
+        if(dir == null) { //no teniamos posicion para este valor
+            dir = generator.getConstantPool().addFloat(f);
+            constantes.put(f, dir);
+        }
+        return dir;
+    }
 
 
     /**
@@ -335,6 +359,93 @@ public class ClassConstructor {
         codigo.añadirU1(Constants.ICONST_0);
         codigo.añadirU1(Constants.INVOKEVIRTUAL);
         codigo.añadirU2(getCharAtIndex());
+    }
+
+    public void cargarDato(int tipoDato, int direccion) throws Exception {
+        switch (tipoDato) {
+            case DatoPila.BOOL_T:
+                codigo.añadirU1(Constants.I2B);
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ILOAD_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ILOAD_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ILOAD_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ILOAD_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ILOAD);
+                        codigo.añadirU1(direccion);
+                }
+
+                break;
+            case DatoPila.CHAR_T:
+                codigo.añadirU1(Constants.I2C);
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ILOAD_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ILOAD_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ILOAD_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ILOAD_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ILOAD);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            case DatoPila.FLOAT_T:
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.FLOAD_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.FLOAD_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.FLOAD_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.FLOAD_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.FLOAD);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            case DatoPila.INT_T:
+            case DatoPila.NAT_T:
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ILOAD_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ILOAD_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ILOAD_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ILOAD_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ILOAD);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            default:
+                throw new Exception("Tipo de dato a escribir inválido");
+        }
     }
 
     public void guardarDato(int tipoDato, int direccion) throws Exception {

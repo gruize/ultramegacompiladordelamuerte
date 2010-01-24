@@ -1,6 +1,6 @@
 package pila.interprete.excepiones;
 
-import pila.Dato;
+import pila.interprete.datos.DatoPila;
 
 /**
  * Esta excepcion puede ser lanzada cuando exista algun
@@ -9,14 +9,14 @@ import pila.Dato;
  */
 public class DatoExc extends Exception {
     
-    private Dato dato;
+    private DatoPila dato;
 
-    public DatoExc(Dato dato) {
+    public DatoExc(DatoPila dato) {
         super();
         this.dato = dato;
     }
 
-    public DatoExc(Dato dato, String str) {
+    public DatoExc(DatoPila dato, String str) {
         super(str);
         this.dato = dato;
     }
@@ -24,7 +24,7 @@ public class DatoExc extends Exception {
     /**
      * @return the dato
      */
-    public Dato getDato() {
+    public DatoPila getDato() {
         return dato;
     }
 

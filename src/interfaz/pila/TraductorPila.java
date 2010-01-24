@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import pila.Dato;
-import pila.Instruccion;
+import pila.interprete.datos.DatoPila;
+import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
  *
@@ -28,7 +28,7 @@ public abstract class TraductorPila {
         expChar = Pattern.compile("'[a-zA-Z]'");
     }
 
-    public Instruccion traducirInstruccion(StringTokenizer st) throws Exception {
+    public InstruccionInterprete traducirInstruccion(StringTokenizer st) throws Exception {
         String texto = st.nextToken().toLowerCase();
         if (texto.equals("apilar"))
             return traducirApila(st);
@@ -91,73 +91,73 @@ public abstract class TraductorPila {
         throw new Exception("Nombre de instrucción \""+texto+"\" inválido");
     }
 
-    public Dato traducirDato(StringTokenizer st) throws Exception {
+    public DatoPila traducirDato(StringTokenizer st) throws Exception {
         String str = st.nextToken();
-        Dato dato = null;
+        DatoPila DatoPila = null;
         if(expChar.matcher(str).matches()) {
-            dato = traducirChar(str);
+            DatoPila = traducirChar(str);
             
         }
         else if(expBool.matcher(str).matches())
-            dato = traducirBool(str);
+            DatoPila = traducirBool(str);
             
         else if(expFloat.matcher(str).matches())
-            dato = traducirFloat(str);
+            DatoPila = traducirFloat(str);
             
         else if(expNat.matcher(str).matches()) {
-            dato = traducirNat(str);
+            DatoPila = traducirNat(str);
 
-            if(dato == null)
+            if(DatoPila == null)
                 throw new Exception();
         }
-        if(dato == null)
-            throw new Exception("Dato "+str+" inválido");
-        return dato;
+        if(DatoPila == null)
+            throw new Exception("DatoPila "+str+" inválido");
+        return DatoPila;
     }
 
-    public ArrayList<Instruccion> traducirPrograma(String programa) throws Exception {
+    public ArrayList<InstruccionInterprete> traducirPrograma(String programa) throws Exception {
         StringTokenizer st = new StringTokenizer(programa);
-        ArrayList<Instruccion> ar = new ArrayList<Instruccion>();
+        ArrayList<InstruccionInterprete> ar = new ArrayList<InstruccionInterprete>();
         while(st.hasMoreTokens())
             ar.add(traducirInstruccion(st));
         return ar;
     }
 
-    abstract protected Dato traducirInt(String str) throws Exception;
-    abstract protected Dato traducirNat(String str) throws Exception;
-    abstract protected Dato traducirFloat(String str) throws Exception;
-    abstract protected Dato traducirChar(String str) throws Exception;
-    abstract protected Dato traducirBool(String str) throws Exception;
+    abstract protected DatoPila traducirInt(String str) throws Exception;
+    abstract protected DatoPila traducirNat(String str) throws Exception;
+    abstract protected DatoPila traducirFloat(String str) throws Exception;
+    abstract protected DatoPila traducirChar(String str) throws Exception;
+    abstract protected DatoPila traducirBool(String str) throws Exception;
 
-    abstract protected Instruccion traducirApila(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirApilaDir(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirDesapila(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirDesapilaDir(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirChar(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirFloat(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirNat(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirInt(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirDiv(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirIgual(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMayor(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMayorIg(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMenor(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMenorIg(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMenos(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMod(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirMult(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirNo(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirNoIgual(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirO(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirResta(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirShl(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirShr(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirSuma(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirY(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirParar(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirIn(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirOut(StringTokenizer st) throws Exception;
-    abstract protected Instruccion traducirAbs(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirApila(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirApilaDir(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirDesapila(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirDesapilaDir(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirChar(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirFloat(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirNat(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirInt(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirDiv(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirIgual(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMayor(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMayorIg(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMenor(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMenorIg(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMenos(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMod(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirMult(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirNo(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirNoIgual(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirO(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirResta(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirShl(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirShr(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirSuma(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirY(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirParar(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirIn(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirOut(StringTokenizer st) throws Exception;
+    abstract protected InstruccionInterprete traducirAbs(StringTokenizer st) throws Exception;
 
 
 }

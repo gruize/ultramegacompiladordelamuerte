@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import pila.Instruccion;
-import pila.LectorBytecode;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
@@ -19,7 +17,7 @@ import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.*;
 
-public class LectorPila implements LectorBytecode {
+public class LectorPila {
 
     /**
      * Este método lee un dato de un DataInputStream
@@ -175,8 +173,8 @@ public class LectorPila implements LectorBytecode {
         return inst;
     }
 
-    public ArrayList<Instruccion> leerPrograma(File f) throws FileNotFoundException, IOException, LectorExc{
-        ArrayList<Instruccion> ad = new ArrayList<Instruccion>();
+    public ArrayList<InstruccionInterprete> leerPrograma(File f) throws FileNotFoundException, IOException, LectorExc{
+        ArrayList<InstruccionInterprete> ad = new ArrayList<InstruccionInterprete>();
         DataInputStream dis = new DataInputStream(new FileInputStream(f));
         while (dis.available() > 0) {//mientras haya bytes disponibles sigo leyendo
             ad.add(leerInstruccion(dis));
