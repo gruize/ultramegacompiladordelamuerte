@@ -11,5 +11,4 @@ package pila;
  */
 public interface Instruccion {
 
-    public Dato getDato();
 }

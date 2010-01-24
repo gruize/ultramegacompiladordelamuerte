@@ -2,7 +2,6 @@ package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
 
-import pila.Dato;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
@@ -24,7 +23,7 @@ public class Suma extends InstruccionInterprete {
         super(InstruccionInterprete.CODIGO_SUMA);
     }
 
-    public Suma(Dato d) throws LectorExc {
+    public Suma(DatoPila d) throws LectorExc {
         this();
         throw new LectorExc("La instrucción Y no "
                 +"acepta argumentos");

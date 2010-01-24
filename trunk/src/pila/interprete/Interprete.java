@@ -1,9 +1,6 @@
 package pila.interprete;
 
 import java.io.BufferedReader;
-import pila.interprete.excepiones.InstruccionExc;
-import pila.interprete.excepiones.LectorExc;
-import pila.interprete.instrucciones.InstruccionInterprete;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import pila.Instruccion;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -40,7 +36,7 @@ public class Interprete {
      * constantes
      */
     private ArrayDeque<DatoPila> pila;
-    private ArrayList<Instruccion> programa;
+    private ArrayList<InstruccionInterprete> programa;
     private DatoPila[] memoria;
     private boolean parar; //true si ha acabado
     private int cp; //el contador de programa

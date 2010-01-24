@@ -1,9 +1,9 @@
 package pila.interprete.datos;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import pila.Dato;
 import pila.interprete.excepiones.DatoExc;
 
 /**
@@ -12,8 +12,9 @@ import pila.interprete.excepiones.DatoExc;
  * dato de la pila, dotándo de la capacidad de realizar
  * casting, comparaciones, etc
  */
-public abstract class DatoPila extends Dato {
-    
+public abstract class DatoPila {
+
+    public static final byte ERROR_T = 0; //sirve para identificar que no es un tipo de dato valido
     public static final byte BOOL_T = 1;
     public static final byte CHAR_T = 2;
     public static final byte NAT_T = 3;
@@ -105,6 +106,20 @@ public abstract class DatoPila extends Dato {
 
     public void escribete(DataOutputStream dos) throws IOException {
         dos.writeByte(tipoDato);
+    }
+
+    public static int TraducirDesdeTipos(Tipos tipo) {
+        if(tipo == Tipos.BOOL)
+            return BOOL_T;
+        if(tipo == Tipos.CHAR)
+            return CHAR_T;
+        if(tipo == Tipos.ENTERO)
+            return INT_T;
+        if(tipo == Tipos.NATURAL)
+            return NAT_T;
+        if(tipo == Tipos.REAL)
+            return FLOAT_T;
+        return ERROR_T;
     }
     
 }

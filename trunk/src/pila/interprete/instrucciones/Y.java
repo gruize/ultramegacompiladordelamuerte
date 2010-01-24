@@ -2,7 +2,6 @@ package pila.interprete.instrucciones;
 
 import java.util.ArrayDeque;
 
-import pila.Dato;
 import pila.interprete.Interprete;
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.DatoPila;
@@ -21,7 +20,7 @@ public class Y extends InstruccionInterprete{
         super(InstruccionInterprete.CODIGO_Y);
     }
 
-    public Y(Dato d) throws LectorExc {
+    public Y(DatoPila d) throws LectorExc {
         this();
         throw new LectorExc("La instrucción no "
                 +"acepta argumentos");
