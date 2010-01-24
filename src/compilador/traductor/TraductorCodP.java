@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import pila.interprete.datos.Booleano;
 import pila.interprete.datos.Caracter;
-import pila.interprete.datos.Entero;
 import pila.interprete.datos.Natural;
 import pila.interprete.datos.Real;
 import pila.interprete.instrucciones.*;
-
 import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
