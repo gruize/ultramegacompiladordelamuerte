@@ -35,6 +35,6 @@ public class Apilar extends InstruccionInterprete{
 
     @Override
     public String toString() {
-        return "Apilar";
+        return "Apilar "+getDato();
     }
 }

@@ -48,7 +48,7 @@ public class TablaSimbolos {
      */
     public static boolean existe(TablaSimbolos ts, String id) {
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
-        return ht.contains(id);
+        return ht.containsKey(id);
     }
 
     /**
@@ -59,7 +59,7 @@ public class TablaSimbolos {
      */
     public static Tipos getTipo(TablaSimbolos ts, String id) {
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
-        if (ht.contains(id)) {
+        if (ht.containsKey(id)) {
         	InfoTs i = ht.get(id);
         	return i.getTipo();
         }
@@ -68,7 +68,7 @@ public class TablaSimbolos {
     
     public static int getDir(TablaSimbolos ts,String id){
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
-        if (ht.contains(id)) {
+        if (ht.containsKey(id)) {
         	InfoTs i = ht.get(id);
         	return i.getDir();
         }
@@ -77,5 +77,9 @@ public class TablaSimbolos {
     
     public Hashtable<String,InfoTs> getHashtable(){
     	return ht;
+    }
+    
+    public void setHashTable(Hashtable<String,InfoTs> ht){
+    	this.ht=ht;
     }
 }

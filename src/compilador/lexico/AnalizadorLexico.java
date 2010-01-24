@@ -154,7 +154,8 @@ public class AnalizadorLexico {
 	}
 
 	public void transita(int est) throws IOException{
-		lex = lex + buff;
+		if (buff!='\uffff')
+			lex = lex + buff;
 		buff = sigCar();
 		estado = est;
 	}
@@ -207,7 +208,7 @@ public class AnalizadorLexico {
 	}
 
 	public void scanner() throws IOException{
-		while(buff != '\uffff'){
+		while(buff != '\uffff' || !lex.equals("")){
 			switch(estado){
 			case INICIAL :
 				switch (buff){

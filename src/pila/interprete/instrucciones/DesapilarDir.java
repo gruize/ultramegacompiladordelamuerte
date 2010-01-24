@@ -31,7 +31,7 @@ public class DesapilarDir extends InstruccionInterprete{
 
     @Override
     public String toString() {
-        return "DesapilarDir";
+        return "DesapilarDir "+getDato();
     }
 
     /**

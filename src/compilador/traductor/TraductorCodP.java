@@ -36,7 +36,19 @@ public class TraductorCodP extends Traductor{
 		}
 		else {
 			Natural n=new Natural(TablaSimbolos.getDir(ts, id));
-			codP1=new Codigo(new Entrada(n));
+			Tipos t=TablaSimbolos.getTipo(ts, id);
+			switch (t){
+			case BOOL: codP1=new Codigo(new EntradaBool(n));
+				break;
+			case ENTERO: codP1=new Codigo(new EntradaInt(n));
+				break;
+			case CHAR: codP1=new Codigo(new EntradaChar(n));
+				break;
+			case NATURAL: codP1=new Codigo(new EntradaNat(n));
+				break;
+			case REAL: codP1=new Codigo(new EntradaFloat(n));
+				break;
+			}
 		}
 		
 		if (!cierraPar()) throw new Exception("FATAL: Se esperaba cierra paréntesis"+textoError());
@@ -45,7 +57,7 @@ public class TraductorCodP extends Traductor{
 	}
 	
 	protected Object[] InsEscritura() throws Exception{
-		Codigo codP1=null;
+		Codigo codP1=new Codigo();
 		if (!out()) return new Object[]{true,codP1};
 		if (!abrePar()) throw new Exception("FATAL: Se esperaba abrir paréntesis"+textoError());
 		
@@ -67,7 +79,7 @@ public class TraductorCodP extends Traductor{
 	//InsAsignación(out: error1,codP1) → 
 	protected Object[] InsAsignacion() throws Exception{
 		boolean error1;
-		Codigo codP1=null;
+		Codigo codP1=new Codigo();
 		String id=Identificador();
 		if (id==null) return new Object[]{true,codP1};
 
@@ -79,7 +91,7 @@ public class TraductorCodP extends Traductor{
 		codP1 = codP3;
 		
 		if (!TablaSimbolos.existe(ts, id)){//no fatal
-			errores.add(new ErrorTraductor("Info: id +"+id+" no declarado"+textoError()));
+			errores.add(new ErrorTraductor("Info: id "+id+" no declarado"+textoError()));
 			error1=true;
 		}
 		else {
@@ -628,44 +640,44 @@ public class TraductorCodP extends Traductor{
 			case REAL:
 				if (tipo3==Tipos.REAL){
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				else {
 					codPh4.appendCod(codP3);
 					codPh4.appendIns(new CastFloat());
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				break;
 			case ENTERO:
 				if (tipo3==Tipos.REAL){
 					codPh4.appendIns(new CastFloat());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				else if (tipo3 == Tipos.NATURAL){
 					codPh4.appendCod(codP3);
 					codPh4.appendIns(new CastInt());
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				else {
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				break;
 			case NATURAL:
 				if (tipo3== Tipos.REAL){
 					codPh4.appendIns(new CastFloat());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				else if (tipo3 == Tipos.ENTERO){
 					codPh4.appendIns(new CastInt());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				else {
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Suma());
+					codPh4.appendIns(new Multiplica());
 				}
 				break;
 			}
@@ -675,44 +687,44 @@ public class TraductorCodP extends Traductor{
 			case REAL:
 				if (tipo3==Tipos.REAL){
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				else {
 					codPh4.appendCod(codP3);
 					codPh4.appendIns(new CastFloat());
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				break;
 			case ENTERO:
 				if (tipo3==Tipos.REAL){
 					codPh4.appendIns(new CastFloat());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				else if (tipo3 == Tipos.NATURAL){
 					codPh4.appendCod(codP3);
 					codPh4.appendIns(new CastInt());
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				else {
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				break;
 			case NATURAL:
 				if (tipo3== Tipos.REAL){
 					codPh4.appendIns(new CastFloat());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				else if (tipo3 == Tipos.ENTERO){
 					codPh4.appendIns(new CastInt());
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				else {
 					codPh4.appendCod(codP3);
-					codPh4.appendIns(new Resta());
+					codPh4.appendIns(new Divide());
 				}
 				break;
 			}
@@ -723,7 +735,7 @@ public class TraductorCodP extends Traductor{
 			break;
 		case AND:
 			codPh4.appendCod(codP3);
-			codPh4.appendIns(new O());
+			codPh4.appendIns(new Y());
 			break;
 		}//fin switch principal
 
@@ -868,7 +880,7 @@ public class TraductorCodP extends Traductor{
 		
 		Tipos tipo1 = TablaSimbolos.getTipo(ts, t.getLex());
 		int dir= TablaSimbolos.getDir(ts, t.getLex());
-		Codigo codP1 = new Codigo(new ApilarDir(new Entero(dir)));
+		Codigo codP1 = new Codigo(new ApilarDir(new Natural(dir)));
 		return new Object[]{tipo1,codP1};
 	}
 	//Literal(out: tipo1, codP1, codJ1) → LitTrue

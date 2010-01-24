@@ -30,7 +30,7 @@ public class ApilarDir extends InstruccionInterprete {
 
     @Override
     public String toString() {
-        return "ApilarDir";
+        return "ApilarDir "+getDato();
     }
 
     /**

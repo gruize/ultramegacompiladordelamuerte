@@ -28,6 +28,7 @@ public class TraductorTest extends JFrame{
 		try{
 		AnalizadorLexico al=new AnalizadorLexico(abrirFich());
 		ArrayList<Token> tokens=al.getArrayTokens();
+		imprimirTokens(tokens);
 		TraductorCodP tcodp= new TraductorCodP(tokens);
 		ArrayList<Instruccion> ai= tcodp.traducir();
 		imprimir(ai);
@@ -37,10 +38,18 @@ public class TraductorTest extends JFrame{
 		}
 		catch(Exception e){
 			System.out.println(e.getMessage());
-			e.printStackTrace();
 		}
+		finally{ System.exit(0);}
 	}
 	
+	private void imprimirTokens(ArrayList<Token> tokens) {
+		Iterator<Token> it=tokens.iterator();
+		while (it.hasNext()){
+			System.out.println(it.next());
+		}
+		
+	}
+
 	private void imprimir(ArrayList<Instruccion> ai) {
 		Iterator<Instruccion> it=ai.iterator();
 		while (it.hasNext()){
