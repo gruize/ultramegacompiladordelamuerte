@@ -67,7 +67,7 @@ public class TraductorCodP extends Traductor{
 		
 		if (!cierraPar()) throw new Exception("FATAL: Se esperaba cierra paréntesis"+textoError());
 		
-		if (tipo2!=Tipos.ERROR)
+		if (tipo2==Tipos.ERROR)
 			errores.add(new ErrorTraductor("Info: Se omite la salida: error en la expresión"+textoError()));
 		else {
 			codP1 = codP2;
