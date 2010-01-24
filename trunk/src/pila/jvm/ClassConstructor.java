@@ -1,9 +1,12 @@
 
 package pila.jvm;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import org.apache.bcel.Constants;
@@ -17,6 +20,7 @@ import org.apache.bcel.generic.FieldGen;
 import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
+import pila.interprete.datos.DatoPila;
 
 /**
  *
@@ -35,7 +39,8 @@ public class ClassConstructor {
     private int initExceptionIndex;
     private int natNegStringIndex;
     
-    private int parseInt, parseBool, parseFloat,charAtIndex;
+    private int parseInt, parseBool, parseFloat, charAtIndex,
+            printlnZIndex, printlnFIndex, printlnCIndex, printlnIIndex;
 
     public ClassConstructor() {
         String className = "Clase";
@@ -57,13 +62,17 @@ public class ClassConstructor {
         parseFloat = 0;
         parseInt = 0;
         charAtIndex = 0;
+        printlnZIndex = 0;
+        printlnFIndex = 0;
+        printlnCIndex = 0;
+        printlnIIndex = 0;
     }
 
     private int getBufferedReaderIndex() {
         if(bufferedReaderIndex == 0)
             bufferedReaderIndex = generator.getConstantPool().addClass(
                 BufferedReader.class.getName());
-        return printerIndex;
+        return bufferedReaderIndex;
     }
 
     private int getReaderFieldIndex() {
@@ -102,11 +111,11 @@ public class ClassConstructor {
         return generator.getConstantPool().addFieldref(
                 System.class.getName(),
                 "in",
-                new ObjectType(InputStreamReader.class.getName()).getClassName());
+                new ObjectType(InputStream.class.getName()).getSignature());
     }
 
     private int getExceptionIndex() {
-        if(exceptionIndex != 0)
+        if(exceptionIndex == 0)
             exceptionIndex = generator.getConstantPool().addClass(Exception.class.getName());
         return exceptionIndex;
     }
@@ -132,7 +141,7 @@ public class ClassConstructor {
     }
 
     private int getInitExceptionIndex() {
-        if(initExceptionIndex != 0)
+        if(initExceptionIndex == 0)
             initExceptionIndex = generator.getConstantPool().addMethodref(
                     Exception.class.getName(),
                     "<init>",
@@ -182,6 +191,44 @@ public class ClassConstructor {
                     Type.getMethodSignature(Type.CHAR, new Type[]{Type.INT}));
         return charAtIndex;
     }
+    
+    private int getPrintlnZIndex() {
+        if(printlnZIndex == 0)
+            printlnZIndex = generator.getConstantPool().addMethodref(
+                    PrintStream.class.getName(),
+                    "println",
+                    Type.getMethodSignature(Type.VOID, new Type[]{Type.BOOLEAN}));
+        return printlnZIndex;
+    }
+
+    private int getPrintlnIIndex() {
+        if(printlnIIndex == 0)
+            printlnIIndex = generator.getConstantPool().addMethodref(
+                    PrintStream.class.getName(),
+                    "println",
+                    Type.getMethodSignature(Type.VOID, new Type[]{Type.INT}));
+        return printlnIIndex;
+    }
+
+    private int getPrintlnCIndex() {
+        if(printlnCIndex == 0)
+            printlnCIndex = generator.getConstantPool().addMethodref(
+                    PrintStream.class.getName(),
+                    "println",
+                    Type.getMethodSignature(Type.VOID, new Type[]{Type.CHAR}));
+        return printlnCIndex;
+    }
+
+    private int getPrintlnFIndex() {
+        if(printlnFIndex == 0)
+            printlnFIndex = generator.getConstantPool().addMethodref(
+                    PrintStream.class.getName(),
+                    "println",
+                    Type.getMethodSignature(Type.VOID, new Type[]{Type.FLOAT}));
+        return printlnFIndex;
+    }
+
+
 
 
     /**
@@ -195,7 +242,6 @@ public class ClassConstructor {
                     BufferedReader.class.getName(),
                     "readLine",
                     Type.getMethodSignature(Type.STRING, null));
-            
             //ademas readLineIndex == 0 indica que no hemos hecho ninguna lectura
             //por lo que no esta iniciado el field reader
             //new BufferedReader
@@ -248,13 +294,13 @@ public class ClassConstructor {
         codigo.añadirU1(Constants.INVOKESTATIC);
         codigo.añadirU2(getParseIntIndex());
         codigo.añadirU1(Constants.DUP); //gastamos 1 para el if y el otro es el resultado
-        codigo.añadirU1(Constants.IF_ICMPGE);
-        codigo.añadirU2(13+codigo.size()); //2 => saltamos hasta despues del throw
+        codigo.añadirU1(Constants.IFGE);
+        codigo.añadirU2(13); //2 => saltamos hasta despues del throw
         codigo.añadirU1(Constants.NEW); //3
         codigo.añadirU2(getExceptionIndex()); //5
         codigo.añadirU1(Constants.DUP); //6
         codigo.añadirU1(Constants.LDC); //7 => se carga el string
-        codigo.añadirU2(getNatNegStringIndex()); //9
+        codigo.añadirU1(getNatNegStringIndex()); //9
         codigo.añadirU1(Constants.INVOKESPECIAL); //10
         codigo.añadirU2(getInitExceptionIndex()); //12
         codigo.añadirU1(Constants.ATHROW); //13
@@ -291,9 +337,155 @@ public class ClassConstructor {
         codigo.añadirU2(getCharAtIndex());
     }
 
-    public void saltar(int insSalto, int desplazamiento) {
-        codigo.añadirU1(insSalto);
-        codigo.añadirU2(desplazamiento + codigo.size());
+    public void guardarDato(int tipoDato, int direccion) throws Exception {
+        switch (tipoDato) {
+            case DatoPila.BOOL_T:
+                codigo.añadirU1(Constants.I2B);
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ISTORE_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ISTORE_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ISTORE_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ISTORE_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ISTORE);
+                        codigo.añadirU1(direccion);
+                }
+
+                break;
+            case DatoPila.CHAR_T:
+                codigo.añadirU1(Constants.I2C);
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ISTORE_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ISTORE_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ISTORE_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ISTORE_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ISTORE);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            case DatoPila.FLOAT_T:
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.FSTORE_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.FSTORE_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.FSTORE_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.FSTORE_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.FSTORE);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            case DatoPila.INT_T:
+            case DatoPila.NAT_T:
+                switch(direccion) {
+                    case 0:
+                        codigo.añadirU1(Constants.ISTORE_0);
+                        break;
+                    case 1:
+                        codigo.añadirU1(Constants.ISTORE_1);
+                        break;
+                    case 2:
+                        codigo.añadirU1(Constants.ISTORE_2);
+                        break;
+                    case 3:
+                        codigo.añadirU1(Constants.ISTORE_3);
+                        break;
+                    default:
+                        codigo.añadirU1(Constants.ISTORE);
+                        codigo.añadirU1(direccion);
+                }
+                break;
+            default:
+                throw new Exception("Tipo de dato a escribir inválido");
+        }
+    }
+
+    /**
+     * Añade al programa el código necesario para leer de la entrada estandar
+     * un tipo de dato dado y para guardarlo en una direccion de memoria concreta.
+     * Deja intacta la pila
+     * @param tipo tipo del dato a leer, tal como se definen en DatoPila
+     * @param dir direccion de memoria del dato a leer
+     * @throws Exception si el tipo es inválido
+     * @see DatoPila
+     */
+    public void leerDato(int tipo, int dir) throws Exception {
+        switch (tipo) {
+            case DatoPila.BOOL_T:
+                leerBool();
+                break;
+            case DatoPila.CHAR_T:
+                leerChar();
+                break;
+            case DatoPila.FLOAT_T:
+                leerFloat();
+                break;
+            case DatoPila.INT_T:
+                leerInt();
+                break;
+            case DatoPila.NAT_T:
+                leerNat();
+                break;
+            default:
+                throw new Exception("Tipo de dato a escribir inválido");
+        }
+        guardarDato(tipo, dir);
+    }
+
+    public void apilarPrinter() {
+        codigo.añadirU1(Constants.GETSTATIC);
+        codigo.añadirU2(getPrinterFieldIndex());
+    }
+
+    public void escribirDato(int tipo) throws Exception {
+        int dirMetodo;
+        switch (tipo) {
+            case DatoPila.BOOL_T:
+                dirMetodo = getPrintlnZIndex();
+                break;
+            case DatoPila.CHAR_T:
+                dirMetodo = getPrintlnCIndex();
+                break;
+            case DatoPila.FLOAT_T:
+                dirMetodo = getPrintlnFIndex();
+                break;
+            case DatoPila.INT_T:
+                dirMetodo = getPrintlnIIndex();
+                break;
+            case DatoPila.NAT_T:
+                dirMetodo = getPrintlnIIndex();
+                break;
+            default:
+                throw new Exception("Tipo de dato a escribir inválido");
+        }
+        codigo.añadirU1(Constants.INVOKEVIRTUAL);
+        codigo.añadirU2(dirMetodo);
+
+
     }
 
     public void añadirU1(int i) {
@@ -313,6 +505,8 @@ public class ClassConstructor {
     }
 
     public JavaClass getJavaClass(int maxVars, int maxStack) {
+        if(codigo.getByte(codigo.size()-1) != Constants.RETURN)
+            codigo.añadirU1(Constants.RETURN);
         generator.addMethod(new Method(
                 Constants.ACC_PUBLIC | Constants.ACC_STATIC,
                 generator.getConstantPool().addUtf8("main"),
@@ -363,6 +557,10 @@ public class ClassConstructor {
 
         public int size() {
             return codigo.size();
+        }
+
+        private byte getByte(int i) {
+            return codigo.get(i);
         }
 
     }
