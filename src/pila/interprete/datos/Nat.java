@@ -9,12 +9,12 @@ import pila.interprete.excepiones.DatoExc;
 /**
  * Este DatoPila representa a un Natural.
  */
-public class Natural extends DatoPila {
+public class Nat extends DatoPila {
 
     private int valor;
 
 
-    public Natural(int valor) throws DatoExc {
+    public Nat(int valor) throws DatoExc {
         super(NAT_T);
         this.valor = valor;
         if(valor < 0)
