@@ -142,7 +142,7 @@ public class AnalizadorLexico {
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
-        numLinea=0;
+        numLinea=1;
 		scanner();
 	}
 
@@ -251,7 +251,7 @@ public class AnalizadorLexico {
 				break;
 			case COMENTARIO :
 				switch(buff){
-				case '\n': numLinea ++ ; terminaEstado(); break;
+				case '\n': terminaEstado(); break;
 				default: transita(COMENTARIO);
 				}
 
@@ -601,7 +601,9 @@ public class AnalizadorLexico {
 				if (Character.isLetter(buff) || Character.isDigit(buff))
 					transita(CADENA);
 				else if (palabrasReservadas.containsKey(lex)){
-					arrayTokens.add((Token) palabrasReservadas.get(lex));
+                    Token t=(Token) palabrasReservadas.get(lex);
+                    t.cambiaLinea(numLinea);
+					arrayTokens.add(t);
 					terminaEstado();
 				}
 				else {
@@ -643,7 +645,8 @@ public class AnalizadorLexico {
 	
 	public static void main(String [] args) throws FileNotFoundException, IOException {
 		@SuppressWarnings("unused")
-		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba.txt");
+		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba lexico.txt");
+        a.lex="";
     }
 
 }

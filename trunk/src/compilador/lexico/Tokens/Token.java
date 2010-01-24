@@ -31,4 +31,7 @@ public class Token {
     public int getLinea(){
     	return numLinea;
     }
+    public void cambiaLinea(int n){
+        numLinea=n;
+    }
 }
