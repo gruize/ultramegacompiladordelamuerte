@@ -9,8 +9,8 @@ package compilador.lexico.Tokens;
  *
  * @author ruben
  */
-public class Float extends Token{
-    public Float(){
+public class FloatToken extends Token{
+    public FloatToken(){
         super();
     }
 }
