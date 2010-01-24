@@ -15,6 +15,8 @@ import compilador.lexico.Tokens.Token;
 
 public class TraductorTest extends JFrame{
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * @param args
 	 */
