@@ -9,11 +9,11 @@ import pila.interprete.excepiones.DatoExc;
 /**
  * Este DatoPila representa a un booleano
  */
-public class Booleano extends DatoPila {
+public class Bool extends DatoPila {
 
     private boolean valor;
 
-    public Booleano(boolean valor) {
+    public Bool(boolean valor) {
         super(BOOL_T);
         this.valor = valor;
     }
