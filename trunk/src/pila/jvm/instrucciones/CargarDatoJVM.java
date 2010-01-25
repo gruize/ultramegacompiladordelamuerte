@@ -5,6 +5,8 @@
 
 package pila.jvm.instrucciones;
 
+import org.apache.bcel.Constants;
+import pila.interprete.datos.DatoPila;
 import pila.jvm.ClassConstructor;
 
 /**
@@ -21,7 +23,60 @@ public class CargarDatoJVM implements PseudoInstruccionJVM {
     }
 
     public void toClass(ClassConstructor cc) throws Exception {
-        cc.cargarDato(tipoDato, dir);
+        switch (tipoDato) {
+            case DatoPila.BOOL_T:
+            case DatoPila.CHAR_T:
+            case DatoPila.INT_T:
+            case DatoPila.NAT_T:
+                switch(dir) {
+                    case 0:
+                        cc.añadirU1(Constants.ILOAD_0);
+                        break;
+                    case 1:
+                        cc.añadirU1(Constants.ILOAD_1);
+                        break;
+                    case 2:
+                        cc.añadirU1(Constants.ILOAD_2);
+                        break;
+                    case 3:
+                        cc.añadirU1(Constants.ILOAD_3);
+                        break;
+                    default:
+                        cc.añadirU1(Constants.ILOAD);
+                        cc.añadirU1(dir);
+                }
+
+                break;
+            case DatoPila.FLOAT_T:
+                switch(dir) {
+                    case 0:
+                        cc.añadirU1(Constants.FLOAD_0);
+                        break;
+                    case 1:
+                        cc.añadirU1(Constants.FLOAD_1);
+                        break;
+                    case 2:
+                        cc.añadirU1(Constants.FLOAD_2);
+                        break;
+                    case 3:
+                        cc.añadirU1(Constants.FLOAD_3);
+                        break;
+                    default:
+                        cc.añadirU1(Constants.FLOAD);
+                        cc.añadirU1(dir);
+                }
+                break;
+            default:
+                throw new Exception("Tipo de dato a escribir inválido");
+        }
     }
+
+    public int dameU1s() {
+        if(dir >= 0 && dir <= 3)
+            return 1;
+        else return 2;
+    }
+
+
 
 }

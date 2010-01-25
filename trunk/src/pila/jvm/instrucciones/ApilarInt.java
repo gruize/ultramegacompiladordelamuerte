@@ -46,7 +46,7 @@ public class ApilarInt implements PseudoInstruccionJVM {
             default:
                 if(valor >= Byte.MIN_VALUE && valor <= Byte.MAX_VALUE) {
                     cc.añadirU1(Constants.BIPUSH);
-                    cc.añadirU2(valor);
+                    cc.añadirU1(valor);
                 }
                 else if(valor >= Short.MIN_VALUE && valor <= Short.MAX_VALUE) {
                     cc.añadirU1(Constants.SIPUSH);
@@ -54,9 +54,22 @@ public class ApilarInt implements PseudoInstruccionJVM {
                 }
                 else {
                     cc.añadirU1(Constants.LDC);
-                    cc.añadirU2(cc.getConstanteIndex(valor));
+                    cc.añadirU1(cc.getConstanteIndex(valor));
                 }
         }
     }
+
+    public int dameU1s() {
+        if(valor >= -1 || valor <= 5)
+            return 1;
+        else if(valor >= Byte.MIN_VALUE && valor <= Byte.MAX_VALUE)
+            return 2;
+        else if(valor >= Short.MIN_VALUE && valor <= Short.MAX_VALUE)
+            return 3;
+        else
+            return 2;
+    }
+
+
 
 }

@@ -29,4 +29,8 @@ public class InstruccionJVM implements PseudoInstruccionJVM {
         cc.añadirU1(tipo);
     }
 
+    public int dameU1s() {
+        return 1;
+    }
+
 }
