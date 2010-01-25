@@ -52,19 +52,19 @@ public class Mayor extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Bool(d1.toNatural() > d2.toNatural());
+                        res = new Bool(d2.toNatural() > d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Bool(d1.toInt() > d2.toInt());
+                        res = new Bool(d2.toInt() > d1.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Bool(d1.toFloat() > d2.toFloat());
+                        res = new Bool(d2.toFloat() > d1.toFloat());
                         break;
                     case DatoPila.CHAR_T:
-                    	res = new Bool(d1.toChar() > d2.toChar());
+                    	res = new Bool(d2.toChar() > d1.toChar());
                     	break;
                     case DatoPila.BOOL_T:
-                        if (d1.toBoolean() && !d2.toBoolean()) //true > false
+                        if (d2.toBoolean() && !d1.toBoolean()) //true > false
                             res = new Bool(true);
                         else
                             res = new Bool(false);

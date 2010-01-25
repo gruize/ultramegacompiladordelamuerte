@@ -54,13 +54,13 @@ public class Divide extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Nat(d1.toNatural() / d2.toNatural());
+                        res = new Nat(d2.toNatural() / d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Entero(d1.toInt() / d2.toInt());
+                        res = new Entero(d2.toInt() / d1.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Real(d1.toFloat() / d2.toFloat());
+                        res = new Real(d2.toFloat() / d1.toFloat());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

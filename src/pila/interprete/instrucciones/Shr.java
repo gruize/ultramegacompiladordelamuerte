@@ -52,7 +52,7 @@ public class Shr extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Nat(d1.toNatural() >> d2.toNatural());
+                        res = new Nat(d2.toNatural() >> d1.toNatural());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
