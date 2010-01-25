@@ -45,7 +45,6 @@ import compilador.lexico.Tokens.Parentesis_c;
 import compilador.lexico.Tokens.Punto_coma;
 import compilador.lexico.Tokens.Separador;
 import compilador.lexico.Tokens.Shl;
-import compilador.lexico.Tokens.Shr;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
@@ -179,7 +178,7 @@ public class AnalizadorLexico {
             case INICIAL: sal="No existe el token"+ buff; break;
             case CASTING_INT1:
             case CASTING_INT2:
-            case CASTING_INT3: 
+            case CASTING_INT3:
             case CASTING_NAT1:
             case CASTING_NAT2:
     		case CASTING_NAT3:
@@ -191,12 +190,8 @@ public class AnalizadorLexico {
     		case CASTING_CHAR1:
     		case CASTING_CHAR2:
     		case CASTING_CHAR3:
-    		case CASTING_CHAR4:  
-    			Token par=new Parentesis_a(numLinea);
-    			arrayTokens.add(par);
-    			lex=lex.substring(1);
-    			estado=CADENA;
-    			return;
+    		case CASTING_CHAR4:
+    			break;
     		case DISTINTO1: sal= "No exite el token" + lex; break;
             case LIT_NAT1:
             case LIT_NAT2: sal= "Un numero natural no puede acabar por letra"; break;
@@ -215,6 +210,7 @@ public class AnalizadorLexico {
     			break;
     		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"; break;
     		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"; break;
+            case CADENA: sal="No puedes definir un token con nombre de palabra reservada"; break;
     		default:
     		}
             transita(INICIAL);
@@ -288,20 +284,44 @@ public class AnalizadorLexico {
 			case CASTING_INT1 :
 				switch (buff){
 				case 'n': transita(CASTING_INT2); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_INT2 :
 				switch (buff){
 				case 't': transita(CASTING_INT3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_INT3 :
 				switch (buff){
 				case ')': transita(CAST_INT); break;
                 case ' ': transita(CASTING_INT3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CAST_INT :
@@ -311,20 +331,44 @@ public class AnalizadorLexico {
 			case CASTING_NAT1 :
 				switch (buff){
 				case 'a': transita(CASTING_NAT2); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_NAT2 :
 				switch (buff){
 				case 't': transita(CASTING_NAT3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_NAT3 :
 				switch (buff){
 				case ')': transita(CAST_NAT); break;
                 case ' ': transita(CASTING_NAT3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CAST_NAT :
@@ -334,32 +378,72 @@ public class AnalizadorLexico {
 			case CASTING_FLOAT1 :
 				switch (buff){
 				case 'l': transita(CASTING_FLOAT2); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_FLOAT2 :
 				switch (buff){
 				case 'o': transita(CASTING_FLOAT3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_FLOAT3 :
 				switch (buff){
 				case 'a': transita(CASTING_FLOAT4); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff)|| buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_FLOAT4 :
 				switch (buff){
 				case 't': transita(CASTING_FLOAT5); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_FLOAT5 :
 				switch (buff){
 				case ')': transita(CAST_FLOAT); break;
                 case ' ': transita(CASTING_FLOAT5); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CAST_FLOAT :
@@ -369,26 +453,58 @@ public class AnalizadorLexico {
 			case CASTING_CHAR1 :
 				switch (buff){
 				case 'h': transita(CASTING_CHAR2); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')' ){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_CHAR2 :
 				switch (buff){
 				case 'a': transita(CASTING_CHAR3); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_CHAR3 :
 				switch (buff){
 				case 'r': transita(CASTING_CHAR4); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CASTING_CHAR4 :
 				switch (buff){
 				case ')': transita(CAST_CHAR); break;
                 case ' ': transita(CASTING_CHAR4); break;
-				default: error();
+				default:
+                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                        arrayTokens.add(new Parentesis_a(numLinea));
+                        lex=lex.substring(1);
+                        estado=CADENA;
+                        break;
+                    }
+                    else
+                        error();
 				}
 				break;
 			case CAST_CHAR :
@@ -422,7 +538,7 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 			case SHR:
-				arrayTokens.add(new Shr(numLinea));
+				arrayTokens.add(new Shl(numLinea));
 				terminaEstado();
 				break;
 			case DOS_PUNTOS :
@@ -470,7 +586,7 @@ public class AnalizadorLexico {
 				case '.': transita(FLOAT1); break;
 				default:
 					if (Character.isDigit(buff)){
-						transita(LIT_NAT2); 
+						transita(LIT_NAT2);
                         break;
                     }
 					else
@@ -625,7 +741,9 @@ public class AnalizadorLexico {
 					arrayTokens.add(t);
 					terminaEstado();
 				}
-				else {
+				else if(lex.equals("nat") || lex.equals("int") || lex.equals("bool") || lex.equals("char") || lex.equals("float"))
+                    error();
+                else{
 					arrayTokens.add(new Identificador(lex,numLinea));
 					terminaEstado();
 				}
@@ -656,17 +774,16 @@ public class AnalizadorLexico {
 		}
 
 	}
-	
+
 	public ArrayList<Token> getArrayTokens(){
 		return arrayTokens;
 	}
-	
-	
+
+
 	public static void main(String [] args) throws FileNotFoundException, IOException {
 		@SuppressWarnings("unused")
-		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/Documentos/prueba lexico.txt");
+		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/pruebacodigo");
         a.lex="";
     }
 
 }
-
