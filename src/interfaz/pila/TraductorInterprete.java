@@ -4,11 +4,11 @@ package interfaz.pila;
 import java.util.StringTokenizer;
 
 
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.*;
@@ -191,7 +191,7 @@ public class TraductorInterprete extends TraductorPila {
 
     @Override
     protected DatoPila traducirNat(String str) throws DatoExc {
-        return new Natural(Integer.valueOf(str));
+        return new Nat(Integer.valueOf(str));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class TraductorInterprete extends TraductorPila {
 
     @Override
     protected DatoPila traducirBool(String str) {
-        return new Booleano(Boolean.valueOf(str));
+        return new Bool(Boolean.valueOf(str));
     }
 
     @Override
