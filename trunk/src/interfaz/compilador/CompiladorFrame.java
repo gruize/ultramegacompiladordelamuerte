@@ -16,7 +16,6 @@ import compilador.traductor.TraductorCodP;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PipedReader;
 import java.io.PipedWriter;
@@ -39,10 +38,16 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     File inputFile;
     PipedWriter pWriter = new PipedWriter();
+    PipedReader pReader = new PipedReader();
 
     /** Creates new form CompiladorFrame */
     public CompiladorFrame() {
         initComponents();
+        try {
+            pReader.connect(pWriter);
+        } catch (IOException ex) {
+            Logger.getLogger(CompiladorFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -58,13 +63,13 @@ public class CompiladorFrame extends javax.swing.JFrame {
         textAreaEntrada = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         textAreaDebug = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        textAreaEjecucion = new javax.swing.JTextArea();
         compilarButton = new javax.swing.JButton();
         ejecutarButton = new javax.swing.JButton();
         abrirButton = new javax.swing.JButton();
         inputTextField = new javax.swing.JTextField();
         EnviarButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        textAreaEjecucion = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,11 +84,6 @@ public class CompiladorFrame extends javax.swing.JFrame {
         textAreaDebug.setRows(5);
         textAreaDebug.setName("ConsolaCompilacion"); // NOI18N
         jScrollPane2.setViewportView(textAreaDebug);
-
-        textAreaEjecucion.setColumns(20);
-        textAreaEjecucion.setRows(5);
-        textAreaEjecucion.setName("ConsolaEjecucion"); // NOI18N
-        jScrollPane3.setViewportView(textAreaEjecucion);
 
         compilarButton.setText("Compilar");
         compilarButton.setName("CompilarButton"); // NOI18N
@@ -115,57 +115,62 @@ public class CompiladorFrame extends javax.swing.JFrame {
             }
         });
 
+        textAreaEjecucion.setColumns(20);
+        textAreaEjecucion.setEditable(false);
+        textAreaEjecucion.setRows(5);
+        jScrollPane3.setViewportView(textAreaEjecucion);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(ejecutarButton)
-                                    .addComponent(compilarButton))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(abrirButton)
-                                .addGap(18, 18, 18)))
+                                .addGap(6, 6, 6)
+                                .addComponent(abrirButton))
+                            .addComponent(compilarButton)
+                            .addComponent(ejecutarButton))
+                        .addGap(6, 6, 6)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(inputTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(EnviarButton)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(inputTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 565, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(EnviarButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(abrirButton)
+                        .addGap(6, 6, 6)
+                        .addComponent(compilarButton)
+                        .addGap(6, 6, 6)
+                        .addComponent(ejecutarButton))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(abrirButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(compilarButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ejecutarButton)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inputTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(inputTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(EnviarButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -183,22 +188,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private void ejecutarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ejecutarButtonMouseClicked
         try {
-            System.setOut(new PrintStream(new TextAreaOutputStream()));
-            PipedReader pReader = new PipedReader(pWriter);
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
-            AnalizadorLexico al = new AnalizadorLexico(reader);
-            ArrayList<Token> tokens = al.getArrayTokens();
-            imprimirTokens(tokens);
-            TraductorCodP tcodp = new TraductorCodP(tokens);
-            ArrayList<InstruccionInterprete> ai = tcodp.traducir();
-            imprimir(ai);
-            File f = new File("./codigo_binario");
-            EscritorPila ep = new EscritorPila();
-            ep.escribirPrograma(ai, f);
-            Interprete interprete = new Interprete(false, pReader, new PrintWriter(System.out,true));
-            File f2 = new File("./codigo_binario");
-            interprete.leerPrograma(f2);
-            interprete.ejecutarPrograma();
+            this.textAreaDebug.setText("");
+            this.textAreaEjecucion.setText("");
+            compilar();
+            new EjecucionThread(pReader, pWriter).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
@@ -217,12 +210,15 @@ public class CompiladorFrame extends javax.swing.JFrame {
 }//GEN-LAST:event_abrirButtonMouseClicked
 
     private void compilarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compilarButtonMouseClicked
-//JOptionPane.showInputDialog(evt)        // TODO add your handling code here:
+        this.compilar();
 }//GEN-LAST:event_compilarButtonMouseClicked
 
     private void EnviarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EnviarButtonMouseClicked
         try {
-            inputTextField.write(pWriter);
+            pWriter.write(inputTextField.getText() + "\n");
+            // inputTextField.write(pWriter);
+            pWriter.flush();
+            textAreaEjecucion.append(inputTextField.getText() + "\n");
             inputTextField.setText("");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -230,18 +226,53 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_EnviarButtonMouseClicked
 
+    private void compilar() {
+        try {
+            System.setOut(new PrintStream(new TextAreaOutputStream()));
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
+            AnalizadorLexico al = new AnalizadorLexico(reader);
+            ArrayList<Token> tokens = al.getArrayTokens();
+            imprimirTokens(tokens);
+            TraductorCodP tcodp = new TraductorCodP(tokens);
+            ArrayList<InstruccionInterprete> ai = tcodp.traducir();
+            imprimir(ai);
+            File f = new File("./codigo_binario");
+            EscritorPila ep = new EscritorPila();
+            ep.escribirPrograma(ai, f);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void ejecutar() {
+        try {
+            this.textAreaDebug.setText("");
+            this.textAreaEjecucion.setText("");
+            compilar();
+            EjecucionThread thread = new EjecucionThread(new PipedReader(pWriter), pWriter);
+            thread.run();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            //System.exit(0);
+        }
+    }
+
     private void imprimirTokens(ArrayList<Token> tokens) {
+        textAreaDebug.append("\n --TOKENS--\n\n");
         Iterator<Token> it = tokens.iterator();
         while (it.hasNext()) {
-            System.out.println(it.next());
+            textAreaDebug.append(it.next().toString() + "\n");
         }
 
     }
 
     private void imprimir(ArrayList<InstruccionInterprete> ai) {
+        textAreaDebug.append("\n --INSTRUCCIONES INTERPRETE--\n\n");
         Iterator<InstruccionInterprete> it = ai.iterator();
         while (it.hasNext()) {
-            System.out.println(it.next());
+            textAreaDebug.append(it.next().toString() + "\n");
         }
 
     }
@@ -260,12 +291,13 @@ public class CompiladorFrame extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
+
+
             public void run() {
                 new CompiladorFrame().setVisible(true);
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton EnviarButton;
     private javax.swing.JButton abrirButton;
