@@ -50,6 +50,7 @@ import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
 import compilador.lexico.Tokens.character;
+import java.io.Reader;
 
 /**
  *
@@ -133,13 +134,24 @@ public class AnalizadorLexico {
 	private char buff;
 	private String lex;
 	private int estado;
-	private InputStreamReader reader = null;
+	private Reader reader = null;
 	private ArrayList<Token> arrayTokens;
     private static int numLinea;
 
 	public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
 		File f=new File(src);
 		reader = new InputStreamReader(new FileInputStream(f));
+		lex="";
+		estado = 0;
+		buff = sigCar();//inicioScan() de los apuntes
+		arrayTokens = new ArrayList<Token>();
+        numLinea=1;
+		scanner();
+	}
+
+    public AnalizadorLexico(Reader reader) throws FileNotFoundException, IOException{
+		//File f=new File(src);
+		this.reader = reader;
 		lex="";
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
