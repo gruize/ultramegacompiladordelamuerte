@@ -121,5 +121,4 @@ public abstract class DatoPila {
             return FLOAT_T;
         return ERROR_T;
     }
-    
 }
