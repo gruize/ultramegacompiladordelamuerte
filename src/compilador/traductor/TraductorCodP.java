@@ -2,9 +2,9 @@ package compilador.traductor;
 
 import java.util.ArrayList;
 
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.Caracter;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.datos.Real;
 import pila.interprete.instrucciones.*;
 import compilador.lexico.Tokens.Token;
@@ -33,7 +33,7 @@ public class TraductorCodP extends Traductor{
 			errores.add(new ErrorTraductor("Info: variable "+id+"no declarada"+textoError()));
 		}
 		else {
-			Natural n=new Natural(TablaSimbolos.getDir(ts, id));
+			Nat n=new Nat(TablaSimbolos.getDir(ts, id));
 			Tipos t=TablaSimbolos.getTipo(ts, id);
 			switch (t){
 			case BOOL: codP1=new Codigo(new EntradaBool(n));
@@ -100,10 +100,10 @@ public class TraductorCodP extends Traductor{
 	   	   		(tipoTs == Tipos.REAL && (tipo3 == Tipos.CHAR || tipo3 == Tipos.BOOL)) ||
 	   	   		(tipoTs == Tipos.ENTERO && (tipo3== Tipos.REAL || tipo3 == Tipos.CHAR ||  tipo3 == Tipos.BOOL))  ||
 	   	   		(tipoTs == Tipos.NATURAL && tipo3 != Tipos.NATURAL)  ||
-	   	   		(tipoTs ==Tipos.CHAR && tipo3 != Tipos.BOOL)  ||
+	   	   		(tipoTs ==Tipos.CHAR && tipo3 != Tipos.CHAR)  ||
 	   	   		(tipoTs == Tipos.BOOL && tipo3 != Tipos.BOOL);
 
-			codP1.appendIns(new DesapilarDir(new Natural(dir)));
+			codP1.appendIns(new DesapilarDir(new Nat(dir)));
 		}
 		return new Object[]{error1,codP1};
 	}
@@ -878,14 +878,14 @@ public class TraductorCodP extends Traductor{
 		
 		Tipos tipo1 = TablaSimbolos.getTipo(ts, t.getLex());
 		int dir= TablaSimbolos.getDir(ts, t.getLex());
-		Codigo codP1 = new Codigo(new ApilarDir(new Natural(dir)));
+		Codigo codP1 = new Codigo(new ApilarDir(new Nat(dir)));
 		return new Object[]{tipo1,codP1};
 	}
 	//Literal(out: tipo1, codP1, codJ1) → LitTrue
 	protected Object[] Literal_LitTrue() throws Exception{
 		boolean valor=true;
 		Apilar i=null;
-		i = new Apilar(new Booleano(valor));
+		i = new Apilar(new Bool(valor));
 		return new Object[]{Tipos.BOOL,new Codigo(i)};
 	}
 
@@ -893,7 +893,7 @@ public class TraductorCodP extends Traductor{
 	protected Object[] Literal_LitFalse() throws Exception {
 		boolean valor=false;
 		Apilar i=null;
-		i = new Apilar(new Booleano(valor));
+		i = new Apilar(new Bool(valor));
 		return new Object[]{Tipos.BOOL,new Codigo(i)};
 	}
 	
@@ -906,7 +906,7 @@ public class TraductorCodP extends Traductor{
 	//Literal(out: tipo1, codP1) → litNat
 	protected Object[] Literal_LitNat(Token t) throws Exception {
 		Apilar i=null;
-		i=new Apilar(new Natural(Integer.parseInt(t.getLex())));
+		i=new Apilar(new Nat(Integer.parseInt(t.getLex())));
 		return new Object[]{Tipos.NATURAL,new Codigo(i)};
 	}
 

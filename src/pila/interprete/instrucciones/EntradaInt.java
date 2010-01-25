@@ -26,25 +26,21 @@ public class EntradaInt extends InstruccionInterprete{
         super(InstruccionInterprete.CODIGO_ENTRADA_INT, d);
         if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
-                    "argumento entero");
+                    "argumento natural");
     }
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             DatoPila datoLeido = null;
+            interprete.getWriter().print("Introduzca un entero >>>");
+            interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             int i = Integer.valueOf(leido);
-            if(i < 0)
-                throw new InstruccionExc(this,"El dato leído ("
-                        +datoLeido.toNatural()+") no es un entero");
             datoLeido = new Entero(i);
-
             interprete.getMemoria()[getDato().toNatural()] = datoLeido;
-        } catch (InstruccionExc ex) {
-            throw ex;
-
-        } catch (Exception ex) {
+            }
+            catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }
         return true;

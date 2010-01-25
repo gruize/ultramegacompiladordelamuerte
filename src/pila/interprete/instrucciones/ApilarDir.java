@@ -41,14 +41,12 @@ public class ApilarDir extends InstruccionInterprete {
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-            ArrayDeque<DatoPila> pila = interprete.getPila();
-            DatoPila d = pila.pop();
-            switch (d.getTipoDato()) {
+            switch (getDato().getTipoDato()) {
                 case DatoPila.NAT_T:
                     interprete.getPila().addFirst(interprete.getMemoria()[getDato().toNatural()]);
                     break;
                 default:
-                    throw new InstruccionExc(this, "Tipo inválido (" + d.toString() + ")");
+                    throw new InstruccionExc(this, "Tipo inválido (" + getDato().toString() + ")");
             }
             
         } catch (DatoExc ex) {

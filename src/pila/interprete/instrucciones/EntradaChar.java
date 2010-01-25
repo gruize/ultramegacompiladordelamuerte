@@ -26,13 +26,15 @@ public class EntradaChar extends InstruccionInterprete{
         super(InstruccionInterprete.CODIGO_ENTRADA_CHAR, d);
         if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
-                    "argumento caracter");
+                    "argumento natural");
     }
 
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             DatoPila datoLeido = null;
+            interprete.getWriter().print("Introduzca un caracter >>>");
+            interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             datoLeido = new Caracter(leido.charAt(0));
             interprete.getMemoria()[getDato().toNatural()] = datoLeido;           

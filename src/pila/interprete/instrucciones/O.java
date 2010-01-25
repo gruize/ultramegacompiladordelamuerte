@@ -3,7 +3,7 @@ package pila.interprete.instrucciones;
 import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -34,9 +34,9 @@ public class O extends InstruccionInterprete{
 
     /**
      * Semantica:
-     * apilar(booleano(desapilar || desapilar))
+     * apilar(Bool(desapilar || desapilar))
      * @return siempre true (nunca modifica el cp del interprete)
-     * @throws InstruccionExc si encuentra tipos de datos no booleanos
+     * @throws InstruccionExc si encuentra tipos de datos no Bools
      */
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
@@ -54,7 +54,7 @@ public class O extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.BOOL_T:
-                        res = new Booleano(d1.toBoolean() || d2.toBoolean());
+                        res = new Bool(d1.toBoolean() || d2.toBoolean());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

@@ -7,11 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
@@ -31,12 +31,12 @@ public class LectorPila {
             byte tipo = dis.readByte(); //se lee el tipo
             switch(tipo) { //segun el tipo se crea un DatoPila distinto
                 case DatoPila.BOOL_T:
-                    return new Booleano(dis.readBoolean());
+                    return new Bool(dis.readBoolean());
                 case DatoPila.CHAR_T:
                     return new Caracter(dis.readChar());
                 case DatoPila.NAT_T:
                     try {
-                        return new Natural(dis.readInt());
+                        return new Nat(dis.readInt());
                     } catch (DatoExc ex) {
                         throw new LectorExc(ex.getLocalizedMessage());
                     }

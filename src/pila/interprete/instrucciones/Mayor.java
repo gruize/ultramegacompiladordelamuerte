@@ -3,7 +3,7 @@ package pila.interprete.instrucciones;
 import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -52,19 +52,22 @@ public class Mayor extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Booleano(d1.toNatural() > d2.toNatural());
+                        res = new Bool(d1.toNatural() > d2.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Booleano(d1.toInt() > d2.toInt());
+                        res = new Bool(d1.toInt() > d2.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Booleano(d1.toFloat() > d2.toFloat());
+                        res = new Bool(d1.toFloat() > d2.toFloat());
                         break;
+                    case DatoPila.CHAR_T:
+                    	res = new Bool(d1.toChar() > d2.toChar());
+                    	break;
                     case DatoPila.BOOL_T:
                         if (d1.toBoolean() && !d2.toBoolean()) //true > false
-                            res = new Booleano(true);
+                            res = new Bool(true);
                         else
-                            res = new Booleano(false);
+                            res = new Bool(false);
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

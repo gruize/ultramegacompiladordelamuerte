@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class Interprete {
     }
 
     public Interprete(int longMem, boolean depuracion) {
-        this(longMem,depuracion,System.in,new PrintWriter(System.out));
+        this(longMem,depuracion,System.in,new PrintWriter(System.out,true));
     }
 
     /**
@@ -182,6 +183,7 @@ public class Interprete {
      * @param el nuevo contador de programa
      */
     public void setCp(int cp) {
+    	if (cp==programa.size()) setParar(true);
         this.cp = cp;
     }
 

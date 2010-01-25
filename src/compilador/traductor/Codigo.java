@@ -1,21 +1,21 @@
 package compilador.traductor;
 import java.util.ArrayList;
 
-import pila.Instruccion;
+import pila.interprete.instrucciones.InstruccionInterprete;
 
 public class Codigo {
-	private ArrayList<Instruccion> cod;
+	private ArrayList<InstruccionInterprete> cod;
 	
 	public Codigo(){
-		cod=new ArrayList<Instruccion>();
+		cod=new ArrayList<InstruccionInterprete>();
 	}
 	
-	public Codigo(Instruccion i){
-		cod=new ArrayList<Instruccion>();
+	public Codigo(InstruccionInterprete i){
+		cod=new ArrayList<InstruccionInterprete>();
 		cod.add(i);
 	}
 	
-	public ArrayList<Instruccion> getCod(){
+	public ArrayList<InstruccionInterprete> getCod(){
 		return cod;
 	}
 	
@@ -23,7 +23,7 @@ public class Codigo {
 		return cod.addAll(c.getCod());
 	}
 	
-	public void appendIns(Instruccion i){
+	public void appendIns(InstruccionInterprete i){
 		cod.add(i);
 	}
 	

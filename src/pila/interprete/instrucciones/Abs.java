@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -40,7 +40,7 @@ public class Abs extends InstruccionInterprete {
         try {
             switch (d.getTipoDato()) {
                 case DatoPila.NAT_T:
-                    res = new Natural(d.toNatural());
+                    res = new Nat(d.toNatural());
                     break;
                 case DatoPila.INT_T:
                     if (d.toInt() < 0)
