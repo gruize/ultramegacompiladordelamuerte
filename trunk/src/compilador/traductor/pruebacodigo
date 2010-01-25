@@ -1,8 +1,9 @@
 a : boolean;
 b : natural;
-c : natural;
+c : float;
+d : character;
 &
-a := true or false;
-b:= 5;
-
-out(b);
+b:=5+5;
+in(c);
+c:=c+b;
+out(c);

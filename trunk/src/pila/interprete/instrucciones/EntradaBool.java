@@ -5,7 +5,7 @@
 package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Booleano;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -26,7 +26,7 @@ public class EntradaBool extends InstruccionInterprete {
         super(InstruccionInterprete.CODIGO_ENTRADA_BOOL, d);
         if (d.getTipoDato() != DatoPila.NAT_T) {
             throw new LectorExc("La instrucción requiere un " +
-                    "argumento booleano");
+                    "argumento natural");
         }
     }
 
@@ -34,6 +34,8 @@ public class EntradaBool extends InstruccionInterprete {
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             DatoPila datoLeido = null;
+            interprete.getWriter().print("Introduzca un booleano >>>");
+            interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             boolean b;
             if (leido.equals("true")) {
@@ -44,7 +46,7 @@ public class EntradaBool extends InstruccionInterprete {
                 throw new InstruccionExc(this, "El dato leido no " +
                         "es un un booleano");
             }
-            datoLeido = new Booleano(b);
+            datoLeido = new Bool(b);
             
             interprete.getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (InstruccionExc ex) {

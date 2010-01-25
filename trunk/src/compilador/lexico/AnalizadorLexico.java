@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import sun.security.action.GetLongAction;
+
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
 import compilador.lexico.Tokens.Boolean;
@@ -19,15 +21,16 @@ import compilador.lexico.Tokens.Distinto;
 import compilador.lexico.Tokens.Division;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
-import compilador.lexico.Tokens.LitFalse;
-import compilador.lexico.Tokens.Float;
+import compilador.lexico.Tokens.FloatToken;
 import compilador.lexico.Tokens.Identificador;
 import compilador.lexico.Tokens.Igual;
 import compilador.lexico.Tokens.In;
 import compilador.lexico.Tokens.Integer;
 import compilador.lexico.Tokens.LitCha;
+import compilador.lexico.Tokens.LitFalse;
 import compilador.lexico.Tokens.LitFlo;
 import compilador.lexico.Tokens.LitNat;
+import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.Mayor;
 import compilador.lexico.Tokens.Mayor_ig;
 import compilador.lexico.Tokens.Menor;
@@ -46,7 +49,6 @@ import compilador.lexico.Tokens.Shl;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
-import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.character;
 
 /**
@@ -118,7 +120,7 @@ public class AnalizadorLexico {
 		palabrasReservadas.put("integer",new Integer());
 		palabrasReservadas.put("natural",new Natural());
 		palabrasReservadas.put("boolean",new Boolean());
-		palabrasReservadas.put("float",new Float());
+		palabrasReservadas.put("float",new FloatToken());
 		palabrasReservadas.put("character",new character());
 		palabrasReservadas.put("and",new And());
 		palabrasReservadas.put("or",new Or());
@@ -165,19 +167,24 @@ public class AnalizadorLexico {
             case INICIAL: sal="No existe el token"+ buff; break;
             case CASTING_INT1:
             case CASTING_INT2:
-            case CASTING_INT3: sal= "Casting (int) mal escrito"; break;
+            case CASTING_INT3: 
             case CASTING_NAT1:
             case CASTING_NAT2:
-    		case CASTING_NAT3: sal= "Casting (nat) mal escrito"; break;
+    		case CASTING_NAT3:
     		case CASTING_FLOAT1:
     		case CASTING_FLOAT2:
     		case CASTING_FLOAT3:
     		case CASTING_FLOAT4:
-    		case CASTING_FLOAT5: sal= "Casting (float) mal escrito"; break;
+    		case CASTING_FLOAT5:
     		case CASTING_CHAR1:
     		case CASTING_CHAR2:
     		case CASTING_CHAR3:
-    		case CASTING_CHAR4:  sal= "Casting (char) mal escrito"; break;
+    		case CASTING_CHAR4:  
+    			Token par=new Parentesis_a(numLinea);
+    			arrayTokens.add(par);
+    			lex=lex.substring(1);
+    			estado=CADENA;
+    			return;
     		case DISTINTO1: sal= "No exite el token" + lex; break;
             case LIT_NAT1:
             case LIT_NAT2: sal= "Un numero natural no puede acabar por letra"; break;
@@ -624,7 +631,7 @@ public class AnalizadorLexico {
 				}
 				break;
 			case LIT_CHA:
-				arrayTokens.add(new LitCha(numLinea));
+				arrayTokens.add(new LitCha(lex,numLinea));
 				terminaEstado();
 				break;
 			case SIGNO_MENOS:

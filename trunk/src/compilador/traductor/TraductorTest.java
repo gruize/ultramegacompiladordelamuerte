@@ -1,6 +1,7 @@
 package compilador.traductor;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -9,6 +10,8 @@ import javax.swing.JFrame;
 
 import pila.Instruccion;
 import pila.interprete.EscritorPila;
+import pila.interprete.Interprete;
+import pila.interprete.instrucciones.InstruccionInterprete;
 
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
@@ -32,11 +35,16 @@ public class TraductorTest extends JFrame{
 		ArrayList<Token> tokens=al.getArrayTokens();
 		imprimirTokens(tokens);
 		TraductorCodP tcodp= new TraductorCodP(tokens);
-		ArrayList<Instruccion> ai= tcodp.traducir();
+		ArrayList<InstruccionInterprete> ai= tcodp.traducir();
 		imprimir(ai);
-		//File f= new File("./codigo_binario");
-		//EscritorPila ep= new EscritorPila();
-		//ep.escribirPrograma(ai, f);
+		File f= new File("./codigo_binario");
+		EscritorPila ep= new EscritorPila();
+		ep.escribirPrograma(ai, f);
+		Interprete interprete = new Interprete(false);
+		File f2= new File("./codigo_binario");
+        interprete.leerPrograma(f2);
+        interprete.ejecutarPrograma();
+		
 		}
 		catch(Exception e){
 			System.out.println(e.getMessage());
@@ -52,8 +60,8 @@ public class TraductorTest extends JFrame{
 		
 	}
 
-	private void imprimir(ArrayList<Instruccion> ai) {
-		Iterator<Instruccion> it=ai.iterator();
+	private void imprimir(ArrayList<InstruccionInterprete> ai) {
+		Iterator<InstruccionInterprete> it=ai.iterator();
 		while (it.hasNext()){
 			System.out.println(it.next());
 		}

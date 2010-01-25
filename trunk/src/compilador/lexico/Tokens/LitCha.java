@@ -13,4 +13,7 @@ public class LitCha extends Token{
     public LitCha(int n){
         super(n);
     }
+    public LitCha(String l, int n){
+    	super(l,n);
+    }
 }

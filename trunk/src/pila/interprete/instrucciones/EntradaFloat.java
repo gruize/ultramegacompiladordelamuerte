@@ -26,7 +26,7 @@ public class EntradaFloat extends InstruccionInterprete{
         super(InstruccionInterprete.CODIGO_ENTRADA_FLOAT, d);
         if(d.getTipoDato() != DatoPila.NAT_T)
             throw new LectorExc("La instrucción requiere un " +
-                    "argumento real");
+                    "argumento natural");
     }
 
     @Override
@@ -34,6 +34,8 @@ public class EntradaFloat extends InstruccionInterprete{
         try {
 
             DatoPila datoLeido = null;
+            interprete.getWriter().print("Introduzca un real >>>");
+            interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             float i = Float.valueOf(leido);          
             datoLeido = new Real(i);

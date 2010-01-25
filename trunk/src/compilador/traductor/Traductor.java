@@ -3,6 +3,8 @@ package compilador.traductor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import pila.interprete.instrucciones.InstruccionInterprete;
+
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
 import compilador.lexico.Tokens.Cast_char;
@@ -14,7 +16,7 @@ import compilador.lexico.Tokens.Division;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
 import compilador.lexico.Tokens.LitFalse;
-import compilador.lexico.Tokens.Float;
+import compilador.lexico.Tokens.FloatToken;
 import compilador.lexico.Tokens.Identificador;
 import compilador.lexico.Tokens.In;
 import compilador.lexico.Tokens.LitCha;
@@ -67,7 +69,7 @@ public abstract class Traductor {
 	}
 	
 	
-	public ArrayList<pila.Instruccion> traducir() throws Exception{
+	public ArrayList<InstruccionInterprete> traducir() throws Exception{
 		Codigo codigo=new Codigo();
 		try {
 			Object[] resultado=Programa();
@@ -277,7 +279,7 @@ public abstract class Traductor {
 		if (t instanceof compilador.lexico.Tokens.Integer) return Tipos.ENTERO;
 		if (t instanceof Natural) return Tipos.NATURAL;
 		if (t instanceof compilador.lexico.Tokens.Boolean) return Tipos.BOOL;
-		if (t instanceof Float) return Tipos.REAL;
+		if (t instanceof FloatToken) return Tipos.REAL;
 		if (t instanceof character) return Tipos.CHAR;
 		return Tipos.ERROR;
 	}

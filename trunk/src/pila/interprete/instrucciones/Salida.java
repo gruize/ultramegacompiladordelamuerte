@@ -40,6 +40,7 @@ public class Salida extends InstruccionInterprete{
                     interprete.getWriter().println(d1.toBoolean());
                     break;
                 case DatoPila.CHAR_T:
+
                     interprete.getWriter().println(d1.toChar());
                     break;
                 case DatoPila.NAT_T:

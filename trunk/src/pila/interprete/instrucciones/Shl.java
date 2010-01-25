@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -53,7 +53,7 @@ public class Shl extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Natural(d1.toNatural() << d2.toNatural());
+                        res = new Nat(d1.toNatural() << d2.toNatural());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

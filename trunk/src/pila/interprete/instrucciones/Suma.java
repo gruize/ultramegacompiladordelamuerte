@@ -5,7 +5,7 @@ import java.util.ArrayDeque;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
-import pila.interprete.datos.Natural;
+import pila.interprete.datos.Nat;
 import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -56,7 +56,7 @@ public class Suma extends InstruccionInterprete {
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Natural(d1.toNatural() + d2.toNatural());
+                        res = new Nat(d1.toNatural() + d2.toNatural());
                         break;
                     case DatoPila.INT_T:
                         res = new Entero(d1.toInt() + d2.toInt());
