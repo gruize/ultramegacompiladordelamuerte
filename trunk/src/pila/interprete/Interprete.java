@@ -5,8 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,7 +53,7 @@ public class Interprete {
      * @param longMem el tamaño de la memoria
      * @param depuracion
      */
-    public Interprete(int longMem, boolean depuracion, Reader entrada, PrintWriter salida) {
+    public Interprete(int longMem, boolean depuracion, InputStream entrada, PrintWriter salida) {
         programa = null;
         pila = null;
         memoria = new DatoPila[longMem];
@@ -61,12 +62,12 @@ public class Interprete {
             sb = new StringBuilder(100);
         else
             sb = null;
-        reader = new BufferedReader(entrada);
+        reader = new BufferedReader(new InputStreamReader(entrada));
         writer = salida;
     }
 
     public Interprete(int longMem, boolean depuracion) {
-       // this(longMem,depuracion,System.in,new PrintWriter(System.out,true));
+        this(longMem,depuracion,System.in,new PrintWriter(System.out,true));
     }
 
     /**
@@ -78,7 +79,7 @@ public class Interprete {
         this(100,depuracion);
     }
 
-    public Interprete(boolean depuracion, Reader entrada, PrintWriter salida) {
+    public Interprete(boolean depuracion, InputStream entrada, PrintWriter salida) {
         this(100,depuracion,entrada,salida);
     }
 
