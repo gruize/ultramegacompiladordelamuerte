@@ -53,7 +53,7 @@ public class Y extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.BOOL_T:
-                        res = new Bool(d1.toBoolean() && d2.toBoolean());
+                        res = new Bool(d2.toBoolean() && d1.toBoolean());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

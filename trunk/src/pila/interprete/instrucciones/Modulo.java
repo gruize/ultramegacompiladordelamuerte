@@ -53,10 +53,10 @@ public class Modulo extends InstruccionInterprete{
             try {
                 switch (t1) {
                     case DatoPila.NAT_T:
-                        res = new Nat(d1.toNatural() % d2.toNatural());
+                        res = new Nat(d2.toNatural() % d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Entero(d1.toInt() % d2.toNatural());
+                        res = new Entero(d2.toInt() % d1.toNatural());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");
