@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import sun.security.action.GetLongAction;
 
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
@@ -46,6 +45,7 @@ import compilador.lexico.Tokens.Parentesis_c;
 import compilador.lexico.Tokens.Punto_coma;
 import compilador.lexico.Tokens.Separador;
 import compilador.lexico.Tokens.Shl;
+import compilador.lexico.Tokens.Shr;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
@@ -410,7 +410,7 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 			case SHR:
-				arrayTokens.add(new Shl(numLinea));
+				arrayTokens.add(new Shr(numLinea));
 				terminaEstado();
 				break;
 			case DOS_PUNTOS :

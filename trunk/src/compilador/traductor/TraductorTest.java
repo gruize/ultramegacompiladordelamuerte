@@ -8,7 +8,6 @@ import java.util.Iterator;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import pila.Instruccion;
 import pila.interprete.EscritorPila;
 import pila.interprete.Interprete;
 import pila.interprete.instrucciones.InstruccionInterprete;

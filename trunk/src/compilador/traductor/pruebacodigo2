@@ -1,0 +1,16 @@
+a : boolean;
+b : natural;
+c : float;
+d : character;
+e : integer;
+&
+b:=5+5;
+out(b);
+in(c);
+c:=c*b;
+out(c);
+a:=c<b;
+out(a);
+in(e);
+b:=|e|;
+out(b);
