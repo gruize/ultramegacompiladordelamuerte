@@ -15,4 +15,5 @@ import pila.jvm.ClassConstructor;
 public interface PseudoInstruccionJVM extends Instruccion {
 
     public void toClass(ClassConstructor cc) throws Exception;
+    public int dameU1s();
 }

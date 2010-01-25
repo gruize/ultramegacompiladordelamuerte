@@ -24,5 +24,12 @@ public class InstruccionJVMU2 extends InstruccionJVM {
         cc.añadirU2(tipo);
     }
 
+    @Override
+    public int dameU1s() {
+        return super.dameU1s()+2;
+    }
+
+
+
 
 }

@@ -5,6 +5,7 @@
 
 package pila.jvm.instrucciones;
 
+import org.apache.bcel.Constants;
 import pila.jvm.ClassConstructor;
 
 /**
@@ -14,7 +15,14 @@ import pila.jvm.ClassConstructor;
 public class ApilarPrinterJVM implements PseudoInstruccionJVM{
 
     public void toClass(ClassConstructor cc) {
-        cc.apilarPrinter();
+        cc.añadirU1(Constants.GETSTATIC);
+        cc.añadirU2(cc.getPrinterFieldIndex());
     }
+
+    public int dameU1s() {
+        return 3;
+    }
+
+
 
 }

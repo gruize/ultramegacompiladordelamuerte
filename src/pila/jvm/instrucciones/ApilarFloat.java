@@ -29,7 +29,24 @@ public class ApilarFloat implements PseudoInstruccionJVM {
             cc.añadirU1(Constants.FCONST_2);
         else {
             cc.añadirU1(Constants.LDC);
-            cc.añadirU2(cc.getConstanteIndex(valor));
+            cc.añadirU1(cc.getConstanteIndex(valor));
+        }
+    }
+
+    public int dameU1s() {
+        if(valor == 0)
+            //cc.añadirU1(Constants.FCONST_0);
+            return 1;
+        else if(valor == 1)
+            //cc.añadirU1(Constants.FCONST_1);
+            return 1;
+        else if(valor == 2)
+            //cc.añadirU1(Constants.FCONST_2);
+            return 1;
+        else {
+            //cc.añadirU1(Constants.LDC);
+            //cc.añadirU1(cc.getConstanteIndex(valor));
+            return 2;
         }
     }
 

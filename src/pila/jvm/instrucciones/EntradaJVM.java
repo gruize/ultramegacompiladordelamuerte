@@ -5,6 +5,8 @@
 
 package pila.jvm.instrucciones;
 
+import org.apache.bcel.Constants;
+import pila.interprete.datos.DatoPila;
 import pila.jvm.ClassConstructor;
 
 /**
@@ -21,8 +23,70 @@ public class EntradaJVM implements PseudoInstruccionJVM{
     }
 
     public void toClass(ClassConstructor cc) throws Exception {
-        cc.leerDato(tipoDato, dirVar);
+        //las siguientes 4 sentencias leen una linea
+        cc.añadirU1(Constants.GETSTATIC);
+        cc.añadirU2(cc.getReaderFieldIndex());
+        cc.añadirU1(Constants.INVOKEVIRTUAL);
+        cc.añadirU2(cc.getReadLineIndex());
+        switch(tipoDato) {
+            case DatoPila.BOOL_T:
+                cc.añadirU1(Constants.INVOKESTATIC);
+                cc.añadirU2(cc.getParseBoolIndex());
+                break;
+            case DatoPila.CHAR_T:
+                cc.añadirU1(Constants.ICONST_0);
+                cc.añadirU1(Constants.INVOKEVIRTUAL);
+                cc.añadirU2(cc.getCharAtIndex());
+                break;
+            case DatoPila.FLOAT_T:
+                cc.añadirU1(Constants.INVOKESTATIC);
+                cc.añadirU2(cc.getParseFloatIndex());
+                break;
+            case DatoPila.INT_T:
+                cc.añadirU1(Constants.INVOKESTATIC);
+                cc.añadirU2(cc.getParseIntIndex());
+                break;
+            case DatoPila.NAT_T:
+                cc.añadirU1(Constants.INVOKESTATIC);
+                cc.añadirU2(cc.getParseIntIndex());
+                cc.añadirU1(Constants.DUP); //gastamos 1 para el if y el otro es el resultado
+                cc.añadirU1(Constants.IFGE);
+                cc.añadirU2(12); //2 => saltamos hasta despues del throw
+                cc.añadirU1(Constants.NEW); //3
+                cc.añadirU2(cc.getExceptionIndex()); //5
+                cc.añadirU1(Constants.DUP); //6
+                cc.añadirU1(Constants.LDC); //7 => se carga el string
+                cc.añadirU1(cc.getNatNegStringIndex()); //8
+                cc.añadirU1(Constants.INVOKESPECIAL); //9
+                cc.añadirU2(cc.getInitExceptionIndex()); //11
+                cc.añadirU1(Constants.ATHROW); //12
+                break;
+        }
     }
+
+    public int dameU1s() {
+        int u1sTipo = 0;
+        switch(tipoDato) {
+            case DatoPila.BOOL_T:
+                u1sTipo = 3;
+                break;
+            case DatoPila.CHAR_T:
+                u1sTipo = 4;
+                break;
+            case DatoPila.FLOAT_T:
+                u1sTipo = 3;
+                break;
+            case DatoPila.INT_T:
+                u1sTipo = 3;
+                break;
+            case DatoPila.NAT_T:
+                u1sTipo = 17;
+                break;
+        }
+        return 6 + u1sTipo;
+    }
+
+
 
 
 }
