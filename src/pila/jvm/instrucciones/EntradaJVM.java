@@ -52,7 +52,7 @@ public class EntradaJVM implements PseudoInstruccionJVM{
                 cc.añadirU2(cc.getParseIntIndex());
                 cc.añadirU1(Constants.DUP); //gastamos 1 para el if y el otro es el resultado
                 cc.añadirU1(Constants.IFGE);
-                cc.añadirU2(12); //2 => saltamos hasta despues del throw
+                cc.añadirU2(13); //2 => saltamos hasta despues del throw
                 cc.añadirU1(Constants.NEW); //3
                 cc.añadirU2(cc.getExceptionIndex()); //5
                 cc.añadirU1(Constants.DUP); //6
