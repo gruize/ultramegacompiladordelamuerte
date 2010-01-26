@@ -13,4 +13,8 @@ public class Distinto extends Token{
     public Distinto(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo =/=";
+    }
 }

@@ -13,4 +13,8 @@ public class Multiplicacion extends Token{
     public Multiplicacion(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo *";
+    }
 }

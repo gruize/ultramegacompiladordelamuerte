@@ -13,4 +13,8 @@ public class Cast_nat extends Token{
     public Cast_nat(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Cast a natural";
+    }
 }

@@ -13,4 +13,8 @@ public class Integer extends Token{
     public Integer(){
         super();
     }
+
+    public String toString(){
+        return "Tipo integer";
+    }
 }

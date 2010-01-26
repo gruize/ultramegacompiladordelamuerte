@@ -13,4 +13,8 @@ public class Division extends Token{
     public Division(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo /";
+    }
 }

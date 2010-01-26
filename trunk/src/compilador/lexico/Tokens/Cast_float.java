@@ -13,4 +13,8 @@ public class Cast_float extends Token{
     public Cast_float(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Cast a float";
+    }
 }

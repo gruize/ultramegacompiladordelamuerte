@@ -13,4 +13,8 @@ public class character extends Token{
     public character(){
         super();
     }
+
+    public String toString(){
+        return "Tipo character";
+    }
 }

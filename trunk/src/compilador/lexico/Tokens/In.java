@@ -13,4 +13,8 @@ public class In extends Token{
     public In(){
         super();
     }
+
+    public String toString(){
+        return "Operador de entrada in";
+    }
 }

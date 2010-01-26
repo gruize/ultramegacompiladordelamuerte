@@ -13,4 +13,8 @@ public class Out extends Token{
     public Out(){
         super();
     }
+
+    public String toString(){
+        return "Salida out";
+    }
 }

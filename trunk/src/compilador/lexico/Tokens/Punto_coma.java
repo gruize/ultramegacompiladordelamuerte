@@ -13,4 +13,8 @@ public class Punto_coma extends Token{
     public Punto_coma(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo ;";
+    }
 }

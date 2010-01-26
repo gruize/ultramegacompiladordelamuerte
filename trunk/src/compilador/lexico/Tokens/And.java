@@ -13,4 +13,8 @@ public class And extends Token{
     public And(){
         super();
     }
+
+    public String toString(){
+        return "And";
+    }
 }

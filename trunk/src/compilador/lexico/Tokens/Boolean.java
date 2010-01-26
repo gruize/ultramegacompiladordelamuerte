@@ -13,4 +13,8 @@ public class Boolean extends Token{
     public Boolean(){
         super();
     }
+
+    public String toString(){
+        return "Tipo boolean";
+    }
 }

@@ -230,19 +230,31 @@ public class CompiladorFrame extends javax.swing.JFrame {
         boolean error=false;
         try {
             System.setOut(new PrintStream(new TextAreaOutputStream()));
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
-            AnalizadorLexico al = new AnalizadorLexico(reader);
-            ArrayList<Token> tokens = al.getArrayTokens();
-            imprimirTokens(tokens);
-            if(al.getErrorLexico() == false){
-                TraductorCodP tcodp = new TraductorCodP(tokens);
-                ArrayList<InstruccionInterprete> ai = tcodp.traducir();
-                imprimir(ai);
-                File f = new File("./codigo_binario");
-                EscritorPila ep = new EscritorPila();
-                ep.escribirPrograma(ai, f);
+
+            String codigo=textAreaEntrada.getText();
+            if (codigo != ""){
+                AnalizadorLexico al = new AnalizadorLexico(codigo);
+                ArrayList<Token> tokens = al.getArrayTokens();
+                imprimirTokens(tokens);
+
+                if(al.getErrorLexico() == false){
+                    TraductorCodP tcodp = new TraductorCodP(tokens);
+                    ArrayList<InstruccionInterprete> ai = tcodp.traducir();
+                    imprimir(ai);
+                    File f = new File("./codigo_binario");
+                    EscritorPila ep = new EscritorPila();
+                    ep.escribirPrograma(ai, f);
+                }
             }
             else error=true;
+
+            /*InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
+
+            File f=new File(src);
+		reader = new InputStreamReader(new FileInputStream(f));*/
+
+
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

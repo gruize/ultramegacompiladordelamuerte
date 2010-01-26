@@ -13,4 +13,8 @@ public class LitFalse extends Token{
     public LitFalse(){
         super();
     }
+
+    public String toString(){
+        return "Literal booleano";
+    }
 }

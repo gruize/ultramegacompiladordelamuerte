@@ -13,4 +13,8 @@ public class LitFlo extends Token{
     public LitFlo(String l,int n){
         super(l,n);
     }
+
+    public String toString(){
+        return "Literal real";
+    }
 }

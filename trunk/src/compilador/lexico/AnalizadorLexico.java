@@ -51,6 +51,7 @@ import compilador.lexico.Tokens.Token;
 import compilador.lexico.Tokens.character;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringReader;
 
 /**
  *
@@ -136,20 +137,19 @@ public class AnalizadorLexico {
 	private int estado;
 	private Reader reader = null;
 	private ArrayList<Token> arrayTokens;
-        private static int numLinea;
-        private PrintWriter writer;
-        private boolean errorLexico;
+    private static int numLinea;
+    private PrintWriter writer;
+    private boolean errorLexico;
 
 	public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
-		File f=new File(src);
-		reader = new InputStreamReader(new FileInputStream(f));
+		reader = new StringReader(src);
 		lex="";
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
-                writer = new PrintWriter(System.out,true);
-                numLinea=1;
-                errorLexico=false;
+        writer = new PrintWriter(System.out,true);
+        numLinea=1;
+        errorLexico=false;
 		scanner();
 	}
 
@@ -160,9 +160,9 @@ public class AnalizadorLexico {
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
-                numLinea=1;
-                writer = new PrintWriter(System.out,true);
-                errorLexico=false;
+        numLinea=1;
+        writer = new PrintWriter(System.out,true);
+        errorLexico=false;
 		scanner();
 	}
 

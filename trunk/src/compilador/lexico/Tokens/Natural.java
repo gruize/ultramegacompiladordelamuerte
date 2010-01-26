@@ -13,4 +13,8 @@ public class Natural extends Token{
     public Natural(){
         super();
     }
+
+    public String toString(){
+        return "Tipo natural";
+    }
 }
