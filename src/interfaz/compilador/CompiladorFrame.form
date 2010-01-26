@@ -28,10 +28,10 @@
                       <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                       <Component id="jScrollPane1" min="-2" pref="327" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="abrirButton" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="compilarButton" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="ejecutarButton" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="ejecutarButton" linkSize="1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="compilarButton" linkSize="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="abrirButton" linkSize="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="232" max="-2" attributes="0"/>
@@ -56,11 +56,11 @@
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
                       <Component id="abrirButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="6" pref="6" max="6" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="compilarButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="6" pref="6" max="6" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="ejecutarButton" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -129,7 +129,7 @@
         <Property name="name" type="java.lang.String" value="CompilarButton" noResource="true"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="compilarButtonMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="compilarButtonActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="ejecutarButton">
@@ -138,7 +138,7 @@
         <Property name="name" type="java.lang.String" value="EjecutarButton" noResource="true"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="ejecutarButtonMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ejecutarButtonActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="abrirButton">
@@ -146,7 +146,6 @@
         <Property name="text" type="java.lang.String" value="Abrir"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="abrirButtonMouseClicked"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="abrirButtonActionPerformed"/>
       </Events>
     </Component>
@@ -157,7 +156,7 @@
         <Property name="text" type="java.lang.String" value="Enviar"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="EnviarButtonMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="EnviarButtonActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane3">

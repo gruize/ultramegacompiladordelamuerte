@@ -10,20 +10,14 @@
  */
 package interfaz.compilador;
 
-import compilador.lexico.AnalizadorLexico;
-import compilador.lexico.Tokens.Token;
 import compilador.traductor.TraductorCodDual;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 
@@ -32,8 +26,13 @@ import pila.interprete.instrucciones.InstruccionInterprete;
 
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
-import compilador.traductor.TraductorCodP;
+import java.awt.FlowLayout;
+import java.io.FileReader;
+import java.io.Reader;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -45,8 +44,9 @@ public class CompiladorFrame extends javax.swing.JFrame {
     File inputFile;
     PipedWriter pWriter = new PipedWriter();
     PipedReader pReader = new PipedReader();
-    private boolean debug = false;
     JFileChooser selectFich = new JFileChooser();
+    JPanel opcionesCompilacionPanel, opcionesEjecucionPanel;
+    JCheckBox checkJVM, checkP, checkDebug;
 
     /** Creates new form CompiladorFrame */
     public CompiladorFrame() {
@@ -94,26 +94,21 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
         compilarButton.setText("Compilar");
         compilarButton.setName("CompilarButton"); // NOI18N
-        compilarButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                compilarButtonMouseClicked(evt);
+        compilarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compilarButtonActionPerformed(evt);
             }
         });
 
         ejecutarButton.setText("Ejecutar");
         ejecutarButton.setName("EjecutarButton"); // NOI18N
-        ejecutarButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ejecutarButtonMouseClicked(evt);
+        ejecutarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ejecutarButtonActionPerformed(evt);
             }
         });
 
         abrirButton.setText("Abrir");
-        abrirButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                abrirButtonMouseClicked(evt);
-            }
-        });
         abrirButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abrirButtonActionPerformed(evt);
@@ -121,9 +116,9 @@ public class CompiladorFrame extends javax.swing.JFrame {
         });
 
         EnviarButton.setText("Enviar");
-        EnviarButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                EnviarButtonMouseClicked(evt);
+        EnviarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EnviarButtonActionPerformed(evt);
             }
         });
 
@@ -142,10 +137,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(abrirButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ejecutarButton)
                             .addComponent(compilarButton)
-                            .addComponent(ejecutarButton))
+                            .addComponent(abrirButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -166,11 +161,11 @@ public class CompiladorFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
+                        .addGap(132, 132, 132)
                         .addComponent(abrirButton)
-                        .addGap(6, 6, 6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(compilarButton)
-                        .addGap(6, 6, 6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ejecutarButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(11, 11, 11)
@@ -201,31 +196,21 @@ public class CompiladorFrame extends javax.swing.JFrame {
         }
     }
 
-    private void ejecutarButtonMouseClicked(java.awt.event.MouseEvent evt) {
-        ejecutar();
-    }
-
-    private void abrirButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_abrirButtonMouseClicked
+    private void abrirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirButtonActionPerformed
         try {
-            String ruta = abrirFich();
-            if(ruta != null) {
-                inputFile = new File(ruta);
-                InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
-                this.textAreaEntrada.read(reader, evt);
+            String str = abrirFich();
+            if(str != null) {
+                inputFile = new File(str);
+                Reader reader = new FileReader(inputFile);
+                textAreaEntrada.read(reader, null);
             }
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
         }
-}//GEN-LAST:event_abrirButtonMouseClicked
+    }//GEN-LAST:event_abrirButtonActionPerformed
 
-    private void compilarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compilarButtonMouseClicked
-        if(selectFich.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-            return ;
-        File classFile = selectFich.getSelectedFile();
-        this.compilar(classFile);
-}//GEN-LAST:event_compilarButtonMouseClicked
-
-    private void EnviarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EnviarButtonMouseClicked
+    private void EnviarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnviarButtonActionPerformed
         try {
             pWriter.write(inputTextField.getText() + "\n");
             // inputTextField.write(pWriter);
@@ -235,17 +220,48 @@ public class CompiladorFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }//GEN-LAST:event_EnviarButtonActionPerformed
 
-    }//GEN-LAST:event_EnviarButtonMouseClicked
+    private void compilarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compilarButtonActionPerformed
+        if(opcionesCompilacionPanel == null) {
+            checkJVM = new JCheckBox("Compilar a codigo JVM");
+            checkP = new JCheckBox("Compilar a codigo P");
+            opcionesCompilacionPanel = new JPanel();
+            opcionesCompilacionPanel.setLayout(new BoxLayout(opcionesCompilacionPanel, BoxLayout.Y_AXIS));
+            opcionesCompilacionPanel.add(checkP);
+            opcionesCompilacionPanel.add(checkJVM);
+        }
+        int i = JOptionPane.showConfirmDialog(this, opcionesCompilacionPanel,
+                "Opciones de compilación", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(i == JOptionPane.OK_OPTION) {
+            File f = null;
+            if(checkJVM.isSelected()) {
+                if(selectFich.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+                    f = selectFich.getSelectedFile();
+                else
+                    return ;
+            }
+            compilar(f, checkP.isSelected());
+        }
+    }//GEN-LAST:event_compilarButtonActionPerformed
 
-    private void abrirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_abrirButtonActionPerformed
+    private void ejecutarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarButtonActionPerformed
+        if(opcionesEjecucionPanel == null) {
+            opcionesEjecucionPanel = new JPanel();
+            opcionesEjecucionPanel.setLayout(new BoxLayout(opcionesEjecucionPanel, BoxLayout.Y_AXIS));
+            checkDebug = new JCheckBox("Modo depuración");
+            opcionesEjecucionPanel.add(checkDebug);
+        }
+        int i = JOptionPane.showConfirmDialog(this, opcionesEjecucionPanel,
+                "Opciones de ejecución", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(i == JOptionPane.OK_OPTION)
+            ejecutar(checkDebug.isSelected());
+    }//GEN-LAST:event_ejecutarButtonActionPerformed
 
-    public boolean compilar(File classFile) {
+    public boolean compilar(File classFile, boolean compilarP) {
         try {
-            String nombreClase = classFile.getName();
-            nombreClase = nombreClase.substring(0, nombreClase.indexOf('.'));
             this.textAreaEjecucion.setText("");
             String codigo = textAreaEntrada.getText();
             if (codigo.equals("")) {
@@ -258,12 +274,31 @@ public class CompiladorFrame extends javax.swing.JFrame {
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
             TraductorCodDual tcoddual = new TraductorCodDual(tokens);
-            ArrayList<InstruccionInterprete> ai = tcoddual.getTraduccionP(nombreClase);
-            imprimir(ai);
-            File f = new File("./codigo_binario");
-            EscritorPila ep = new EscritorPila();
-            ep.escribirPrograma(ai, f);
-            tcoddual.getTraduccionJ(nombreClase).dump(classFile);
+
+            if(classFile != null) {
+                String nombreClase = classFile.getName();
+                int i = nombreClase.indexOf('.');
+                if(i != -1) {//tiene un punto
+                    if(!nombreClase.substring(i).equals(".class")) {
+                        JOptionPane.showMessageDialog(this, "El archivo de destino del " +
+                                "programa compilado a JVM debe acabar en .class");
+                        return false;
+                    }
+                    else
+                        nombreClase = nombreClase.substring(0, i);
+                }
+                else
+                    nombreClase = nombreClase + ".class";
+                tcoddual.getTraduccionJ(nombreClase).dump(classFile);
+            }
+            if(compilarP) {
+                ArrayList<InstruccionInterprete> ai = tcoddual.getTraduccionP();
+                imprimir(ai);
+                File f = new File("./codigo_binario");
+                EscritorPila ep = new EscritorPila();
+                ep.escribirPrograma(ai, f);
+            }
+            
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -272,13 +307,9 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     }
 
-    private boolean compilar() {
-        return compilar(new File("./Clase.class"));
-    }
+    private void ejecutar(boolean debug) {
 
-    private void ejecutar() {
-
-        if (!compilar()) {
+        if (!compilar(null,true)) {
             return;
         }
         EjecucionThread thread = new EjecucionThread(pReader, pWriter, debug);

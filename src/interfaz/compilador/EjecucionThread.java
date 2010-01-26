@@ -5,16 +5,11 @@
 
 package interfaz.compilador;
 
-import compilador.lexico.Tokens.Token;
 import java.io.File;
-import java.io.PipedReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
 import pila.interprete.Interprete;
-import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
  *

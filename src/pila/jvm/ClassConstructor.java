@@ -13,14 +13,11 @@ import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Signature;
 import org.apache.bcel.generic.ArrayType;
 import org.apache.bcel.generic.ClassGen;
 import org.apache.bcel.generic.FieldGen;
-import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
-import pila.interprete.datos.DatoPila;
 
 /**
  *
@@ -40,7 +37,7 @@ public class ClassConstructor {
     private int natNegStringIndex;
     
     private int parseInt, parseBool, parseFloat, charAtIndex,
-            printlnZIndex, printlnFIndex, printlnCIndex, printlnIIndex;
+            printZIndex, printFIndex, printCIndex, printIIndex;
 
     private HashMap<Object,Integer> constantes; //key puede ser Integer o Float
     private int orMethodIndex;
@@ -64,28 +61,22 @@ public class ClassConstructor {
         parseFloat = 0;
         parseInt = 0;
         charAtIndex = 0;
-        printlnZIndex = 0;
-        printlnFIndex = 0;
-        printlnCIndex = 0;
-        printlnIIndex = 0;
+        printZIndex = 0;
+        printFIndex = 0;
+        printCIndex = 0;
+        printIIndex = 0;
         orMethodIndex = 0;
         andMethodIndex = 0;
         notMethodIndex = 0;
         absFloatMethodIndex = 0;
         absIntMethodIndex = 0;
 
+        generator.addEmptyConstructor(Constants.ACC_PRIVATE);
         /*
-         * Ahora creamos una constructora sin argumentos que inicie el atributo
+         * Ahora creamos el static que inicie el atributo
          * reader, que se usara para las instrucciones de lectura
          */
         codigo = new Codigo();
-        codigo.añadirU1(Constants.ALOAD_0); //apilamos this
-        codigo.añadirU1(Constants.INVOKESPECIAL); //invocamos
-        codigo.añadirU2(generator.getConstantPool().addMethodref( //la constructora de Object
-                generator.getSuperclassName(),
-                "<init>",
-                "()V")
-            );
         //Codigo para iniciar el field reader
         //new BufferedReader
         codigo.añadirU1(Constants.NEW);
@@ -114,14 +105,14 @@ public class ClassConstructor {
         //acabamos la constructora
         codigo.añadirU1(Constants.RETURN);
         generator.addMethod(new Method(
-                Constants.ACC_PUBLIC, //visibilidad
-                generator.getConstantPool().addUtf8("<Init>"), //nombre
+                Constants.ACC_PUBLIC | Constants.ACC_STATIC, //visibilidad
+                generator.getConstantPool().addUtf8("<clinit>"), //nombre
                 generator.getConstantPool().addUtf8("()V"), //firma
                 new Attribute[] {new Code( //codigo
                         generator.getConstantPool().addUtf8("Code"),
                         0, //el tamaño en U1s se rellena solo
                         5, //altura maxima de la pila
-                        0, //no usamos variables locales ni parametros
+                        1, //usamos solo el "argumento" this
                         codigo.getByteCode(), //el codigpo que tendra
                         null, //no captura excepciones
                         null, //no tiene atributos
@@ -256,40 +247,40 @@ public class ClassConstructor {
         return charAtIndex;
     }
     
-    public int getPrintlnZIndex() {
-        if(printlnZIndex == 0)
-            printlnZIndex = generator.getConstantPool().addMethodref(
+    public int getPrintZIndex() {
+        if(printZIndex == 0)
+            printZIndex = generator.getConstantPool().addMethodref(
                     PrintStream.class.getName(),
-                    "println",
+                    "print",
                     Type.getMethodSignature(Type.VOID, new Type[]{Type.BOOLEAN}));
-        return printlnZIndex;
+        return printZIndex;
     }
 
-    public int getPrintlnIIndex() {
-        if(printlnIIndex == 0)
-            printlnIIndex = generator.getConstantPool().addMethodref(
+    public int getPrintIIndex() {
+        if(printIIndex == 0)
+            printIIndex = generator.getConstantPool().addMethodref(
                     PrintStream.class.getName(),
-                    "println",
+                    "print",
                     Type.getMethodSignature(Type.VOID, new Type[]{Type.INT}));
-        return printlnIIndex;
+        return printIIndex;
     }
 
-    public int getPrintlnCIndex() {
-        if(printlnCIndex == 0)
-            printlnCIndex = generator.getConstantPool().addMethodref(
+    public int getPrintCIndex() {
+        if(printCIndex == 0)
+            printCIndex = generator.getConstantPool().addMethodref(
                     PrintStream.class.getName(),
-                    "println",
+                    "print",
                     Type.getMethodSignature(Type.VOID, new Type[]{Type.CHAR}));
-        return printlnCIndex;
+        return printCIndex;
     }
 
-    public int getPrintlnFIndex() {
-        if(printlnFIndex == 0)
-            printlnFIndex = generator.getConstantPool().addMethodref(
+    public int getPrintFIndex() {
+        if(printFIndex == 0)
+            printFIndex = generator.getConstantPool().addMethodref(
                     PrintStream.class.getName(),
-                    "println",
+                    "print",
                     Type.getMethodSignature(Type.VOID, new Type[]{Type.FLOAT}));
-        return printlnFIndex;
+        return printFIndex;
     }
 
     public int getConstanteIndex(int i) {
@@ -489,7 +480,7 @@ public class ClassConstructor {
             codigoAbsInt.añadirU1(Constants.DUP); //clonamos la cima
             codigoAbsInt.añadirU1(Constants.IFGE); //saltamos a IRETURN si la cima es mayor
             codigoAbsInt.añadirU2(4);
-            codigoAbsInt.añadirU1(Constants.FNEG); //si no era mayor negamos la cima (el primer apilar)
+            codigoAbsInt.añadirU1(Constants.INEG); //si no era mayor negamos la cima (el primer apilar)
             codigoAbsInt.añadirU1(Constants.IRETURN); //devolvemos el valor
 
             generator.addMethod(new Method(
@@ -517,7 +508,7 @@ public class ClassConstructor {
         if(absFloatMethodIndex == 0) {
             final String signature = Type.getMethodSignature(Type.FLOAT, new Type[]{Type.FLOAT});
             final String nombreMethodo = "absFloat";
-            absIntMethodIndex = generator.getConstantPool().addMethodref(
+            absFloatMethodIndex = generator.getConstantPool().addMethodref(
                     generator.getClassName(),
                     nombreMethodo,
                     signature
@@ -531,7 +522,7 @@ public class ClassConstructor {
             codigoAbsInt.añadirU1(Constants.IFGE); //si era >= 0 saltamos al return
             codigoAbsInt.añadirU2(4);
             codigoAbsInt.añadirU1(Constants.FNEG); //si era < 0 negamos el arg
-            codigoAbsInt.añadirU1(Constants.IRETURN);
+            codigoAbsInt.añadirU1(Constants.FRETURN);
 
             generator.addMethod(new Method(
                     Constants.ACC_PUBLIC | Constants.ACC_STATIC,
@@ -567,7 +558,7 @@ public class ClassConstructor {
                         generator.getConstantPool().addUtf8("Code"),
                         0,//da igual, se recalcula en la constructora
                         maxStack,
-                        maxVars,
+                        maxVars+1,//+1 del argumento
                         codigo.getByteCode(),
                         null,
                         null,
