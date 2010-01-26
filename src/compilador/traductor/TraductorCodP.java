@@ -11,6 +11,10 @@ import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 
+/**
+ *
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
+ */
 public abstract class TraductorCodP extends Traductor{
 
 

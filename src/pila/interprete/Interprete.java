@@ -29,6 +29,7 @@ import pila.interprete.instrucciones.InstruccionInterprete;
  * que en el lenguaje de alto nivel son variables) y un
  * booleano "parar", que al ponerse a true detendra la
  * ejecución del programa
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class Interprete {
     /**

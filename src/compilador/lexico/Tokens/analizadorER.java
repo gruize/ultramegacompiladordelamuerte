@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
  * Debido al peor rendimiento, no se usa en el compilador, pero sirve para
  * comprobar empiricamente la corrección de las ER mediante las cuales se hace
  * el analizador lexico con automata, que si es el usado en el compilador
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class analizadorER {
 

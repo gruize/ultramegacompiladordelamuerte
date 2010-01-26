@@ -13,6 +13,11 @@ import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.*;
 
+/**
+ *
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
+ */
+
 
 public class TraductorInterprete extends TraductorPila {
 

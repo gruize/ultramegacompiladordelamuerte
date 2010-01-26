@@ -8,6 +8,7 @@ import pila.interprete.excepiones.DatoExc;
 
 /**
  * Este DatoPila representa a un Entero
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class Entero extends DatoPila {
 

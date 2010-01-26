@@ -7,7 +7,7 @@ package compilador.lexico.Tokens;
 
 /**
  *
- * @author usuario_local
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class Dos_puntos extends Token{
     public Dos_puntos(int n){

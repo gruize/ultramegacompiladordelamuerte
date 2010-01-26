@@ -11,6 +11,7 @@ import pila.interprete.excepiones.DatoExc;
  * Clase de la que heredan todos los tipos de
  * dato de la pila, dotándo de la capacidad de realizar
  * casting, comparaciones, etc
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public abstract class DatoPila {
 

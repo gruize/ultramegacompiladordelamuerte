@@ -7,7 +7,7 @@ package compilador.lexico.Tokens;
 
 /**
  *
- * @author usuario_local
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class LitFlo extends Token{
     public LitFlo(String l,int n){

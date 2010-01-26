@@ -9,6 +9,10 @@ import java.util.regex.Pattern;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.instrucciones.InstruccionInterprete;
 
+/**
+ * 
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
+ */
 
 public abstract class TraductorPila {
 
