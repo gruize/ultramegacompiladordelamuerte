@@ -1,6 +1,10 @@
 package compilador.traductor;
 import java.util.ArrayList;
 
+/**
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
+ */
+
 import pila.interprete.instrucciones.InstruccionInterprete;
 
 public class Codigo {

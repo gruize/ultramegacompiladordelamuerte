@@ -12,7 +12,7 @@ import pila.interprete.excepiones.LectorExc;
 
 /**
  *
- * @author Laura Reyero
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class Parar extends InstruccionInterprete {
         public byte tipo;

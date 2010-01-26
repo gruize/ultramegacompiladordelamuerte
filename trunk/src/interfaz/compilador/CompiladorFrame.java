@@ -7,6 +7,7 @@
  * CompiladorFrame.java
  *
  * Created on 25-ene-2010, 17:33:22
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 package interfaz.compilador;
 

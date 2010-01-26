@@ -46,7 +46,7 @@ import pila.jvm.instrucciones.PseudoInstruccionJVM;
 /**
  * Esta clase contiene las funciones de traducción que sólo dependen de la
  * gramática y no del código  que se va a generar.
- * @author hector
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  *
  */
 public abstract class Traductor {

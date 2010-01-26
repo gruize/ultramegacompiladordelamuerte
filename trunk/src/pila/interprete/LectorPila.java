@@ -25,6 +25,7 @@ public class LectorPila {
      * @return el dato leido
      * @throws LectorExc en el caso de que ocurra algún error
      * al leer el dato
+     * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
      */
     private DatoPila leerDato(DataInputStream dis) throws LectorExc {
         try {

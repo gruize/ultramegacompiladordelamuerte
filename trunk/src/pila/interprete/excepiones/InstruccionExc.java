@@ -8,6 +8,7 @@ import pila.interprete.instrucciones.InstruccionInterprete;
  * sumar un natural y un booleano. Tiene un atributo
  * "instruccion" que permite obtener la instrucción que
  * falló.
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class InstruccionExc extends Exception {
     

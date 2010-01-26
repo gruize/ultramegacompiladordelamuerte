@@ -6,6 +6,7 @@ import pila.interprete.datos.DatoPila;
  * Esta excepcion puede ser lanzada cuando exista algun
  * problema con un dato. Por ejemplo, al castearlo a un
  * tipo al que no puede convertirse
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class DatoExc extends Exception {
     

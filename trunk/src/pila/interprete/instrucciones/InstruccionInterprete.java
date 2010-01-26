@@ -13,6 +13,7 @@ import pila.interprete.excepiones.LectorExc;
  * De esta clase heredan todas las instrucciones del lenguaje a pila
  * Contiene las constantes de todos los tipos de instrucción y la
  * interfaz del método ejecutar, el más importante de las instrucciones
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public abstract class InstruccionInterprete implements Instruccion {
 

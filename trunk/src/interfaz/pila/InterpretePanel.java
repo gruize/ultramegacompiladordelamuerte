@@ -7,6 +7,7 @@
  * InterpretePanel.java
  *
  * Created on 04-dic-2009, 20:51:58
+ * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 
 package interfaz.pila;
