@@ -38,7 +38,7 @@ public class EjecucionThread extends Thread {
     @Override
     public void run() {
          try {
-            Interprete interprete = new Interprete(false, reader, new PrintWriter(System.out,true));
+            Interprete interprete = new Interprete(debug, reader, new PrintWriter(System.out,true));
             File f2 = new File("./codigo_binario");
             interprete.leerPrograma(f2);
             interprete.ejecutarPrograma();

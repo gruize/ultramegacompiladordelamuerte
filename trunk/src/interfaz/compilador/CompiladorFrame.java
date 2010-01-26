@@ -45,6 +45,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
 	File inputFile;
     PipedWriter pWriter = new PipedWriter();
     PipedReader pReader = new PipedReader();
+    private boolean debug=false;
 
     /** Creates new form CompiladorFrame */
     public CompiladorFrame() {
@@ -254,7 +255,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
     private void ejecutar() {
 
     	if (!compilar()) return;
-   		EjecucionThread thread = new EjecucionThread(pReader,pWriter,true);
+   		EjecucionThread thread = new EjecucionThread(pReader,pWriter,debug);
    		thread.start();
    	}
 

@@ -133,6 +133,9 @@ public class Interprete {
         else
             sb.append("Vacía\n");
 
+        sb.append("\n\nPróxima instrucción: "+programa.get(getCp()).toString());
+        sb.append("\n**Pulse enviar para continuar**\n\n");
+        
         return new String(sb);
     }
 
@@ -149,7 +152,7 @@ public class Interprete {
         while(!isParar()) {
             if(modoDepuracion) {
                 System.out.print(mostrarEstado()+"\n\nDEBUG>");
-                //System.in.read();
+                reader.readLine();
                 System.out.println();
             }
             if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))
