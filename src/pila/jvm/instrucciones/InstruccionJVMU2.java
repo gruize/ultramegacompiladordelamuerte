@@ -21,7 +21,7 @@ public class InstruccionJVMU2 extends InstruccionJVM {
     
     public void toClass(ClassConstructor cc) {
         super.toClass(cc);
-        cc.añadirU2(tipo);
+        cc.añadirU2(dato);
     }
 
     @Override

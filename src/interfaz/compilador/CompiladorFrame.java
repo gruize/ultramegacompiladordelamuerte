@@ -287,8 +287,9 @@ public class CompiladorFrame extends javax.swing.JFrame {
                     else
                         nombreClase = nombreClase.substring(0, i);
                 }
-                else
-                    nombreClase = nombreClase + ".class";
+                else {
+                    classFile = new File(classFile.getParent()+File.separator+nombreClase+".class");
+                }
                 tcoddual.getTraduccionJ(nombreClase).dump(classFile);
             }
             if(compilarP) {
