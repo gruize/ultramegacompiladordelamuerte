@@ -33,6 +33,7 @@ import pila.interprete.instrucciones.InstruccionInterprete;
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
 import compilador.traductor.TraductorCodP;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,12 +41,12 @@ import compilador.traductor.TraductorCodP;
  */
 public class CompiladorFrame extends javax.swing.JFrame {
 
-	private static final long serialVersionUID = 1L;
-
-	File inputFile;
+    private static final long serialVersionUID = 1L;
+    File inputFile;
     PipedWriter pWriter = new PipedWriter();
     PipedReader pReader = new PipedReader();
-    private boolean debug=false;
+    private boolean debug = false;
+    JFileChooser selectFich = new JFileChooser();
 
     /** Creates new form CompiladorFrame */
     public CompiladorFrame() {
@@ -54,7 +55,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
             pReader.connect(pWriter);
             System.setOut(new PrintStream(new TextAreaOutputStream()));
         } catch (IOException ex) {
-            Logger.getLogger(CompiladorFrame.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -113,6 +114,11 @@ public class CompiladorFrame extends javax.swing.JFrame {
                 abrirButtonMouseClicked(evt);
             }
         });
+        abrirButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abrirButtonActionPerformed(evt);
+            }
+        });
 
         EnviarButton.setText("Enviar");
         EnviarButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -135,15 +141,13 @@ public class CompiladorFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(abrirButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(abrirButton)
                             .addComponent(compilarButton)
                             .addComponent(ejecutarButton))
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(inputTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 565, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -154,20 +158,25 @@ public class CompiladorFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {abrirButton, compilarButton, ejecutarButton});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
+                        .addGap(72, 72, 72)
                         .addComponent(abrirButton)
                         .addGap(6, 6, 6)
                         .addComponent(compilarButton)
                         .addGap(6, 6, 6)
                         .addComponent(ejecutarButton))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -192,22 +201,28 @@ public class CompiladorFrame extends javax.swing.JFrame {
         }
     }
 
-    private void ejecutarButtonMouseClicked(java.awt.event.MouseEvent evt) {                                            
-    	ejecutar();
+    private void ejecutarButtonMouseClicked(java.awt.event.MouseEvent evt) {
+        ejecutar();
     }
 
     private void abrirButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_abrirButtonMouseClicked
         try {
-            inputFile = new File(abrirFich());
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
-            this.textAreaEntrada.read(reader, evt);
+            String ruta = abrirFich();
+            if(ruta != null) {
+                inputFile = new File(ruta);
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
+                this.textAreaEntrada.read(reader, evt);
+            }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 }//GEN-LAST:event_abrirButtonMouseClicked
 
     private void compilarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compilarButtonMouseClicked
-        this.compilar();
+        if(selectFich.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+            return ;
+        File classFile = selectFich.getSelectedFile();
+        this.compilar(classFile);
 }//GEN-LAST:event_compilarButtonMouseClicked
 
     private void EnviarButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EnviarButtonMouseClicked
@@ -223,19 +238,27 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_EnviarButtonMouseClicked
 
-    public boolean compilar(File classFile){
-        try{
+    private void abrirButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_abrirButtonActionPerformed
+
+    public boolean compilar(File classFile) {
+        try {
             String nombreClase = classFile.getName();
             nombreClase = nombreClase.substring(0, nombreClase.indexOf('.'));
             this.textAreaEjecucion.setText("");
-            String codigo=textAreaEntrada.getText();
-            if (codigo.equals("")) return false;
+            String codigo = textAreaEntrada.getText();
+            if (codigo.equals("")) {
+                return false;
+            }
             AnalizadorLexico al = new AnalizadorLexico(codigo);
-            if (al.getErrorLexico()) return false;
+            if (al.getErrorLexico()) {
+                return false;
+            }
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
-            TraductorCodDual tcoddual= new TraductorCodDual(tokens);
-            ArrayList<InstruccionInterprete> ai= tcoddual.getTraduccionP(nombreClase);
+            TraductorCodDual tcoddual = new TraductorCodDual(tokens);
+            ArrayList<InstruccionInterprete> ai = tcoddual.getTraduccionP(nombreClase);
             imprimir(ai);
             File f = new File("./codigo_binario");
             EscritorPila ep = new EscritorPila();
@@ -243,10 +266,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
             tcoddual.getTraduccionJ(nombreClase).dump(classFile);
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
-        
+
     }
 
     private boolean compilar() {
@@ -255,11 +278,12 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private void ejecutar() {
 
-    	if (!compilar()) return;
-   		EjecucionThread thread = new EjecucionThread(pReader,pWriter,debug);
-   		thread.start();
-   	}
-
+        if (!compilar()) {
+            return;
+        }
+        EjecucionThread thread = new EjecucionThread(pReader, pWriter, debug);
+        thread.start();
+    }
 
     private void imprimirTokens(ArrayList<Token> tokens) {
         textAreaDebug.append("\n --TOKENS--\n\n");
@@ -280,19 +304,19 @@ public class CompiladorFrame extends javax.swing.JFrame {
     }
 
     private String abrirFich() {
-        JFileChooser selectFich = new JFileChooser();
-        selectFich.setEnabled(true);
-        selectFich.setCurrentDirectory(new File("./src/compilador/traductor"));
-        selectFich.showOpenDialog(this);
-        return selectFich.getSelectedFile().getAbsolutePath();
+        if(selectFich.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+            return selectFich.getSelectedFile().getAbsolutePath();
+        else
+            return null;
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    	
+
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 new CompiladorFrame().setVisible(true);
             }
