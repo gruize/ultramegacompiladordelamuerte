@@ -30,7 +30,7 @@ public abstract class TraductorCodP extends Traductor{
 			errores.add(new ErrorTraductor("Info: Omitiendo. Se esperaba un Id"+textoError()));
 		}
 		else if (!TablaSimbolos.existe(ts, id)){
-			errores.add(new ErrorTraductor("Info: variable "+id+"no declarada"+textoError()));
+			errores.add(new ErrorTraductor("Info: variable "+id+" no declarada"+textoError()));
 		}
 		else {
 			Nat n=new Nat(TablaSimbolos.getDir(ts, id));
