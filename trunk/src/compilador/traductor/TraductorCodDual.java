@@ -156,6 +156,8 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
                     || (tipoTs == Tipos.BOOL && tipo3 != Tipos.BOOL);
 
             codP1.appendIns(new DesapilarDir(new Nat(dir)));
+            if(tipo3 != Tipos.REAL && tipoTs == Tipos.REAL)
+                codJ1.add(new InstruccionJVM(Constants.I2F));
             codJ1.add(new GuardarDatoJVM(tipoTs, dir));
         }
         return new Object[]{error1, codP1, codJ1};
