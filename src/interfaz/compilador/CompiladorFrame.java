@@ -225,32 +225,21 @@ public class CompiladorFrame extends javax.swing.JFrame {
         try{
             String nombreClase = classFile.getName();
             nombreClase = nombreClase.substring(0, nombreClase.indexOf('.'));
-	    this.textAreaEjecucion.setText("");
+            this.textAreaEjecucion.setText("");
+            String codigo=textAreaEntrada.getText();
+            if (codigo.equals("")) return false;
             AnalizadorLexico al = new AnalizadorLexico(codigo);
+            if (al.getErrorLexico()) return false;
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
-            if (al.getErrorLexico()) return false;
-
-            String codigo=textAreaEntrada.getText();
-            if (!codigo.equals("")){
-                AnalizadorLexico al = new AnalizadorLexico(codigo);
-                ArrayList<Token> tokens = al.getArrayTokens();
-                imprimirTokens(tokens);
-
-                if(al.getErrorLexico() == false){
-                    //TraductorCodP tcodp= new TraductorCodP(tokens);
-                    TraductorCodDual tcoddual= new TraductorCodDual(tokens);
-                    ArrayList<InstruccionInterprete> ai= tcoddual.getTraduccionP(nombreClase);
-                    imprimir(ai);
-                    File f = new File("./codigo_binario");
-                    EscritorPila ep = new EscritorPila();
-                    ep.escribirPrograma(ai, f);
-
-                    tcoddual.getTraduccionJ(nombreClase).dump(classFile);
-                }
-            }
-            else
-                error=true;
+            TraductorCodDual tcoddual= new TraductorCodDual(tokens);
+            ArrayList<InstruccionInterprete> ai= tcoddual.getTraduccionP(nombreClase);
+            imprimir(ai);
+            File f = new File("./codigo_binario");
+            EscritorPila ep = new EscritorPila();
+            ep.escribirPrograma(ai, f);
+            tcoddual.getTraduccionJ(nombreClase).dump(classFile);
+            return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
