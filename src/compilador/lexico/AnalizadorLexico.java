@@ -1,10 +1,7 @@
 package compilador.lexico;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -153,8 +150,7 @@ public class AnalizadorLexico {
 		scanner();
 	}
 
-        public AnalizadorLexico(Reader reader) throws FileNotFoundException, IOException{
-		//File f=new File(src);
+    public AnalizadorLexico(Reader reader) throws FileNotFoundException, IOException{
 		this.reader = reader;
 		lex="";
 		estado = 0;
@@ -799,11 +795,4 @@ public class AnalizadorLexico {
 		}
 
 	}
-
-	public static void main(String [] args) throws FileNotFoundException, IOException {
-		@SuppressWarnings("unused")
-		AnalizadorLexico a= new AnalizadorLexico("./pruebacodigo");
-        a.lex="";
-    }
-
 }

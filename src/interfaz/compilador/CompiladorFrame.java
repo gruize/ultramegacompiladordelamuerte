@@ -20,14 +20,12 @@ import java.io.InputStreamReader;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import pila.interprete.EscritorPila;
-import pila.interprete.Interprete;
 import pila.interprete.instrucciones.InstruccionInterprete;
 
 /**
@@ -74,7 +72,6 @@ public class CompiladorFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         textAreaEntrada.setColumns(20);
-        textAreaEntrada.setEditable(false);
         textAreaEntrada.setRows(5);
         textAreaEntrada.setName("EntradaCodigo"); // NOI18N
         jScrollPane1.setViewportView(textAreaEntrada);
@@ -229,6 +226,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
     private boolean compilar() {
         boolean error=false;
         try {
+            this.textAreaEjecucion.setText("");
+            
             System.setOut(new PrintStream(new TextAreaOutputStream()));
 
             String codigo=textAreaEntrada.getText();
@@ -246,15 +245,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
                     ep.escribirPrograma(ai, f);
                 }
             }
-            else error=true;
-
-            /*InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
-
-            File f=new File(src);
-		reader = new InputStreamReader(new FileInputStream(f));*/
-
-
-
+            else
+                error=true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
