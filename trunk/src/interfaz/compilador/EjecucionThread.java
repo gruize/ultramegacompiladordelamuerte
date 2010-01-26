@@ -24,11 +24,13 @@ public class EjecucionThread extends Thread {
 
     Reader reader;
     Writer writer;
+    boolean debug;
 
 
-    public EjecucionThread(Reader reader, Writer writer) {
+    public EjecucionThread(Reader reader, Writer writer,boolean debug) {
         this.reader = reader;
         this.writer = writer;
+        this.debug=debug;
     }
 
 
