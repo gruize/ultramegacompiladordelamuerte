@@ -14,6 +14,7 @@ import org.apache.bcel.Constants;
 import pila.jvm.instrucciones.AbsInstruccionJVM;
 import pila.jvm.instrucciones.ApilarFloat;
 import pila.jvm.instrucciones.ApilarInt;
+import pila.jvm.instrucciones.ApilarPrinterJVM;
 import pila.jvm.instrucciones.CargarDatoJVM;
 import pila.jvm.instrucciones.EntradaJVM;
 import pila.jvm.instrucciones.GuardarDatoJVM;
@@ -21,7 +22,7 @@ import pila.jvm.instrucciones.InstruccionJVM;
 import pila.jvm.instrucciones.InstruccionJVMU2;
 import pila.jvm.instrucciones.NegarInstruccionJVM;
 import pila.jvm.instrucciones.OInstruccionJVM;
-import pila.jvm.instrucciones.SalidadaJVM;
+import pila.jvm.instrucciones.SalidaJVM;
 import pila.jvm.instrucciones.YInstruccionJVM;
 
 public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, esta para que no casque
@@ -110,8 +111,10 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
             codP1 = codP2;
             codP1.appendIns(new Salida());
 
-            codJ1 = codJ2;
-            codJ1.add(new SalidadaJVM(tipo2));
+            codJ1 = new CodigoJVM();
+            codJ1.add(new ApilarPrinterJVM());
+            codJ1.append(codJ2);
+            codJ1.add(new SalidaJVM(tipo2));
         }
         return new Object[]{false, codP1, codJ1};
     }
@@ -861,7 +864,7 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
                             codJh4.append(codJ3);
                             codJh4.add(new InstruccionJVM(Constants.FADD));
                         } else {
-                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
                             codJh4.add(new InstruccionJVM(Constants.IADD));
 
                             if (tipo3 == Tipos.NATURAL) {
@@ -884,7 +887,7 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
                             codJh4.append(codJ3);
                             codJh4.add(new InstruccionJVM(Constants.FADD));
                         } else {
-                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
                             codJh4.add(new InstruccionJVM(Constants.IADD));
                             if (tipo3 == Tipos.ENTERO) {
                                 codPh4.appendIns(new CastInt());
@@ -1337,17 +1340,17 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
                 break;
             case CASTENT:
                 codP1.appendIns(new CastInt());
-                if(tipo3 != Tipos.REAL)
+                if(tipo3 == Tipos.REAL)
                     codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
             case CASTNAT:
                 codP1.appendIns(new CastNat());
-                if(tipo3 != Tipos.REAL)
+                if(tipo3 == Tipos.REAL)
                     codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
             case CASTCHAR:
                 codP1.appendIns(new CastChar());
-                if(tipo3 != Tipos.REAL)
+                if(tipo3 == Tipos.REAL)
                     codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
         }
