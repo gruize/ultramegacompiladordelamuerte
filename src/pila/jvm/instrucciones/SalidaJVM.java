@@ -14,11 +14,11 @@ import pila.jvm.ClassConstructor;
  *
  * @author Gonzalo Ortiz Jaureguizar (Golthiryus)
  */
-public class SalidadaJVM implements PseudoInstruccionJVM {
+public class SalidaJVM implements PseudoInstruccionJVM {
     
     Tipos tipoDato;
 
-    public SalidadaJVM(Tipos tipoDato) {
+    public SalidaJVM(Tipos tipoDato) {
         this.tipoDato = tipoDato;
     }
     
