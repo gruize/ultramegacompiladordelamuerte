@@ -14,4 +14,8 @@ public class Identificador extends Token{
         super(l,n);
         lex = l;
     }
+
+    public String toString(){
+        return "identificador \""+lex+"\"";
+    }
 }

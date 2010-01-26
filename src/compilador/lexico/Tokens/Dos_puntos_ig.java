@@ -13,4 +13,8 @@ public class Dos_puntos_ig extends Token{
     public Dos_puntos_ig(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo :=";
+    }
 }

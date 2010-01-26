@@ -13,4 +13,8 @@ public class Mayor_ig extends Token{
     public Mayor_ig(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo >=";
+    }
 }

@@ -13,4 +13,8 @@ public class Parentesis_a extends Token{
     public Parentesis_a(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Parentesis abierto";
+    }
 }

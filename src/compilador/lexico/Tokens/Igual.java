@@ -13,4 +13,8 @@ public class Igual extends Token{
     public Igual(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo =";
+    }
 }

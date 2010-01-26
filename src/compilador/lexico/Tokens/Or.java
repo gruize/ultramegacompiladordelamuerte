@@ -14,4 +14,8 @@ public class Or extends Token{
         super();
     }
 
+    public String toString(){
+        return "Or";
+    }
+
 }

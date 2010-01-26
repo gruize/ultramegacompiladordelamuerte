@@ -13,4 +13,8 @@ public class Mayor extends Token{
     public Mayor(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo >";
+    }
 }

@@ -13,4 +13,8 @@ public class Not extends Token{
     public Not(){
         super();
     }
+
+    public String toString(){
+        return "Not";
+    }
 }

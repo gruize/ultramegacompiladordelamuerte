@@ -13,4 +13,8 @@ public class Suma extends Token{
     public Suma(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo +";
+    }
 }

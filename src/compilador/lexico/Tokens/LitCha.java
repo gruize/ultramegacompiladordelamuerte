@@ -16,4 +16,8 @@ public class LitCha extends Token{
     public LitCha(String l, int n){
     	super(l,n);
     }
+
+    public String toString(){
+        return "Character "+lex;
+    }
 }

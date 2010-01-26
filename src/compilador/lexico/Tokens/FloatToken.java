@@ -13,4 +13,8 @@ public class FloatToken extends Token{
     public FloatToken(){
         super();
     }
+
+    public String toString(){
+        return "Tipo float";
+    }
 }

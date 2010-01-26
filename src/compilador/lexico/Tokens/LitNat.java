@@ -13,4 +13,8 @@ public class LitNat extends Token{
     public LitNat(String l,int n){
         super(l,n);
     }
+
+    public String toString(){
+        return "Literal natural";
+    }
 }

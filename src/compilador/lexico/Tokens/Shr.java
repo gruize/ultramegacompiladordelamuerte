@@ -13,4 +13,8 @@ public class Shr extends Token{
     public Shr(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Shr";
+    }
 }

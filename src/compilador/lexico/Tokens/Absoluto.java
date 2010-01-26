@@ -13,4 +13,8 @@ public class Absoluto extends Token{
     public Absoluto(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Barra de valor Absoluto";
+    }
 }

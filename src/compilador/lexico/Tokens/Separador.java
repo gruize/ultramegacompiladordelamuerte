@@ -13,4 +13,8 @@ public class Separador extends Token{
     public Separador(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo &";
+    }
 }

@@ -13,4 +13,8 @@ public class Menor extends Token{
     public Menor(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo <";
+    }
 }

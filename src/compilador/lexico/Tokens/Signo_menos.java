@@ -13,4 +13,8 @@ public class Signo_menos extends Token{
     public Signo_menos(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Simbolo -";
+    }
 }

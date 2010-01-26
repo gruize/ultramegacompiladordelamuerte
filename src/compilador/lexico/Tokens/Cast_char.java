@@ -13,4 +13,8 @@ public class Cast_char extends Token{
     public Cast_char(int n){
         super(n);
     }
+
+    public String toString(){
+        return "Cast a character";
+    }
 }
