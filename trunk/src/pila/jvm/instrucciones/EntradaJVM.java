@@ -16,11 +16,9 @@ import pila.jvm.ClassConstructor;
  */
 public class EntradaJVM implements PseudoInstruccionJVM{
     Tipos tipoDato;
-    int dirVar;
 
-    public EntradaJVM(Tipos tipoDato, int dirVar) {
+    public EntradaJVM(Tipos tipoDato) {
         this.tipoDato = tipoDato;
-        this.dirVar = dirVar;
     }
 
     public void toClass(ClassConstructor cc) throws Exception {
