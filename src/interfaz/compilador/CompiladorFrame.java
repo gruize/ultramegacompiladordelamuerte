@@ -190,8 +190,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
         try {
             this.textAreaDebug.setText("");
             this.textAreaEjecucion.setText("");
-            compilar();
-            new EjecucionThread(pReader, pWriter).start();
+            if (compilar())
+                new EjecucionThread(pReader, pWriter).start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
@@ -226,32 +226,37 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_EnviarButtonMouseClicked
 
-    private void compilar() {
+    private boolean compilar() {
+        boolean error=false;
         try {
             System.setOut(new PrintStream(new TextAreaOutputStream()));
             InputStreamReader reader = new InputStreamReader(new FileInputStream(inputFile));
             AnalizadorLexico al = new AnalizadorLexico(reader);
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
-            TraductorCodP tcodp = new TraductorCodP(tokens);
-            ArrayList<InstruccionInterprete> ai = tcodp.traducir();
-            imprimir(ai);
-            File f = new File("./codigo_binario");
-            EscritorPila ep = new EscritorPila();
-            ep.escribirPrograma(ai, f);
-
+            if(al.getErrorLexico() == false){
+                TraductorCodP tcodp = new TraductorCodP(tokens);
+                ArrayList<InstruccionInterprete> ai = tcodp.traducir();
+                imprimir(ai);
+                File f = new File("./codigo_binario");
+                EscritorPila ep = new EscritorPila();
+                ep.escribirPrograma(ai, f);
+            }
+            else error=true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return !error;
     }
 
     private void ejecutar() {
         try {
             this.textAreaDebug.setText("");
             this.textAreaEjecucion.setText("");
-            compilar();
-            EjecucionThread thread = new EjecucionThread(new PipedReader(pWriter), pWriter);
+            if (compilar()){
+                EjecucionThread thread = new EjecucionThread(new PipedReader(pWriter), pWriter);
             thread.run();
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {

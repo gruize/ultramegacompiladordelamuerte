@@ -49,6 +49,7 @@ import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Token;
 import compilador.lexico.Tokens.character;
+import java.io.PrintWriter;
 import java.io.Reader;
 
 /**
@@ -135,7 +136,9 @@ public class AnalizadorLexico {
 	private int estado;
 	private Reader reader = null;
 	private ArrayList<Token> arrayTokens;
-    private static int numLinea;
+        private static int numLinea;
+        private PrintWriter writer;
+        private boolean errorLexico;
 
 	public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
 		File f=new File(src);
@@ -144,18 +147,22 @@ public class AnalizadorLexico {
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
-        numLinea=1;
+                writer = new PrintWriter(System.out,true);
+                numLinea=1;
+                errorLexico=false;
 		scanner();
 	}
 
-    public AnalizadorLexico(Reader reader) throws FileNotFoundException, IOException{
+        public AnalizadorLexico(Reader reader) throws FileNotFoundException, IOException{
 		//File f=new File(src);
 		this.reader = reader;
 		lex="";
 		estado = 0;
 		buff = sigCar();//inicioScan() de los apuntes
 		arrayTokens = new ArrayList<Token>();
-        numLinea=1;
+                numLinea=1;
+                writer = new PrintWriter(System.out,true);
+                errorLexico=false;
 		scanner();
 	}
 
@@ -172,57 +179,75 @@ public class AnalizadorLexico {
 		buff = sigCar();
 		estado = est;
 	}
-	public void error() throws IOException{
-		String sal="";
-		switch(estado){
-            case INICIAL: sal="No existe el token"+ buff; break;
-            case CASTING_INT1:
-            case CASTING_INT2:
-            case CASTING_INT3:
-            case CASTING_NAT1:
-            case CASTING_NAT2:
-    		case CASTING_NAT3:
-    		case CASTING_FLOAT1:
-    		case CASTING_FLOAT2:
-    		case CASTING_FLOAT3:
-    		case CASTING_FLOAT4:
-    		case CASTING_FLOAT5:
-    		case CASTING_CHAR1:
-    		case CASTING_CHAR2:
-    		case CASTING_CHAR3:
-    		case CASTING_CHAR4:
-    			break;
-    		case DISTINTO1: sal= "No exite el token" + lex; break;
-            case LIT_NAT1:
-            case LIT_NAT2: sal= "Un numero natural no puede acabar por letra"; break;
-            case LIT_FLO1:
-            case LIT_FLO2:
-            case LIT_FLO3:
-            case LIT_FLO4: sal= "Un numero real no puede acabar por letra"; break;
-        	case FLOAT1:
-    		case FLOAT2: sal= "La parte decimal de un float no puede acabar en 0"; break;
-    		case FLOAT3: sal= "La parte decimal de un float solo tiene numeros"; break;
-    		case FLOAT4:
-    			switch(buff){
-    			case '0': sal= "El exponente de un float no puede empezar por cero"; break;
-    			default: sal= "El exponente de un float solo puede llevar numeros"; break;
-    			}
-    			break;
-    		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"; break;
-    		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"; break;
-            case CADENA: sal="No puedes definir un token con nombre de palabra reservada"; break;
-    		default:
-    		}
-            transita(INICIAL);
-    		System.out.println(sal);
-    }
 
-	public void terminaEstado(){
+        public void terminaEstado(){
 		lex="";
 		estado=INICIAL;
 	}
 
-	public void scanner() throws IOException{
+        public ArrayList<Token> getArrayTokens(){
+		return arrayTokens;
+	}
+
+        public PrintWriter getWriter(){
+            return writer;
+        }
+
+        public boolean getErrorLexico(){
+            return errorLexico;
+        }
+        public void imprimirTokens(){
+
+        }
+	public void error() throws IOException{
+		String sal="";
+                String linea=" (linea "+numLinea+")";
+		switch(estado){
+            case INICIAL: sal="No existe el token"+ buff+linea; break;
+            case CASTING_INT1:
+            case CASTING_INT2:
+            case CASTING_INT3: sal="Has escrito mal (int)"+linea; break;
+            case CASTING_NAT1:
+            case CASTING_NAT2:
+            case CASTING_NAT3: sal="Has escrito mal (nat)"+linea; break;
+            case CASTING_FLOAT1:
+            case CASTING_FLOAT2:
+            case CASTING_FLOAT3:
+            case CASTING_FLOAT4:
+            case CASTING_FLOAT5: sal="Has escrito mal (float)"+linea; break;
+            case CASTING_CHAR1:
+            case CASTING_CHAR2:
+            case CASTING_CHAR3:
+            case CASTING_CHAR4: sal="Has escrito mal (char)"+linea; break;
+            case DISTINTO1: sal= "No exite el token" + lex+linea; break;
+            case LIT_NAT1:
+            case LIT_NAT2: sal= "Un numero natural no puede acabar por letra"+linea; break;
+            case LIT_FLO1:
+            case LIT_FLO2:
+            case LIT_FLO3:
+            case LIT_FLO4: sal= "Un numero real no puede acabar por letra"+linea; break;
+        	case FLOAT1:
+    		case FLOAT2: sal= "La parte decimal de un float no puede acabar en 0"+linea; break;
+    		case FLOAT3: sal= "La parte decimal de un float solo tiene numeros"+linea; break;
+    		case FLOAT4:
+    			switch(buff){
+    			case '0': sal= "El exponente de un float no puede empezar por cero"+linea; break;
+    			default: sal= "El exponente de un float solo puede llevar numeros"+linea; break;
+    			}
+    			break;
+    		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"+linea; break;
+    		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"+linea; break;
+            case CADENA: sal="No puedes definir un token con nombre de palabra reservada"+linea; break;
+    		default:
+    		}
+            transita(INICIAL);
+            writer.println(sal);
+            writer.println("La ejecucion se ha parado por error en el analisis lexico");
+            errorLexico=true;
+
+        }
+
+        public void scanner() throws IOException{
 		while(buff != '\uffff' || !lex.equals("")){
 			switch(estado){
 			case INICIAL :
@@ -775,14 +800,9 @@ public class AnalizadorLexico {
 
 	}
 
-	public ArrayList<Token> getArrayTokens(){
-		return arrayTokens;
-	}
-
-
 	public static void main(String [] args) throws FileNotFoundException, IOException {
 		@SuppressWarnings("unused")
-		AnalizadorLexico a= new AnalizadorLexico("/home/ruben/pruebacodigo");
+		AnalizadorLexico a= new AnalizadorLexico("./pruebacodigo");
         a.lex="";
     }
 
