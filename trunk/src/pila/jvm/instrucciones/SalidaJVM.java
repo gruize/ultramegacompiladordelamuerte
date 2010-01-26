@@ -26,19 +26,19 @@ public class SalidaJVM implements PseudoInstruccionJVM {
         int dirMetodo;
         switch (tipoDato) {
             case BOOL:
-                dirMetodo = cc.getPrintlnZIndex();
+                dirMetodo = cc.getPrintZIndex();
                 break;
             case CHAR:
-                dirMetodo = cc.getPrintlnCIndex();
+                dirMetodo = cc.getPrintCIndex();
                 break;
             case REAL:
-                dirMetodo = cc.getPrintlnFIndex();
+                dirMetodo = cc.getPrintFIndex();
                 break;
             case ENTERO:
-                dirMetodo = cc.getPrintlnIIndex();
+                dirMetodo = cc.getPrintIIndex();
                 break;
             case NATURAL:
-                dirMetodo = cc.getPrintlnIIndex();
+                dirMetodo = cc.getPrintIIndex();
                 break;
             default:
                 throw new Exception("Tipo de dato a escribir inválido");

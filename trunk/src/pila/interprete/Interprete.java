@@ -151,11 +151,14 @@ public class Interprete {
         setParar(false);
         while(!isParar()) {
             if(modoDepuracion) {
-                System.out.print(mostrarEstado()+"\n\nDEBUG>");
+                writer.print(mostrarEstado()+"\n\nDEBUG: Se ejecutara:");
+                writer.print(programa.get(getCp()).toString()+">");
+                writer.flush();
                 reader.readLine();
-                System.out.println();
+                writer.println();
+                writer.flush();
             }
-            if(((InstruccionInterprete)programa.get(getCp())).ejecutate(this))
+            if((programa.get(getCp())).ejecutate(this))
                 setCp(cp+1);
         }
     }

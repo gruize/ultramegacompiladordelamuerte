@@ -72,7 +72,14 @@ public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, es
                     break;
             }
             codJ1 = new CodigoJVM();
+            codJ1.add(new ApilarPrinterJVM());
+            codJ1.add(new ApilarInt('>'));
+            codJ1.add(new SalidaJVM(Tipos.CHAR));
             codJ1.add(new EntradaJVM(t, dir));
+            codJ1.add(new ApilarPrinterJVM());
+            codJ1.add(new ApilarInt('\n'));
+            codJ1.add(new SalidaJVM(Tipos.CHAR));
+            codJ1.add(new GuardarDatoJVM(t, dir));
         }
 
         if (!cierraPar()) {
