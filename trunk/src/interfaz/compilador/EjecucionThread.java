@@ -42,9 +42,6 @@ public class EjecucionThread extends Thread {
             interprete.ejecutarPrograma();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } finally {
-            //System.exit(0);
         }
-        super.run();
     }
 }
