@@ -5,6 +5,7 @@
 
 package pila.jvm.instrucciones;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
 import org.apache.bcel.Constants;
 import pila.interprete.datos.DatoPila;
 import pila.jvm.ClassConstructor;
@@ -14,10 +15,10 @@ import pila.jvm.ClassConstructor;
  * @author Gonzalo Ortiz Jaureguizar (Golthiryus)
  */
 public class EntradaJVM implements PseudoInstruccionJVM{
-    int tipoDato;
+    Tipos tipoDato;
     int dirVar;
 
-    public EntradaJVM(int tipoDato, int dirVar) {
+    public EntradaJVM(Tipos tipoDato, int dirVar) {
         this.tipoDato = tipoDato;
         this.dirVar = dirVar;
     }
@@ -29,24 +30,24 @@ public class EntradaJVM implements PseudoInstruccionJVM{
         cc.añadirU1(Constants.INVOKEVIRTUAL);
         cc.añadirU2(cc.getReadLineIndex());
         switch(tipoDato) {
-            case DatoPila.BOOL_T:
+            case BOOL:
                 cc.añadirU1(Constants.INVOKESTATIC);
                 cc.añadirU2(cc.getParseBoolIndex());
                 break;
-            case DatoPila.CHAR_T:
+            case CHAR:
                 cc.añadirU1(Constants.ICONST_0);
                 cc.añadirU1(Constants.INVOKEVIRTUAL);
                 cc.añadirU2(cc.getCharAtIndex());
                 break;
-            case DatoPila.FLOAT_T:
+            case REAL:
                 cc.añadirU1(Constants.INVOKESTATIC);
                 cc.añadirU2(cc.getParseFloatIndex());
                 break;
-            case DatoPila.INT_T:
+            case ENTERO:
                 cc.añadirU1(Constants.INVOKESTATIC);
                 cc.añadirU2(cc.getParseIntIndex());
                 break;
-            case DatoPila.NAT_T:
+            case NATURAL:
                 cc.añadirU1(Constants.INVOKESTATIC);
                 cc.añadirU2(cc.getParseIntIndex());
                 cc.añadirU1(Constants.DUP); //gastamos 1 para el if y el otro es el resultado
@@ -56,7 +57,7 @@ public class EntradaJVM implements PseudoInstruccionJVM{
                 cc.añadirU2(cc.getExceptionIndex()); //5
                 cc.añadirU1(Constants.DUP); //6
                 cc.añadirU1(Constants.LDC); //7 => se carga el string
-                cc.añadirU1(cc.getNatNegStringIndex()); //8
+                cc.añadirU1(cc.getNatNegErrorStringIndex()); //8
                 cc.añadirU1(Constants.INVOKESPECIAL); //9
                 cc.añadirU2(cc.getInitExceptionIndex()); //11
                 cc.añadirU1(Constants.ATHROW); //12
@@ -67,19 +68,19 @@ public class EntradaJVM implements PseudoInstruccionJVM{
     public int dameU1s() {
         int u1sTipo = 0;
         switch(tipoDato) {
-            case DatoPila.BOOL_T:
+            case BOOL:
                 u1sTipo = 3;
                 break;
-            case DatoPila.CHAR_T:
+            case CHAR:
                 u1sTipo = 4;
                 break;
-            case DatoPila.FLOAT_T:
+            case REAL:
                 u1sTipo = 3;
                 break;
-            case DatoPila.INT_T:
+            case ENTERO:
                 u1sTipo = 3;
                 break;
-            case DatoPila.NAT_T:
+            case NATURAL:
                 u1sTipo = 17;
                 break;
         }

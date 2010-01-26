@@ -5,6 +5,7 @@
 
 package pila.jvm.instrucciones;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
 import org.apache.bcel.Constants;
 import pila.interprete.datos.DatoPila;
 import pila.jvm.ClassConstructor;
@@ -15,24 +16,17 @@ import pila.jvm.ClassConstructor;
  */
 public class GuardarDatoJVM implements PseudoInstruccionJVM {
 
-    int tipoDato, dir;
+    Tipos tipoDato;
+    int dir;
 
-    public GuardarDatoJVM(int tipoDato, int dir) {
+    public GuardarDatoJVM(Tipos tipoDato, int dir) {
         this.tipoDato = tipoDato;
         this.dir = dir;
     }
 
-    public int getDir() {
-        return dir;
-    }
-
-    public int getTipoDato() {
-        return tipoDato;
-    }
-
     public void toClass(ClassConstructor cc) throws Exception {
         switch (tipoDato) {
-            case DatoPila.BOOL_T:
+            case BOOL:
                 cc.añadirU1(Constants.I2B);
                 switch(dir) {
                     case 0:
@@ -53,7 +47,7 @@ public class GuardarDatoJVM implements PseudoInstruccionJVM {
                 }
 
                 break;
-            case DatoPila.CHAR_T:
+            case CHAR:
                 cc.añadirU1(Constants.I2C);
                 switch(dir) {
                     case 0:
@@ -73,7 +67,7 @@ public class GuardarDatoJVM implements PseudoInstruccionJVM {
                         cc.añadirU1(dir);
                 }
                 break;
-            case DatoPila.FLOAT_T:
+            case REAL:
                 switch(dir) {
                     case 0:
                         cc.añadirU1(Constants.FSTORE_0);
@@ -92,8 +86,8 @@ public class GuardarDatoJVM implements PseudoInstruccionJVM {
                         cc.añadirU1(dir);
                 }
                 break;
-            case DatoPila.INT_T:
-            case DatoPila.NAT_T:
+            case ENTERO:
+            case NATURAL:
                 switch(dir) {
                     case 0:
                         cc.añadirU1(Constants.ISTORE_0);
@@ -119,7 +113,7 @@ public class GuardarDatoJVM implements PseudoInstruccionJVM {
 
     public int dameU1s() {
         int i;
-        if(tipoDato== DatoPila.BOOL_T || tipoDato == DatoPila.CHAR_T)
+        if(tipoDato== Tipos.BOOL || tipoDato == Tipos.CHAR)
             i = 1;
         else
             i = 0;

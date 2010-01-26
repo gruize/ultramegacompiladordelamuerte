@@ -25,31 +25,39 @@ public class TraductorTest extends JFrame{
 	public static void main(String[] args){
 		
 		TraductorTest t=new TraductorTest();
-
+                System.exit(0);
 	}
 	
-	public TraductorTest(){
-		try{
+	public TraductorTest(File classFile){
+            try{
+                String nombreClase = classFile.getName();
+                nombreClase = nombreClase.substring(0, nombreClase.indexOf('.'));
 		AnalizadorLexico al=new AnalizadorLexico(abrirFich());
 		ArrayList<Token> tokens=al.getArrayTokens();
 		imprimirTokens(tokens);
-		TraductorCodP tcodp= new TraductorCodP(tokens);
-		ArrayList<InstruccionInterprete> ai= tcodp.traducir();
+		//TraductorCodP tcodp= new TraductorCodP(tokens);
+                TraductorCodDual tcoddual= new TraductorCodDual(tokens);
+		ArrayList<InstruccionInterprete> ai= tcoddual.getTraduccionP(nombreClase);
 		imprimir(ai);
 		File f= new File("./codigo_binario");
 		EscritorPila ep= new EscritorPila();
 		ep.escribirPrograma(ai, f);
 		Interprete interprete = new Interprete(false);
 		File f2= new File("./codigo_binario");
-        interprete.leerPrograma(f2);
-        interprete.ejecutarPrograma();
-		
-		}
-		catch(Exception e){
-			System.out.println(e.getMessage());
-		}
-		finally{ System.exit(0);}
+                interprete.leerPrograma(f2);
+                interprete.ejecutarPrograma();
+
+                //si llega aqui el programa interpretado acaba correctamente => generamos el class
+                tcoddual.getTraduccionJ(nombreClase).dump(classFile);
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
 	}
+
+        public TraductorTest() {
+            this(new File("./Clase.class"));
+        }
 	
 	private void imprimirTokens(ArrayList<Token> tokens) {
 		Iterator<Token> it=tokens.iterator();
