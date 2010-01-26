@@ -1,0 +1,9 @@
+a : boolean;
+b : natural;
+c : float;
+d : character;
+e : natural;
+f : natural;
+&
+b:=5+5
+out(c);
