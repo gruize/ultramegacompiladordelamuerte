@@ -9,19 +9,17 @@ import java.util.regex.Pattern;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.instrucciones.InstruccionInterprete;
 
-/**
- *
- */
+
 public abstract class TraductorPila {
 
-    private Pattern expInt;
+    //private Pattern expInt;
     private Pattern expFloat;
     private Pattern expNat;
     private Pattern expChar;
     private Pattern expBool;
 
     public TraductorPila() {
-        expInt = Pattern.compile("-?[1-9][0-9]*");
+        //expInt = Pattern.compile("-?[1-9][0-9]*");
         expNat = Pattern.compile("[1-9][0-9]*|0");
         expFloat = Pattern.compile("-?[1-9][0-9]*\\.(0|[0-9]*[1-9])");
         expBool = Pattern.compile("true|false");
