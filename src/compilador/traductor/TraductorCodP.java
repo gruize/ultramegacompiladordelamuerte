@@ -11,7 +11,7 @@ import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 
-public class TraductorCodP extends Traductor{
+public abstract class TraductorCodP extends Traductor{
 
 
 

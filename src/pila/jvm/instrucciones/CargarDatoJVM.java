@@ -5,6 +5,7 @@
 
 package pila.jvm.instrucciones;
 
+import compilador.tablaSimbolos.InfoTs.Tipos;
 import org.apache.bcel.Constants;
 import pila.interprete.datos.DatoPila;
 import pila.jvm.ClassConstructor;
@@ -15,19 +16,20 @@ import pila.jvm.ClassConstructor;
  */
 public class CargarDatoJVM implements PseudoInstruccionJVM {
 
-    int tipoDato, dir;
+    Tipos tipoDato;
+    int dir;
 
-    public CargarDatoJVM(int tipoDato, int dir) {
+    public CargarDatoJVM(Tipos tipoDato, int dir) {
         this.tipoDato = tipoDato;
         this.dir = dir;
     }
 
     public void toClass(ClassConstructor cc) throws Exception {
         switch (tipoDato) {
-            case DatoPila.BOOL_T:
-            case DatoPila.CHAR_T:
-            case DatoPila.INT_T:
-            case DatoPila.NAT_T:
+            case BOOL:
+            case CHAR:
+            case ENTERO:
+            case NATURAL:
                 switch(dir) {
                     case 0:
                         cc.añadirU1(Constants.ILOAD_0);
@@ -47,7 +49,7 @@ public class CargarDatoJVM implements PseudoInstruccionJVM {
                 }
 
                 break;
-            case DatoPila.FLOAT_T:
+            case REAL:
                 switch(dir) {
                     case 0:
                         cc.añadirU1(Constants.FLOAD_0);

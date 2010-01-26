@@ -12,7 +12,7 @@ package interfaz.compilador;
 
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
-import compilador.traductor.TraductorCodP;
+import compilador.traductor.TraductorCodDual;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -223,26 +223,30 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_EnviarButtonMouseClicked
 
-    private boolean compilar() {
+    public boolean compilar(File classFile){
         boolean error=false;
-        try {
-            this.textAreaEjecucion.setText("");
-            
+        try{
+            String nombreClase = classFile.getName();
+            nombreClase = nombreClase.substring(0, nombreClase.indexOf('.'));
+	    this.textAreaEjecucion.setText("");
             System.setOut(new PrintStream(new TextAreaOutputStream()));
 
             String codigo=textAreaEntrada.getText();
-            if (codigo != ""){
+            if (!codigo.equals("")){
                 AnalizadorLexico al = new AnalizadorLexico(codigo);
                 ArrayList<Token> tokens = al.getArrayTokens();
                 imprimirTokens(tokens);
 
                 if(al.getErrorLexico() == false){
-                    TraductorCodP tcodp = new TraductorCodP(tokens);
-                    ArrayList<InstruccionInterprete> ai = tcodp.traducir();
+                    //TraductorCodP tcodp= new TraductorCodP(tokens);
+                    TraductorCodDual tcoddual= new TraductorCodDual(tokens);
+                    ArrayList<InstruccionInterprete> ai= tcoddual.getTraduccionP(nombreClase);
                     imprimir(ai);
                     File f = new File("./codigo_binario");
                     EscritorPila ep = new EscritorPila();
                     ep.escribirPrograma(ai, f);
+
+                    tcoddual.getTraduccionJ(nombreClase).dump(classFile);
                 }
             }
             else
@@ -251,6 +255,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
         return !error;
+    }
+
+    private boolean compilar() {
+        return compilar(new File("./Clase.class"));
     }
 
     private void ejecutar() {

@@ -6,7 +6,9 @@
 package compilador.traductor;
 
 import java.util.ArrayList;
+import org.apache.bcel.classfile.JavaClass;
 import pila.interprete.instrucciones.InstruccionInterprete;
+import pila.jvm.ClassConstructor;
 import pila.jvm.instrucciones.PseudoInstruccionJVM;
 
 /**
@@ -37,8 +39,20 @@ public class CodigoJVM {
         return ar;
     }
 
+    public int size(){
+        return ar.size();
+    }
+
     public int dameU1s() {
         return numU1s;
+    }
+
+    public JavaClass dameTraduccion(int numVars, int maxStack, String nombreClase) throws Exception {
+        ClassConstructor cc = new ClassConstructor(nombreClase);
+        final int size = ar.size();
+        for(int i = 0; i < size; i++)
+            ar.get(i).toClass(cc);
+        return cc.getJavaClass(numVars,maxStack);
     }
 
 

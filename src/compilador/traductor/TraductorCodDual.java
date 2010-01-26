@@ -11,14 +11,20 @@ import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 import org.apache.bcel.Constants;
-import pila.interprete.datos.DatoPila;
+import pila.jvm.instrucciones.AbsInstruccionJVM;
+import pila.jvm.instrucciones.ApilarFloat;
+import pila.jvm.instrucciones.ApilarInt;
+import pila.jvm.instrucciones.CargarDatoJVM;
 import pila.jvm.instrucciones.EntradaJVM;
 import pila.jvm.instrucciones.GuardarDatoJVM;
 import pila.jvm.instrucciones.InstruccionJVM;
 import pila.jvm.instrucciones.InstruccionJVMU2;
+import pila.jvm.instrucciones.NegarInstruccionJVM;
+import pila.jvm.instrucciones.OInstruccionJVM;
 import pila.jvm.instrucciones.SalidadaJVM;
+import pila.jvm.instrucciones.YInstruccionJVM;
 
-public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, esta para que no casque
+public class TraductorCodDual extends Traductor { //TODO: Quitar el abstract, esta para que no casque
 
     public TraductorCodDual(ArrayList<Token> tokens) {
         super(tokens);
@@ -65,7 +71,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                     break;
             }
             codJ1 = new CodigoJVM();
-            codJ1.add(new EntradaJVM(DatoPila.TraducirDesdeTipos(t), dir));
+            codJ1.add(new EntradaJVM(t, dir));
         }
 
         if (!cierraPar()) {
@@ -105,7 +111,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
             codP1.appendIns(new Salida());
 
             codJ1 = codJ2;
-            codJ1.add(new SalidadaJVM(DatoPila.TraducirDesdeTipos(tipo2)));
+            codJ1.add(new SalidadaJVM(tipo2));
         }
         return new Object[]{false, codP1, codJ1};
     }
@@ -147,7 +153,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                     || (tipoTs == Tipos.BOOL && tipo3 != Tipos.BOOL);
 
             codP1.appendIns(new DesapilarDir(new Nat(dir)));
-            codJ1.add(new GuardarDatoJVM(DatoPila.TraducirDesdeTipos(tipoTs), dir));
+            codJ1.add(new GuardarDatoJVM(tipoTs, dir));
         }
         return new Object[]{error1, codP1, codJ1};
     }
@@ -160,7 +166,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         CodigoJVM codJ1 = null;
         if (op2 == null)// lambda
         {
-            return new Object[]{tipo1h, new Codigo(), new CodigoJVM()};
+            return new Object[]{tipo1h, codPh1, codJh1};
         }
 
         // no lambda → OpNiv0(out: op2) ExpresiónNiv1(out: tipo3,codP3)
@@ -772,23 +778,26 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
     }
 
     // ExpresiónNiv1Rec(in: tipoh1, codh1; out: tipo1, cod1)
-    protected Object[] ExpresionNiv1Rec(Tipos tipoh1, Codigo codPh1)
+    protected Object[] ExpresionNiv1Rec(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1)
             throws Exception {
         Operaciones op2 = OpNiv1();
         Tipos tipo1 = null;
         Codigo codP1 = null;
-        Tipos tipoh4 = null;
-        Codigo codPh4 = null;
+        CodigoJVM codJ1 = null;
         if (op2 == null) // lambda
         {
-            return new Object[]{tipoh1, codPh1};
+            return new Object[]{tipoh1, codPh1, codJh1};
         }
 
         // no lambda
         Object[] resExprN2 = ExpresionNiv2();
         Tipos tipo3 = (Tipos) resExprN2[0];
         Codigo codP3 = (Codigo) resExprN2[1];
+        CodigoJVM codJ3 = (CodigoJVM) resExprN2[2];
 
+        Tipos tipoh4 = null;
+        Codigo codPh4 = null;
+        CodigoJVM codJh4 = null;
         // tipoh4-----------------------
         if (tipoh1 == Tipos.ERROR || tipo3 == Tipos.ERROR
                 || tipoh1 == Tipos.CHAR || tipo3 == Tipos.CHAR
@@ -820,6 +829,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         }
         // tipoh4 fin ------------------------------------
         codPh4 = codPh1;
+        codJh4 = codJh1;
 
         switch (op2) {
             case SUMA:
@@ -828,10 +838,17 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                         if (tipo3 == Tipos.REAL) {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Suma());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FADD));
                         } else {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendIns(new Suma());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.add(new InstruccionJVM(Constants.FADD));
                         }
                         break;
                     case ENTERO:
@@ -839,13 +856,22 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Suma());
-                        } else if (tipo3 == Tipos.NATURAL) {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendIns(new Suma());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FADD));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Suma());
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.add(new InstruccionJVM(Constants.IADD));
+
+                            if (tipo3 == Tipos.NATURAL) {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendIns(new Suma());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Suma());
+                            }
                         }
                         break;
                     case NATURAL:
@@ -853,13 +879,21 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Suma());
-                        } else if (tipo3 == Tipos.ENTERO) {
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Suma());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FADD));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Suma());
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.add(new InstruccionJVM(Constants.IADD));
+                            if (tipo3 == Tipos.ENTERO) {
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Suma());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Suma());
+                            }
                         }
                         break;
                 }
@@ -870,10 +904,17 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                         if (tipo3 == Tipos.REAL) {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Resta());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FSUB));
                         } else {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendIns(new Resta());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.add(new InstruccionJVM(Constants.FSUB));
                         }
                         break;
                     case ENTERO:
@@ -881,13 +922,21 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Resta());
-                        } else if (tipo3 == Tipos.NATURAL) {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendIns(new Resta());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FSUB));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Resta());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.ISUB));
+                            if (tipo3 == Tipos.NATURAL) {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendIns(new Resta());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Resta());
+                            }
                         }
                         break;
                     case NATURAL:
@@ -895,13 +944,22 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Resta());
-                        } else if (tipo3 == Tipos.ENTERO) {
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Resta());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FSUB));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Resta());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.ISUB));
+
+                            if (tipo3 == Tipos.ENTERO) {
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Resta());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Resta());
+                            }
                         }
                         break;
                 }
@@ -909,29 +967,46 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
             case OR:
                 codPh4.appendCod(codP3);
                 codPh4.appendIns(new O());
+
+                /*
+                 * En vez de usar esta construccion que depende de la longitud
+                 * de codJ3, se usa una funcion creada especialmente en la clase,
+                 * lo cual lo hace mas funcional y legible
+                codJh4.add(new InstruccionJVMU2(Constants.IFNE, 2+codJ3.dameU1s()+4));
+                codJh4.append(codJ3);
+                codJh4.add(new InstruccionJVMU2(Constants.IFEQ, 7));
+                codJh4.add(new InstruccionJVM(Constants.ICONST_1));
+                codJh4.add(new InstruccionJVMU2(Constants.GOTO, 4));
+                codJh4.add(new InstruccionJVM(Constants.ICONST_0));
+                 */
+                codJh4.append(codJ3);
+                codJh4.add(new OInstruccionJVM());
                 break;
         }
 
-        Object[] resExprNiv1Rec = ExpresionNiv1Rec(tipoh4, codPh4);
+        Object[] resExprNiv1Rec = ExpresionNiv1Rec(tipoh4, codPh4, codJh4);
         tipo1 = (Tipos) resExprNiv1Rec[0];
         codP1 = (Codigo) resExprNiv1Rec[1];
-        return new Object[]{tipo1, codP1};
+        codJ1 = (CodigoJVM) resExprNiv1Rec[2];
+        return new Object[]{tipo1, codP1, codJ1};
 
     }
 
     // ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, codP1)
-    public Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codPh1)
+    public Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1)
             throws Exception {
         Operaciones op2 = OpNiv2();
         Tipos tipo1 = null;
         Codigo codP1 = null;
+        CodigoJVM codJ1 = null;
         if (op2 == null) {
-            return new Object[]{tipoh1, codPh1};
+            return new Object[]{tipoh1, codPh1, codJh1};
         }
 
         Object[] resExprN3 = ExpresionNiv3();
         Tipos tipo3 = (Tipos) resExprN3[0];
         Codigo codP3 = (Codigo) resExprN3[1];
+        CodigoJVM codJ3 = (CodigoJVM) resExprN3[2];
         Tipos tipoh4 = null;
         // tipoh4----------------------
         if (tipoh1 == Tipos.ERROR || tipo3 == Tipos.ERROR
@@ -971,6 +1046,7 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         }
         // tiposh4 fin-------------------------
         Codigo codPh4 = codPh1;
+        CodigoJVM codJh4 = codJh1;
 
         switch (op2) {
             case MULT:
@@ -979,10 +1055,17 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                         if (tipo3 == Tipos.REAL) {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Multiplica());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FMUL));
                         } else {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendIns(new Multiplica());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.add(new InstruccionJVM(Constants.FMUL));
                         }
                         break;
                     case ENTERO:
@@ -990,13 +1073,22 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Multiplica());
-                        } else if (tipo3 == Tipos.NATURAL) {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendIns(new Multiplica());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FMUL));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Multiplica());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.IMUL));
+
+                            if (tipo3 == Tipos.NATURAL) {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendIns(new Multiplica());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Multiplica());
+                            }
                         }
                         break;
                     case NATURAL:
@@ -1004,13 +1096,21 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Multiplica());
-                        } else if (tipo3 == Tipos.ENTERO) {
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Multiplica());
+
+                            codJh4.add(new InstruccionJVM(Constants.I2F));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FMUL));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Multiplica());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.IMUL));
+                            if (tipo3 == Tipos.ENTERO) {
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Multiplica());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Multiplica());
+                            }
                         }
                         break;
                 }
@@ -1021,10 +1121,17 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                         if (tipo3 == Tipos.REAL) {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Divide());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FDIV));
                         } else {
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendIns(new Divide());
+
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM((Constants.I2F)));
+                            codJh4.add(new InstruccionJVM(Constants.FDIV));
                         }
                         break;
                     case ENTERO:
@@ -1032,13 +1139,21 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Divide());
-                        } else if (tipo3 == Tipos.NATURAL) {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendIns(new Divide());
+
+                            codJh4.add(new InstruccionJVM((Constants.I2F)));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FDIV));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Divide());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.IDIV));
+                            if (tipo3 == Tipos.NATURAL) {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendIns(new Divide());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Divide());
+                            }
                         }
                         break;
                     case NATURAL:
@@ -1046,13 +1161,21 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
                             codPh4.appendIns(new CastFloat());
                             codPh4.appendCod(codP3);
                             codPh4.appendIns(new Divide());
-                        } else if (tipo3 == Tipos.ENTERO) {
-                            codPh4.appendIns(new CastInt());
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Divide());
+
+                            codJh4.add(new InstruccionJVM((Constants.I2F)));
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.FDIV));
                         } else {
-                            codPh4.appendCod(codP3);
-                            codPh4.appendIns(new Divide());
+                            codJh4.append(codJ3);
+                            codJh4.add(new InstruccionJVM(Constants.IDIV));
+                            if (tipo3 == Tipos.ENTERO) {
+                                codPh4.appendIns(new CastInt());
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Divide());
+                            } else {
+                                codPh4.appendCod(codP3);
+                                codPh4.appendIns(new Divide());
+                            }
                         }
                         break;
                 }
@@ -1060,34 +1183,54 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
             case MOD:
                 codPh4.appendCod(codP3);
                 codPh4.appendIns(new Modulo());
+
+                codJh4.append(codJ3);
+                codJh4.add(new InstruccionJVM(Constants.IREM));
                 break;
             case AND:
                 codPh4.appendCod(codP3);
                 codPh4.appendIns(new Y());
+
+                /*
+                 * En vez de usar esta construccion que depende de la longitud
+                 * de codJ3, se usa una funcion creada especialmente en la clase,
+                 * lo cual lo hace mas funcional y legible
+                codJh4.add(new InstruccionJVMU2(Constants.IFEQ, 2+codJ3.dameU1s()+4));
+                codJh4.append(codJ3);
+                codJh4.add(new InstruccionJVMU2(Constants.IFEQ, 7));
+                codJh4.add(new InstruccionJVM(Constants.ICONST_1));
+                codJh4.add(new InstruccionJVMU2(Constants.GOTO, 4));
+                codJh4.add(new InstruccionJVM(Constants.ICONST_0));
+                 */
+                codJh4.append(codJ3);
+                codJh4.add(new YInstruccionJVM());
                 break;
         }// fin switch principal
 
-        Object[] resExprNiv2Rec = ExpresionNiv2Rec(tipoh4, codPh4);
+        Object[] resExprNiv2Rec = ExpresionNiv2Rec(tipoh4, codPh4, codJh4);
         tipo1 = (Tipos) resExprNiv2Rec[0];
         codP1 = (Codigo) resExprNiv2Rec[1];
-        return new Object[]{tipo1, codP1};
+        codJ1 = (CodigoJVM) resExprNiv2Rec[2];
+        return new Object[]{tipo1, codP1, codJ1};
     }
 
     // ExpresiónNiv3Fact(in: tipoh1, codPh1; out: tipo1, codP1)
-    public Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codPh1)
+    public Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1)
             throws Exception {
         Operaciones op2 = OpNiv3();
         Tipos tipo1 = null;
         Codigo codP1 = null;
+        CodigoJVM codJ1 = null;
 
         if (op2 == null)// lambda
         {
-            return new Object[]{tipoh1, codPh1};
+            return new Object[]{tipoh1, codPh1, codJh1};
         }
 
         Object[] resExprN3 = ExpresionNiv3();
         Tipos tipo3 = (Tipos) resExprN3[0];
         Codigo codP3 = (Codigo) resExprN3[1];
+        CodigoJVM codJ3 = (CodigoJVM) resExprN3[2];
 
         if (tipoh1 == Tipos.ERROR || tipo3 == Tipos.ERROR
                 || tipoh1 != Tipos.NATURAL || tipo3 != Tipos.NATURAL) {
@@ -1097,28 +1240,38 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         }
 
         codP1 = codPh1;
+        codJ1 = codJh1;
 
         switch (op2) {
             case SHL:
                 codP1.appendCod(codP3);
                 codP1.appendIns(new Shl());
+
+                codJ1.append(codJ3);
+                codJ1.add(new InstruccionJVM(Constants.ISHL));
                 break;
             case SHR:
                 codP1.appendCod(codP3);
                 codP1.appendIns(new Shr());
+
+                codJ1.append(codJ3);
+                codJ1.add(new InstruccionJVM(Constants.ISHR));
                 break;
         }
 
-        return new Object[]{tipo1, codP1};
+        return new Object[]{tipo1, codP1, codJ1};
 
     }
 
     protected Object[] ExpresionNiv4_conOp(Operaciones op2) throws Exception {
         Tipos tipo1 = null;
         Codigo codP1 = null;
+        CodigoJVM codJ1 = null;
+
         Object[] resExprNiv4 = ExpresionNiv4();
         Tipos tipo3 = (Tipos) resExprNiv4[0];
         Codigo codP3 = (Codigo) resExprNiv4[1];
+        CodigoJVM codJ3 = (CodigoJVM) resExprNiv4[2];
 
         if (tipo3 == Tipos.ERROR) {
             tipo1 = Tipos.ERROR;
@@ -1158,38 +1311,60 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         }
 
         codP1 = codP3;
+        codJ1 = codJ3;
 
         switch (op2) {
             case NOT:
                 codP1.appendIns(new No());
+
+                //Al igual que con el and y el or, hago una llamada a una funcion
+                //especial de la clase que contiene el codigo.
+                codJ1.add(new NegarInstruccionJVM());
                 break;
             case NEG:
                 codP1.appendIns(new Menos());
+
+                if(tipo3 == Tipos.REAL)
+                    codJ1.add(new InstruccionJVM(Constants.FNEG));
+                else
+                    codJ1.add(new InstruccionJVM(Constants.INEG));
                 break;
             case CASTREAL:
                 codP1.appendIns(new CastFloat());
+
+                if(tipo3 != Tipos.REAL)
+                    codJ1.add(new InstruccionJVM(Constants.I2F));
                 break;
             case CASTENT:
                 codP1.appendIns(new CastInt());
+                if(tipo3 != Tipos.REAL)
+                    codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
             case CASTNAT:
                 codP1.appendIns(new CastNat());
+                if(tipo3 != Tipos.REAL)
+                    codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
             case CASTCHAR:
                 codP1.appendIns(new CastChar());
+                if(tipo3 != Tipos.REAL)
+                    codJ1.add(new InstruccionJVM(Constants.F2I));
                 break;
         }
 
-        return new Object[]{tipo1, codP1};
+        return new Object[]{tipo1, codP1, codJ1};
     }
 
     // ExpresiónNiv4(out: tipo1, codP1)
     protected Object[] ExpresionNiv4_valorAbs() throws Exception {
         Tipos tipo1 = null;
         Codigo codP1 = null;
+        CodigoJVM codJ1 = null;
+
         Object[] resExprNiv4 = ExpresionNiv4();
         Tipos tipo2 = (Tipos) resExprNiv4[0];
         Codigo codP2 = (Codigo) resExprNiv4[1];
+        CodigoJVM codJ2 = (CodigoJVM) resExprNiv4[2];
 
         if (!valorAbs()) {
             throw new Exception("Fatal: se esperaba la barra de valor absoluto"
@@ -1208,7 +1383,10 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
 
         codP1 = codP2;
         codP1.appendIns(new Abs());
-        return new Object[]{tipo1, codP1};
+
+        codJ1 = codJ2;
+        codJ1.add(new AbsInstruccionJVM(tipo2));
+        return new Object[]{tipo1, codP1, codJ1};
     }
 
     // Literal(out: tipo1, codP1) → id
@@ -1217,13 +1395,15 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         if (!TablaSimbolos.existe(ts, id)) {
             errores.add(new ErrorTraductor("Info: identificador no declarado: "
                     + id + textoError()));
-            return new Object[]{Tipos.ERROR, new Codigo()};
+            return new Object[]{Tipos.ERROR, new Codigo(), new CodigoJVM()};
         }
 
         Tipos tipo1 = TablaSimbolos.getTipo(ts, t.getLex());
         int dir = TablaSimbolos.getDir(ts, t.getLex());
         Codigo codP1 = new Codigo(new ApilarDir(new Nat(dir)));
-        return new Object[]{tipo1, codP1};
+        CodigoJVM codJ1 = new CodigoJVM();
+        codJ1.add(new CargarDatoJVM(tipo1, dir));
+        return new Object[]{tipo1, codP1, codJ1};
     }
 
     // Literal(out: tipo1, codP1, codJ1) → LitTrue
@@ -1231,7 +1411,9 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         boolean valor = true;
         Apilar i = null;
         i = new Apilar(new Bool(valor));
-        return new Object[]{Tipos.BOOL, new Codigo(i)};
+        CodigoJVM codJ = new CodigoJVM();
+        codJ.add(new ApilarInt(1));
+        return new Object[]{Tipos.BOOL, new Codigo(i), codJ};
     }
 
     // Literal(out: tipo1, codP1, codJ1) → LitFalse
@@ -1239,26 +1421,37 @@ public abstract class TraductorCodDual extends Traductor { //TODO: Quitar el abs
         boolean valor = false;
         Apilar i = null;
         i = new Apilar(new Bool(valor));
-        return new Object[]{Tipos.BOOL, new Codigo(i)};
+        CodigoJVM codJ = new CodigoJVM();
+        codJ.add(new ApilarInt(0));
+        return new Object[]{Tipos.BOOL, new Codigo(i), codJ};
     }
 
     protected Object[] Literal_LitCha(Token t) throws Exception {
+        char c = t.getLex().charAt(0);
         Apilar i = null;
-        i = new Apilar(new Caracter(t.getLex().charAt(1)));
-        return new Object[]{Tipos.CHAR, new Codigo(i)};
+        i = new Apilar(new Caracter(c));
+        CodigoJVM codJ = new CodigoJVM();
+        codJ.add(new ApilarInt(c));
+        return new Object[]{Tipos.CHAR, new Codigo(i), codJ};
     }
 
     // Literal(out: tipo1, codP1) → litNat
     protected Object[] Literal_LitNat(Token t) throws Exception {
+        int valor = Integer.parseInt(t.getLex());
         Apilar i = null;
-        i = new Apilar(new Nat(Integer.parseInt(t.getLex())));
-        return new Object[]{Tipos.NATURAL, new Codigo(i)};
+        i = new Apilar(new Nat(valor));
+        CodigoJVM codJ = new CodigoJVM();
+        codJ.add(new ApilarInt(valor));
+        return new Object[]{Tipos.NATURAL, new Codigo(i), codJ};
     }
 
     // Literal(out: tipo1, codP1, codJ1) → litFlo
     protected Object[] Literal_LitFlo(Token t) throws Exception {
+        float valor = Float.parseFloat(t.getLex());
         Apilar i = null;
-        i = new Apilar(new Real(Float.parseFloat(t.getLex())));
-        return new Object[]{Tipos.REAL, new Codigo(i)};
+        i = new Apilar(new Real(valor));
+        CodigoJVM codJ = new CodigoJVM();
+        codJ.add(new ApilarFloat(valor));
+        return new Object[]{Tipos.REAL, new Codigo(i), codJ};
     }
 }
