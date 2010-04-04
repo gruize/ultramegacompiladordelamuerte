@@ -1,6 +1,16 @@
 
 package pila.jvm;
 
+import com.sun.org.apache.bcel.internal.Constants;
+import com.sun.org.apache.bcel.internal.classfile.Attribute;
+import com.sun.org.apache.bcel.internal.classfile.Code;
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+import com.sun.org.apache.bcel.internal.classfile.Method;
+import com.sun.org.apache.bcel.internal.generic.ArrayType;
+import com.sun.org.apache.bcel.internal.generic.ClassGen;
+import com.sun.org.apache.bcel.internal.generic.FieldGen;
+import com.sun.org.apache.bcel.internal.generic.ObjectType;
+import com.sun.org.apache.bcel.internal.generic.Type;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,16 +18,6 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ArrayType;
-import org.apache.bcel.generic.ClassGen;
-import org.apache.bcel.generic.FieldGen;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
 
 /**
  *

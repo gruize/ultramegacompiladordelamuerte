@@ -5,8 +5,8 @@
 
 package pila.jvm.instrucciones;
 
+import com.sun.org.apache.bcel.internal.Constants;
 import compilador.tablaSimbolos.InfoTs.Tipos;
-import org.apache.bcel.Constants;
 import pila.jvm.ClassConstructor;
 
 /**
