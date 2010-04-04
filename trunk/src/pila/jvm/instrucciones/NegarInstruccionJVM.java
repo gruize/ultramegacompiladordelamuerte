@@ -5,7 +5,8 @@
 
 package pila.jvm.instrucciones;
 
-import org.apache.bcel.Constants;
+
+import com.sun.org.apache.bcel.internal.Constants;
 import pila.jvm.ClassConstructor;
 
 /**

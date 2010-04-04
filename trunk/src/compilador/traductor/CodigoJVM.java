@@ -5,9 +5,8 @@
 
 package compilador.traductor;
 
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 import java.util.ArrayList;
-import org.apache.bcel.classfile.JavaClass;
-import pila.interprete.instrucciones.InstruccionInterprete;
 import pila.jvm.ClassConstructor;
 import pila.jvm.instrucciones.PseudoInstruccionJVM;
 

@@ -1,5 +1,6 @@
 package compilador.traductor;
 
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -39,9 +40,6 @@ import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.character;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
-import org.apache.bcel.classfile.JavaClass;
-import pila.jvm.ClassConstructor;
-import pila.jvm.instrucciones.PseudoInstruccionJVM;
 
 /**
  * Esta clase contiene las funciones de traducción que sólo dependen de la

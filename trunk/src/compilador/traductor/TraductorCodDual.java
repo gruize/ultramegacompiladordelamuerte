@@ -1,5 +1,6 @@
 package compilador.traductor;
 
+import com.sun.org.apache.bcel.internal.Constants;
 import java.util.ArrayList;
 
 import pila.interprete.datos.Bool;
@@ -10,7 +11,6 @@ import pila.interprete.instrucciones.*;
 import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
-import org.apache.bcel.Constants;
 import pila.jvm.instrucciones.AbsInstruccionJVM;
 import pila.jvm.instrucciones.ApilarFloat;
 import pila.jvm.instrucciones.ApilarInt;
