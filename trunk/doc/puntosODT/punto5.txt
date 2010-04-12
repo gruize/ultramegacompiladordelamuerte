@@ -1,0 +1,1024 @@
+Programa → Declaraciones & Is
+    Programa.codP   = seg(Decs.dir) || Is.codP || stop
+    Programa.codJ   = Is.codJ
+    Is.etqPh      = 1
+    Is.etqJh      = 0
+
+
+Decs → Decs ; Dec
+    Decso.ts        = añadeID(Decs1.ts,Dec.id,Dec.props ⊗ Dec.propsop)
+    Decso.dir       = Decs1.dir + Dec.tam
+    Dec.dirh        = Decs1.dir
+Decs → Dec
+    Decs.ts         = añadeID(creaTS(),Dec.id,Dec.props ⊗ Dec.propsop)
+    Decs.dir        = Dec.tam
+    Dec.dirh        = 0
+Dec → DecTipo
+    Dec.propsop     = <>
+    Dec.tam         = 0
+Dec → DecVar
+    DecVar.propsop  = <dir:Dec.dirh>
+    Dec.tam         = DecVar.props.tipo.tam
+
+Tipo → Boolean
+    Tipo.tipo = <t:boolean,tam:1>
+Tipo → Character
+    Tipo.tipo = <t:character,tam:1>
+Tipo → Float
+    Tipo.tipo = <t:float,tam:1>
+Tipo → Natural
+    Tipo.tipo = <t:natural,tam:1>
+Tipo → Integer
+    Tipo.tipo = <t:integer,tam:1>
+Tipo → iden
+    Tipo.tipo =
+        <   
+            t:ref,
+            id:iden.lex,
+            tam:Tipo.tsh[iden.lex].tipo.tam
+        >
+Tipo → array [num] of Tipo
+    Tipo.tipo =
+        <
+            t:array,
+            nelems:valorDe(num.lex),
+            tbase:Tipo.tipo,
+            tam:valorDe(num.lex)*Tipo1.tipo.tam
+        >
+Tipo → ^Tipo
+    Tipo0.tipo = 
+        <
+            t:puntero,
+            tbase:Tipo1.tipo,
+            tam:1
+        >
+Tipo → reg Campos freg
+    Tipo.tipo = 
+        <
+            t:array,
+            campos:Campos.campos,
+            tam:Campos.tam
+        >
+Campos → Campos ; Campo
+    Campos0.tam = Campos1.tam + Campo.tam
+    Campo.desh = Campos1.tam
+Campos → Campo
+    Campos.tam = Campo.tam
+    Campo.desh = 0
+Campo → iden: Tipo
+    Campo.campo = 
+        <
+            id:iden.lex,
+            tipo:Tipo.tipo,
+            desp:Campo.desph
+        >
+    Campo.tam = Tipo.tam
+
+Is → I ; Is
+    Is0.codP = I.codP || Instrucciones1.codP
+    Is1.etqPh   = Is0.etqPh
+    I.etqPh = Is1.etqP
+    Is0.etqP = I.etqP
+    Is0.codJ = I.codJ || Instrucciones1.codJ
+    Is1.etqJh   = Is0.etqJh
+    I.etqJh = Is1.etqJ
+    Is0.etqJ = I.etqJ
+
+
+Is → I
+    Is.codP = I.codP
+    I.etqPh = Is.etqPh
+    Is.etqP = I.etqP
+    Is.codJ = I.codJ
+    I.etqJh = Is.etqJh
+    Is.etqJ = I.etqJ
+I → InsAsignación
+    Is.codP         = InsAsignación.codP
+    InsAsignación.etqPh = I.etqPh
+    I.etqP            = InsAsignación.etqP
+    Is.codJ         = InsAsignación.codJ
+    InsAsignación.etqJh = I.etqJh
+    I.etqJ            = InsAsignación.etqJ
+I → InsLectura
+    I.codP            = InsLectura.codP
+    InsLectura.etqPh  = I.etqPh
+    I.etqP            = InsLectura.etqP
+    I.codJ            = InsLectura.codJ
+    InsLectura.etqJh  = I.etqJh
+    I.etqJ            = InsLectura.etqJ
+I → InsEscritura
+    I.codP            = InsEscritura.codP
+    InsEscritura.etqPh  = I.etqPh
+    I.etqP            = InsEscritura.etqP
+    I.codJ            = InsEscritura.codJ
+    InsEscritura.etqJh  = I.etqJh
+    I.etqJ            = InsEscritura.etqJ
+I → InsCompuesta
+    I.codP            = InsCompuesta.codP
+    InsCompuesta.etqPh  = I.etqPh
+    I.etqP            = InsCompuesta.etqP
+    I.codJ            = InsCompuesta.codJ
+    InsCompuesta.etqJh  = I.etqJh
+    I.etqJ            = InsCompuesta.etqJ
+I → InsIf
+    I.codP            = InsIf.codP
+    InsIf.etqPh   = I.etqPh
+    I.etqP            = InsIf.etqP
+    I.codJ            = InsIf.codJ
+    InsIf.etqJh   = I.etqJh
+    I.etqJ            = InsIf.etqJ
+I → InsWhile
+    I.codP            = InsWhile.codP
+    InsWhile.etqPh  = I.etqPh
+    I.etqP            = InsWhile.etqP
+    I.codJ            = InsWhile.codJ
+    InsWhile.etqJh  = I.etqJh
+    I.etqJ            = InsWhile.etqJ
+I → InsFor
+    I.codP            = InsFor.codP
+    InsFor.etqPh        = I.etqPh
+    I.etqP            = InsFor.etqP
+    I.codJ            = InsFor.codJ
+    InsFor.etqJh        = I.etqJh
+    I.etqJ            = InsFor.etqJ
+I → InsNew
+    I.codP            = InsNew.codP
+    InsNew.etqPh        = I.etqPh
+    I.etqP            = InsNew.etqP
+    I.codJ            = InsNew.codJ
+    InsNew.etqJh        = I.etqJh
+    I.etqJ            = InsNew.etqJ
+I → InsDis
+    I.codP            = InsDis.codP
+    InsDis.etqPh        = I.etqPh
+    I.etqP            = InsDis.etqP
+    I.codJ            = InsDis.codJ
+    InsDis.etqJh        = I.etqJh
+    I.etqJ            = InsDis.etqJ
+InsLectura → in(id)
+    InsLectura.codP  = in InsLectura.tsh[id.lex].dir
+    InsLectura.etqP  = InsLectura.etqPh + 1
+    InsLectura.codJ  =
+        entradaJVM(InsLectura.tsh[id.lex].tipo) ||
+        desapilaDir(InsLectura.tsh[id.lex].tipo,InsLectura.tsh[id.lex].dir)
+    InsLectura.etqJ  =
+        InsLectura.etqJh + dameU1s(InsLectura.codJ)
+
+InsEscritura → out(Exp)
+    InsEscritura.codP   = Exp.codP || out
+    Exp.etqPh           = InsEscritura.etqPh
+    InsEscritura.etPq   = Exp.etPq + 1
+    InsEscritura.codJ   =
+        getStatic #PrinterField ||
+        Exp.codJ ||
+        salidaJVM(Exp.tipo)
+    Exp.etqJh           = InsEscritura.etqJh + 3
+    InsEscritura.etqJ   = Exp.etqJ + dameU1s(salidaJVM(Exp.tipo))
+
+InsAsignación → Mem := Exp
+    InsAsignación.codP =
+        si esCompatibleConTipoBasico(Mem.tipo,Literal.tsh)
+            Mem.codP || Exp.codP || desapila-ind
+        si no
+            Mem.codP || Exp.codP || mueve(Mem.tipo.tam)
+    Mem.etqPh = InsAsignación.etqPh
+    Exp.etqPh = Mem.etqP
+    InsAsignación.etqP = Exp.etqP + 1
+    InsAsignación.codJ =                                                <---TODO
+        Exp.codJ || desapilarDir(InsAsignación.tsh[id.lex].tipo)
+    Exp.etqJh          = InsAsignación.etqJh                            <---TODO
+    InsAsignación.etqJ =                                                <---TODO
+        Exp.etqJ + dameU1s(desapilarDir(InsAsignación.tsh[id.lex].tipo))
+
+InsCompuesta → { Is }
+    InsCompuesta.codP   = Is.codP
+    Is.etqPh         = InsCompuesta.etqPh
+    InsCompuesta.etqP   = Is.etqP
+    InsCompuesta.codJ   = Is.codJ
+    Is.etqJh         = InsCompuesta.etqJh
+    InsCompuesta.etqJ   = Is.etqJ
+
+InsIf → if Exp then I Pelse
+    InsIf.codP   =
+        Exp.codP || ir-f(I.etqP + 1) || I.codP || ir-a(PElse.etqP) || PElse.codP
+    Exp.etqPh       = InsIf.etqPh
+    I.etqPh     = Exp.etqP + 1
+    PElse.etqPh  = I.etqP + 1
+    InsIf.etqP   = PElse.etqP
+
+    InsIf.codJ   =
+        Exp.codJ ||
+        ifeq +(3 + I.etqJ - Exp.etqJ - 1 + 3) ||
+        I.codJ ||
+        goto +(3 + PElse.etqJ - I.etqJ - 1) ||
+        PElse.codJ
+    Exp.etqJh       = InsIf.etqJh
+    I.etqJh     = Exp.etqJ + 3
+    PElse.etqJh  = I.etqJ + 3
+    InsIf.etqJ   = PElse.etqJ
+
+PElse → else I
+    PElse.codP  = I.codP
+    PElse.etqP  = I.etqP
+    I.etqPh     = PElse.etqPh
+    PElse.codJ  = I.codJ
+    PElse.etqJ  = I.etqJ
+    I.etqJh     = PElse.etqJh
+PElse → λ
+    PElse.codP  = λ
+    PElse.etqP  = PElse.etqPh
+    PElse.codJ  = λ
+    PElse.etqJ  = PElse.etqJh
+
+InsWhile → while Exp do I
+    InsWhile.codP   =
+        Exp.codP ||
+        ir-f(I.etqP + 1) ||
+        I.codP ||
+        ir-a(InsWhile.etqPh)
+    Exp.etqPh       = InsWhile.etqPh
+    I.etqPh         = Exp.etqP + 1
+    InsWhile.etqP   = I.etqP + 1
+    InsWhile.codJ   =
+        Exp.codJ ||
+        ifeq +(3 + I.etqJ - Exp.etqJ + 3) ||
+        I.codJ ||
+        goto (InsWhile.etqJh - I.etqJ)
+    Exp.etqJh       = InsWhile.etqJh
+    I.etqJh     = Exp.etqJ + 3
+    InsWhile.etqJ   = I.etqJ + 3
+
+InsFor → for id=Exp to Exp do I
+    InsFor.codP =
+        Exp0.codP ||
+        desapila-dir InsFor.tsh[id.lex].dir ||
+        Exp1.codP ||
+        dup ||
+        apila-dir InsFor.tsh[id.lex].dir ||
+        igual ||
+        ir-v( InsFor.etqP - 1) ||
+        I.codP ||
+        apila-dir InsFor.tsh[id.lex].dir ||
+        apilar 1 ||
+        sumar ||
+        desapila-dir InsFor.tsh[id.lex].dir ||
+        ir-a (Exp1.etqP)
+        pop
+    Exp0.etqPh  = InsFor.etqPh
+    Exp1.etqPh  = Exp0.etqP + 1
+    I.etqPh = Exp1.etqP + 4
+    InsFor.etqP = I.etqP + 6
+
+    InsFor.codJ =
+        Exp0.codJ ||
+        desapilaDir(InsFor.tsh[id.lex].dir) ||
+        Exp1.codP ||
+        dup ||
+        apilaDir(InsFor.tsh[id.lex].dir) ||
+        if_icmpeq +(3 + I.etqJ - I.etqJh + 3 + 3) ||
+        I.codJ ||
+        iinc InsFor.tsh[id.lex].dir 1 ||
+        goto +(Exp1.etqP - (I.etqJ + 1))
+        pop
+    Exp0.etqJh  = InsFor.etqJh
+    Exp1.etqJh  = Exp0.etqJ + dameU1s(desapilaDir(InsFor.tsh[id.lex].dir))
+    I.etqJh = Exp1.etqJ + 1 + dameU1s(apilaDir(InsFor.tsh[id.lex].dir)) + 3
+    InsFor.etqJ = I.etqJ + 3 + 3 + 1
+
+INew → new Mem
+    INew.codP = 
+        Mem.codP ||
+        new(
+            si Mem.tipo.tbase = ref
+                INew.tsh[Mem.tipo.tbase.id].tam
+            si no 
+                1
+        )
+        || desapila-ind
+    Mem.etqPh = INew.etqPh
+    INew.etqP = Mem.etqP + 2
+    
+IDel → delete Mem
+    IDel.codP = 
+        Mem.codP ||
+        del(
+            si Mem.tipo.tbase = ref
+                IDel.tsh[Mem.tipo.tbase.id].tam
+            si no
+                1
+        )
+    Mem.etqPh = IDel.etqPh
+    IDel.etqP = Mem.etqP + 1
+Mem → id
+    Mem.codP    = apila(Mem.tsh[id.lex].dir)
+    Mem.etqP    = Mem.etqPh + 1
+Mem → Mem->
+    Mem0.codP   = Mem1.codP || apila-ind
+    Mem1.etqPh  = Mem0.etqPh
+    Mem0.etqP   = Mem1.etqP + 1
+Mem → Mem[Expresion]
+    Mem0.codP   =
+        Mem1.codP || Exp.codP || apila Mem1.tipo.tbase.tam || multiplica || suma
+    Mem1.etqPh  = Mem0.etqPh
+    Exp.etqPh   = Mem1.etqP
+    Mem0.etqP   = Exp.etqP + 3
+Mem → Mem.id
+    Mem0.codP   = Mem1.codP || apila(Mem1.tipo.campos[iden.lex].desp) || suma
+    Mem1.etqPh  = Mem0.etqPh
+    Mem0.etqP   = Mem1.etqP + 2 
+
+Exp → ExpNiv1 OpNiv0 ExpNiv1
+    Exp.codP =
+        case (OpNiv0.op)
+            menor:
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || menor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || menor
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || menor
+                        sino si (ExpNiv12.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || menor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || menor
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || menor
+                        sino si (ExpNiv12.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || menor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || menor
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP || menor
+            mayor
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || mayor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || mayor
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || mayor
+                        sino si (ExpNiv11.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || mayor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || mayor
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || mayor
+                        sino si (ExpNiv11.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || mayor
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || mayor
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP ||  mayor
+            menor-ig
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || menorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || menorIg
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || menorIg
+                        sino si (ExpNiv12.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || menorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || menorIg
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || menorIg
+                        sino si (ExpNiv12.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || menorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || menorIg
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP ||  menorIg
+            mayor-ig
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || mayorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || mayorIg
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || mayorIg
+                        sino si (ExpNiv12.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || mayorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || mayorIg
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || mayorIg
+                        sino si (ExpNiv12.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || mayorIg
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || mayorIg
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP ||  mayorIg
+            igual
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || igual
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || igual
+                        sino si (ExpNiv11.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || igual
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || igual
+                        sino si (ExpNiv11.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || igual
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP ||  igual
+            no-igual
+                case (ExpNiv1o.tipo)
+                    float:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || ExpNiv11.codP || no-igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || CastFloat || no-igual
+                    entero:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11..codP || no-igual
+                        sino si (ExpNiv12.tipo = natural)
+                            ExpNiv1o.codP || ExpNiv11.codP || CastInt || no-igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || no-igual
+                    natural:
+                        si (ExpNiv11.tipo = float)
+                            ExpNiv1o.codP || CastFloat || ExpNiv11.codP || no-igual
+                        sino si (ExpNiv12.tipo = entero)
+                            ExpNiv1o.codP || CastInt || ExpNiv11.codP || no-igual
+                        sino
+                            ExpNiv1o.codP || ExpNiv11.codP || no-igual
+                    otro:
+                        ExpNiv1o.codP || ExpNiv11.codP ||  no-igual
+
+    Exp.codJ =
+        case (OpNiv0.op)
+            menor:
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_ge +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_ge +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_ge +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmpge +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+            mayor
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_le +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_le +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_le +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmple +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+            menor-ig
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_gt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_gt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_gt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmpgt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+            mayor-ig
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_lt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_lt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_lt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmplt +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+            igual
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_ne +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_ne +7
+                        iconst_1
+                        goto +4
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_ne +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmpne +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+            no-igual
+                si (ExpNiv1o.tipo = float)
+                    si (ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_eq +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        i2f ||
+                        fcmpg ||
+                        if_eq +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+                sino
+                    si(ExpNiv11.tipo = float)
+                        ExpNiv1o.codJ ||
+                        i2f ||
+                        ExpNiv11.codJ ||
+                        fcmpg ||
+                        if_eq +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+                    sino
+                        ExpNiv1o.codJ ||
+                        ExpNiv11.codJ ||
+                        if_icmpeq +7 ||
+                        iconst_1 ||
+                        goto +4 ||
+                        iconst_0
+
+Exp → ExpNiv1
+    Exp.codP = ExpNiv1.codP
+    Exp.codJ = ExpNiv1.codJ
+
+ExpNiv1 → ExpNiv1 or ExpNiv2
+    ExpNiv10.codP  = 
+        ExpNiv11.codP || 
+        dup || 
+        ir-v(ExpNiv2.etqP) ||
+        desapila || 
+        ExpNiv2.codP
+    ExpNiv11.etqPh = ExpNiv10.etqPh
+    ExpNiv2.etqPh  = ExpNiv11.etqP + 3
+    ExpNiv10.etqP  = ExpNiv2.etqP
+    ExpNiv10.codJ  =
+        ExpNiv11.codJ ||
+        dup     ||
+        ifne (ExpNiv2.etqJ - ExpNiv11.etqJ +1) ||
+        pop     ||
+        ExpNiv2.codJ  
+
+ExpNiv1 → ExpNiv1 OpNiv1 ExpNiv2
+    ExpNiv1o.codP =
+        case (OpNiv1.op)
+            suma:
+                case (ExpNiv11.tipo)
+                    float:
+                        si(ExpNiv2 .tipo = float)
+                            ExpNiv11.codP || ExpNiv2.codP || sumar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || CastFloat || sumar
+                    entero:
+                        si (ExpNiv2.tipo = float)
+                            ExpNiv11.codP || CastFloat || ExpNiv2.codP || sumar
+                        sino si (ExpNiv2.tipo = natural)
+                            ExpNiv11.codP || ExpNiv2.codP || CastInt || sumar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || sumar
+                    natural:
+                        si (ExpNiv2.tipo = float)
+                            ExpNiv11.codP || CastFloat || ExpNiv2.codP || sumar
+                        sino si (ExpNiv2.tipo = entero)
+                            ExpNiv11.codP || CastInt || ExpNiv2.codP ||  sumar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || sumar
+            resta:
+                case (ExpNiv11.tipo)
+                    float:
+                        si(ExpNiv2 .tipo = float)
+                            ExpNiv11.codP || ExpNiv2.codP || restar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || CastFloat || restar
+                    entero:
+                        si (ExpNiv2.tipo = float)
+                            ExpNiv11.codP || CastFloat || ExpNiv2.codP || restar
+                        sino si (ExpNiv2.tipo = natural)
+                            ExpNiv11.codP || ExpNiv2.codP || CastInt || restar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || restar
+                    natural:
+                        si (ExpNiv2.tipo = float)
+                            ExpNiv11.codP || CastFloat || ExpNiv2.codP || restar
+                        sino si (ExpNiv2.tipo = entero)
+                            ExpNiv11.codP || CastInt || ExpNiv2.codP ||  restar
+                        sino
+                            ExpNiv11.codP || ExpNiv2.codP || restar
+    ExpNiv1o.codJ =
+        case (OpNiv1.op)
+            suma:
+                si (ExpNiv11.tipo = float)
+                    si(ExpNiv2.tipo = float)
+                         ExpNiv11.codJ || ExpNiv2. codJ || fadd
+                    sino
+                         ExpNiv11.codJ || ExpNiv2. codJ || i2f || fadd
+                sino
+                    si(ExpNiv2.tipo = float)
+                         ExpNiv11.codJ || i2f || ExpNiv2. codJ || fadd
+                    sino
+                         ExpNiv11.codJ || ExpNiv2. codJ || iadd
+            resta:
+                si (ExpNiv11.tipo = float)
+                    si(ExpNiv2.tipo = float)
+                         ExpNiv11.codJ || ExpNiv2. codJ || fsub
+                    sino
+                         ExpNiv11.codJ || ExpNiv2. codJ || i2f || fsub
+                sino
+                    si(ExpNiv2.tipo = float)
+                         ExpNiv11.codJ || i2f || ExpNiv2. codJ || fsub
+                    sino
+                         ExpNiv11.codJ || ExpNiv2. codJ || isub
+    
+ExpNiv1 → ExpNiv2
+    ExpNiv1.codP = ExpNiv2.codP
+    ExpNiv1.codJ = ExpNiv2.codJ
+
+ExpNiv2 ::= ExpNiv2 and ExpNiv3
+  ExpNiv20.cod = Term1.cod || ir-f(Fact.etq + 1) ||
+              Fact.cod || ir-a(Fact.etq + 2) || apila(0)
+  Term1.etqh = Termo.etqh
+  Fact.etqh = Term1.etq + 1
+  Termo.etq = Fact.etq + 2
+
+
+ExpNiv2 → ExpNiv2 OpNiv2 ExpNiv3
+    ExpNiv2o.codP =
+        case(OpNiv2.op)
+            Multiplica:
+                case (ExpNiv21.tipo)
+                    float:
+                        si(ExpNiv3.tipo = float)
+                            ExpNiv21.codP || ExpNiv3.codP || Mul
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || CastFloat || Mul
+                    entero:
+                        si (ExpNiv3 .tipo = float)
+                            ExpNiv21.codP || CastFloat || ExpNiv3.codP || Mul
+                        sino si (ExpNiv3 .tipo = natural)
+                            ExpNiv21.codP || ExpNiv3.codP || CastInt || Mul
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || Mul
+                    natural:
+                        si (ExpNiv3 .tipo = float)
+                            ExpNiv21.codP || CastFloat || ExpNiv3.codP || Mul
+                        sino si (ExpNiv3 .tipo = entero)
+                            ExpNiv21.codP || CastInt || ExpNiv3.codP ||  Mul
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || Mul
+            Divide:
+                case (ExpNiv21.tipo)
+                    float:
+                        si(ExpNiv3.tipo = float)
+                            ExpNiv21.codP || ExpNiv3.codP || Div
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || CastFloat || Div
+                    entero:
+                        si (ExpNiv3 .tipo = float)
+                            ExpNiv21.codP || CastFloat || ExpNiv3.codP || Div
+                        sino si (ExpNiv3 .tipo = natural)
+                            ExpNiv21.codP || ExpNiv3.codP || CastInt || Div
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || Div
+                    natural:
+                        si (ExpNiv3 .tipo = float)
+                            ExpNiv21.codP || CastFloat || ExpNiv3.codP || Div
+                        sino si (ExpNiv3 .tipo = entero)
+                            ExpNiv21.codP || CastInt || ExpNiv3.codP ||  Div
+                        sino
+                            ExpNiv21.codP || ExpNiv3.codP || Div
+            Modulo:
+                ExpNiv21.codP || ExpNiv3.codP || Mod
+            y:
+                ExpNiv21.codP || ExpNiv3.codP || Y
+    ExpNiv2o.codJ =
+        case(OpNiv2.op)
+            Multiplica:
+                si(ExpNiv21.tipo = float)
+                    si(ExpNiv3.tipo = float)
+                        ExpNiv21.codJ || ExpNiv3.codJ || fmul
+                    sino
+                        ExpNiv21.codJ || ExpNiv3.codJ || i2f || fmul
+                sino
+                    si(ExpNiv3.tipo = float)
+                        ExpNiv21.codJ || i2f || ExpNiv3.codJ|| fmul
+                    sino
+                        ExpNiv21.codJ || ExpNiv3.codJ|| imul
+            Divide:
+                si(ExpNiv21.tipo = float)
+                    si(ExpNiv3.tipo = float)
+                        ExpNiv21.codJ || ExpNiv3.codJ || fdiv
+                    sino
+                        ExpNiv21.codJ || ExpNiv3.codJ || i2f || fdiv
+                sino
+                    si(ExpNiv3.tipo = float)
+                        ExpNiv21.codJ || i2f || ExpNiv3.codJ|| fdiv
+                    sino
+                        ExpNiv21.codJ || ExpNiv3.codJ|| idiv
+            Modulo:
+                ExpNiv21. codJ || ExpNiv3. codJ || imod
+            y:
+                ExpNiv21.codJ ||
+                ifeq +11 ||
+                ExpNiv3.codJ ||
+                ifeq +7 ||
+                iconst_1 ||
+                goto +4 ||
+                iconst_0
+
+ExpNiv2 → ExpNiv3
+    ExpNiv2.codP = ExpNiv3.codP
+    ExpNiv2.codJ = ExpNiv3.codJ
+ExpNiv3 → ExpNiv4 OpNiv3 ExpNiv3
+    ExpNiv3o.codP =
+        case (OpNiv3.op)
+            shl:
+                ExpNiv4.codP || ExpNiv31.codP || shl
+            shr:
+                ExpNiv4.codP || ExpNiv31.codP || shr
+    ExpNiv3o.codJ =
+        case (OpNiv3.op)
+            shl:
+                ExpNiv4.codJ || ExpNiv31.codJ|| ishl
+            shr:
+                ExpNiv4.codJ || ExpNiv31.codJ || ishr
+
+ExpNiv3 → ExpNiv4
+    ExpNiv3.codP = ExpNiv4.codP
+    ExpNiv3.codJ = ExpNiv4.codJ
+
+ExpNiv4 → OpNiv4 ExpNiv4
+    ExpNiv4o.codP =
+        case (OpNiv4.op)
+            no:
+                ExpNiv41.codP || no
+            negativo:
+                ExpNiv41.codP || negativo
+            cast-float:
+                ExpNiv41.codP || CastFloat
+            cast-int:
+                ExpNiv41.codP || CastInt
+            cast-nat:
+                ExpNiv41.codP || CastNat
+            cast-char:
+                ExpNiv41.codP || CastChar
+    ExpNiv4o.codJ =
+        case (OpNiv4.op)
+            no:
+                ExpNiv4.codJ ||
+                ifeq +7 ||
+                iconst_0 ||
+                goto +4 ||
+                iconst_1
+            negativo:
+                case (ExpNiv41.tipo)
+                    entero:
+                        ExpNiv41.codJ || ineg
+                    float:
+                        ExpNiv41.codJ || fneg
+            cast-float:
+                case (ExpNiv41.tipo)
+                    character:
+                    natural:
+                    entero:
+                        ExpNiv41.codJ || i2f
+                    float:
+                        ExpNiv41.codJ
+            cast-int:
+                case (ExpNiv41.tipo)
+                    character:
+                    natural:
+                    entero:
+                        ExpNiv41.codJ
+                    float:
+                        ExpNiv41.codJ || f2i
+            cast-nat:
+                case (ExpNiv41.tipo)
+                    character:
+                    natural:
+                    entero:
+                        ExpNiv4.codJ
+                    float:
+                        ExpNiv4.codJ || f2i
+            cast-char:
+                case (ExpNiv41.tipo)
+                    character:
+                    natural:
+                    entero:
+                        ExpNiv41.codJ
+                    float:
+                        ExpNiv41.codJ || f2i
+
+ExpNiv4 → | Exp |
+    ExpNiv4.codP = Exp.codP || abs
+    ExpNiv4.codJ =
+        case (Exp.tipo)
+            float:
+                Exp.codJ ||
+                dup ||
+                fconst_0 ||
+                fcmpg ||
+                ifge +4
+                fneg
+            otro:
+                Exp.codJ ||
+                dup ||
+                ifge +4
+                fneg
+
+ExpNiv4 → ( Exp )
+    ExpNiv4.codP = Exp.codP
+    ExpNiv4.codJ = Literal.codJ
+
+ExpNiv4 → Literal
+    ExpNiv4.codP = Literal.codP
+    ExpNiv4.codJ = Literal.codJ
+Literal → Mem
+    Literal.codP    = 
+        si esCompatibleConTipoBasico(Mem.tipo,Literal.tsh)
+            Mem.codP || apila-ind
+        si no
+            Mem.codP
+    Mem.etqh        = Literal.etqh
+    Literal.etq     = 
+        si esCompatibleConTipoBasico(Mem.tipo,Literal.tsh)
+             Mem.etq + 1
+        si no 
+            Mem.etq
+    Literal.codJ = case(Literal.tsh[id.lex].tipo) <-- TODO
+        boolean:
+            i2b || iload  Literal.tsh[id.lex].dir
+        tCha:
+            i2c || iload  Literal.tsh[id.lex].dir
+        natural:
+        entero:
+            iload  Literal.tsh[id.lex].dir
+        float:
+            fload  Literal.tsh[id.lex].dir
+Literal → litNat
+    Literal.codP = apila LitNat.lex
+    Literal.codJ = iconst (LitNat.lex)
+
+Literal → litFlo
+    Literal.codP = apila litFlo.lex
+    Literal.codJ = fconst (litFlo.lex)
+
+Literal → litTrue
+    Literal.codP = apila true
+    Literal.codJ = iconst 1
+Literal → litFalse
+    Literal.codP = apila false
+    Literal.codJ = iconst 0
+
+Literal → litCha
+    Literal.codP = apila litCha.lex
+    Literal.codJ = iconst (litCha.lex)
