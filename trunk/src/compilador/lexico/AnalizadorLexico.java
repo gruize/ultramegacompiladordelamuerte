@@ -13,6 +13,9 @@ import compilador.lexico.Tokens.Cast_char;
 import compilador.lexico.Tokens.Cast_float;
 import compilador.lexico.Tokens.Cast_int;
 import compilador.lexico.Tokens.Cast_nat;
+import compilador.lexico.Tokens.Circunflejo;
+import compilador.lexico.Tokens.Corchete_a;
+import compilador.lexico.Tokens.Corchete_c;
 import compilador.lexico.Tokens.Dispose;
 import compilador.lexico.Tokens.Distinto;
 import compilador.lexico.Tokens.Division;
@@ -33,6 +36,8 @@ import compilador.lexico.Tokens.LitFalse;
 import compilador.lexico.Tokens.LitFlo;
 import compilador.lexico.Tokens.LitNat;
 import compilador.lexico.Tokens.LitTrue;
+import compilador.lexico.Tokens.Llave_a;
+import compilador.lexico.Tokens.Llave_c;
 import compilador.lexico.Tokens.Mayor;
 import compilador.lexico.Tokens.Mayor_ig;
 import compilador.lexico.Tokens.Menor;
@@ -50,6 +55,7 @@ import compilador.lexico.Tokens.Parentesis_a;
 import compilador.lexico.Tokens.Parentesis_c;
 import compilador.lexico.Tokens.Pointer;
 import compilador.lexico.Tokens.Procedure;
+import compilador.lexico.Tokens.Punto;
 import compilador.lexico.Tokens.Punto_coma;
 import compilador.lexico.Tokens.Record;
 import compilador.lexico.Tokens.Separador;
@@ -57,6 +63,7 @@ import compilador.lexico.Tokens.Shl;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Suma;
 import compilador.lexico.Tokens.Then;
+import compilador.lexico.Tokens.Tipo;
 import compilador.lexico.Tokens.To;
 import compilador.lexico.Tokens.Token;
 import compilador.lexico.Tokens.Var;
@@ -134,51 +141,7 @@ public class AnalizadorLexico {
 	private static final int PUNTO = 59;
 	private static final int CORCHETE_A = 60;
 	private static final int CORCHETE_C = 61;
-	/*private static final int  = 62;
-	private static final int  = 63;
-	private static final int  = 64;
-	private static final int  = 65;
-	private static final int  = 66;
-	private static final int  = 67;
-	private static final int  = 68;
-	private static final int  = 69;
-	private static final int  = 70;
-	private static final int  = 71;
-	private static final int  = 72;
-	private static final int  = 73;
-	private static final int  = 74;
-	private static final int  = 75;
-	private static final int  = 76;
-	private static final int  = 77;
-	private static final int  = 78;
-	private static final int  = 79;
-	private static final int  = 80;
-	private static final int  = 81;
-	private static final int  = 82;
-	private static final int  = 83;
-	private static final int  = 84;
-	private static final int  = 85;
-	private static final int  = 86;
-	private static final int  = 87;
-	private static final int  = 88;
-	private static final int  = 89;
-	private static final int  = 90;
-	private static final int  = 91;
-	private static final int  = 92;
-	private static final int  = 93;
-	private static final int  = 94;
-	private static final int  = 95;
-	private static final int  = 96;
-	private static final int  = 97;
-	private static final int  = 98;
-	private static final int  = 99;
-	private static final int  = 100;
-	private static final int  = 101;
-	private static final int  = 102;
-	private static final int  = 103;
-	private static final int  = 104;
-	private static final int  = 105;*/
-
+	
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
 		palabrasReservadas.put("true",new LitTrue());
@@ -210,6 +173,7 @@ public class AnalizadorLexico {
                 palabrasReservadas.put("procedure",new Procedure());
                 palabrasReservadas.put("var",new Var());
                 palabrasReservadas.put("forward",new Forward());
+                palabrasReservadas.put("tipo",new Tipo());
 	}
 
 
@@ -317,8 +281,14 @@ public class AnalizadorLexico {
     			break;
     		case CHAR1: sal="Los caracteres tienen que ser de 1 letra"+linea; break;
     		case CHAR2: sal="Despues de escribir el caracter tienes que poner \'"+linea; break;
+            case LLAVE_A:
+            case LLAVE_C:
+            case CIRCUNFLEJO:
+            case PUNTO:
+            case CORCHETE_A:
+            case CORCHETE_C:
             case CADENA: sal="No puedes definir un token con nombre de palabra reservada"+linea; break;
-    		default:
+            default:
     		}
             transita(INICIAL);
             writer.println(sal);
@@ -350,7 +320,13 @@ public class AnalizadorLexico {
 				case '%': transita(MODULO); break;
 				case '|': transita(ABSOLUTO); break;
 				case '\'' : transita(CHAR1); break;
-				case '-': transita(SIGNO_MENOS); break;
+				case '-': transita(SIGNO_MENOS); break; // Tengo q ver que hago con la flecha
+                                case '{': transita(LLAVE_A); break;
+                                case '}': transita(LLAVE_C); break;
+                                case '^': transita(CIRCUNFLEJO); break;
+                                case '.': transita(PUNTO); break;
+                                case '[': transita(CORCHETE_A); break;
+                                case ']': transita(CORCHETE_C); break;
 				default:
 					if (Character.isDigit(buff)){
 						switch(buff){
@@ -873,6 +849,30 @@ public class AnalizadorLexico {
 				arrayTokens.add(new Signo_menos(numLinea));
 				terminaEstado();
 				break;
+                        case LLAVE_A :
+                                arrayTokens.add(new Llave_a(numLinea));
+                                terminaEstado();
+                                break;
+                        case LLAVE_C :
+                                arrayTokens.add(new Llave_c(numLinea));
+                                terminaEstado();
+                                break;
+                        case CIRCUNFLEJO :
+                                arrayTokens.add(new Circunflejo(numLinea));
+                                terminaEstado();
+                                break;
+                        case PUNTO :
+                                arrayTokens.add(new Punto(numLinea));
+                                terminaEstado();
+                                break;
+                        case CORCHETE_A :
+                                arrayTokens.add(new Corchete_a(numLinea));
+                                terminaEstado();
+                                break;
+                        case CORCHETE_C :
+                                arrayTokens.add(new Corchete_c(numLinea));
+                                terminaEstado();
+                                break;
 
 
 			}
