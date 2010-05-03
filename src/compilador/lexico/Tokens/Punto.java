@@ -10,8 +10,8 @@ package compilador.lexico.Tokens;
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class Punto extends Token{
-    public Punto(){
-        super();
+    public Punto(int n){
+        super(n);
     }
 
     @Override

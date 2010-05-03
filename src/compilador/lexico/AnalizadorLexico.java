@@ -23,6 +23,7 @@ import compilador.lexico.Tokens.Do;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
 import compilador.lexico.Tokens.Else;
+import compilador.lexico.Tokens.Flecha;
 import compilador.lexico.Tokens.FloatToken;
 import compilador.lexico.Tokens.For;
 import compilador.lexico.Tokens.Forward;
@@ -141,6 +142,7 @@ public class AnalizadorLexico {
 	private static final int PUNTO = 59;
 	private static final int CORCHETE_A = 60;
 	private static final int CORCHETE_C = 61;
+        private static final int FLECHA = 62;
 	
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
@@ -287,6 +289,7 @@ public class AnalizadorLexico {
             case PUNTO:
             case CORCHETE_A:
             case CORCHETE_C:
+            case FLECHA:
             case CADENA: sal="No puedes definir un token con nombre de palabra reservada"+linea; break;
             default:
     		}
@@ -648,6 +651,13 @@ public class AnalizadorLexico {
 				arrayTokens.add(new Distinto(numLinea));
 				terminaEstado();
 				break;
+//No se si estara bien
+                        case SIGNO_MENOS :
+				switch(buff){
+				case '>': transita(FLECHA); break;
+				default: arrayTokens.add(new Signo_menos(numLinea)); terminaEstado();
+				}
+				break;
 			case LIT_NAT1 :
 				switch(buff){
 				case '.': transita(FLOAT1); break;
@@ -845,10 +855,10 @@ public class AnalizadorLexico {
 				arrayTokens.add(new LitCha(lex,numLinea));
 				terminaEstado();
 				break;
-			case SIGNO_MENOS:
+/******************	case SIGNO_MENOS:
 				arrayTokens.add(new Signo_menos(numLinea));
 				terminaEstado();
-				break;
+				break;*/
                         case LLAVE_A :
                                 arrayTokens.add(new Llave_a(numLinea));
                                 terminaEstado();
@@ -871,6 +881,10 @@ public class AnalizadorLexico {
                                 break;
                         case CORCHETE_C :
                                 arrayTokens.add(new Corchete_c(numLinea));
+                                terminaEstado();
+                                break;
+                        case FLECHA :
+                                arrayTokens.add(new Flecha(numLinea));
                                 terminaEstado();
                                 break;
 
