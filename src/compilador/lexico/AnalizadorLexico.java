@@ -43,6 +43,7 @@ import compilador.lexico.Tokens.Mayor;
 import compilador.lexico.Tokens.Mayor_ig;
 import compilador.lexico.Tokens.Menor;
 import compilador.lexico.Tokens.Menor_ig;
+import compilador.lexico.Tokens.MiArray;
 import compilador.lexico.Tokens.Modulo;
 import compilador.lexico.Tokens.Multiplicacion;
 import compilador.lexico.Tokens.Natural;
@@ -165,7 +166,7 @@ public class AnalizadorLexico {
                 palabrasReservadas.put("do",new Do());
                 palabrasReservadas.put("for",new For());
                 palabrasReservadas.put("to",new To());
-                //palabrasReservadas.put("array",new Array());
+                palabrasReservadas.put("array",new MiArray());
                 palabrasReservadas.put("of",new Of());
                 palabrasReservadas.put("record",new Record());
                 palabrasReservadas.put("pointer",new Pointer());
@@ -323,7 +324,7 @@ public class AnalizadorLexico {
 				case '%': transita(MODULO); break;
 				case '|': transita(ABSOLUTO); break;
 				case '\'' : transita(CHAR1); break;
-				case '-': transita(SIGNO_MENOS); break; // Tengo q ver que hago con la flecha
+				case '-': transita(SIGNO_MENOS); break;
                                 case '{': transita(LLAVE_A); break;
                                 case '}': transita(LLAVE_C); break;
                                 case '^': transita(CIRCUNFLEJO); break;
