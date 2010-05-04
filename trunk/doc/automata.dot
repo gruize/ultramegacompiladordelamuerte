@@ -78,6 +78,17 @@ digraph G{
   "40 float3" -> "42 float4" [label = "."];
   "40 float3" -> "43 litFlo4" [label = "[1-9]"];
   "42 float4" -> "43 liFlo4" [label = "[1-9]"];
+
+  "3 (" -> "3 (" [label = """"]
+  "21 (Char" -> "21 (char" [label = """"]
+  "10 (nat" -> "10 (nat" [label = """"]
+  "16 (float" -> "16 (float" [label = """"]
+  "6 (int" -> "6 (int" [label = """"]
+  "34 litNat2" -> "34 litNat2" [label = "[0-9]"]
+  "38 litFlo2" -> "38 litFlo2" [label = "[1-9]"]
+  "39 float2" -> "39 float2" [label = "0"]
+  "43 litFlo4" -> "43 litFlo4" [label = "[0-9]"]
+
   "" -> "44 &" [label = "&"];
   "" -> "45 ;" [label = ";"];
   "" -> "46 +" [label = "+"];
