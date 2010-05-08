@@ -174,9 +174,9 @@ LFParams → LFParams, FParam
     LFParams0.dir   = LFParams1.dir + FParam.tam
     FParam.dirh     = LFParams1.dir
 
-LFParam → FParam
-    LFParam.ts      = añadeID(LFParam.tsph, FParam.id,FParam.props ⊗ <dir:0>)
-    LFParam.dir     = FParam.tam
+LFParams → FParam
+    LFParams.ts      = añadeID(LFParams.tsph, FParam.id,FParam.props ⊗ <dir:0>)
+    LFParams.dir     = FParam.tam
     FParam.dirh     = 0
 
 
@@ -189,7 +189,7 @@ FParam → id: Tipo
     Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
 
 
-Bloque → Decs && I
+Bloque → DecsBloque && I
     Decs.dirh       = Bloque.dirh
     Decs.nh         = Bloque.nh
     Bloque.n        = Decs.n
@@ -218,15 +218,15 @@ Bloque → I
 
     
     
-Decs → Decs ; Dec
+DecsBloque → DecsBloque ; Dec
     Decs1.dirh = Decso.dirh
     
-Decs → Dec
+DecsBloque → Dec
     Decs.dir = Decs.dirh + Dec.tam
     Dec.dirh = Decs.dirh
 
 Is → I ; Is
-    Is0.cod    = I.cod || Instrucciones1.cod
+    Is0.cod    = I.cod || Is1.cod
     Is1.etqh   = Is0.etqh
     I.etqh     = Is1.etq
     Is0.etq    = I.etq
