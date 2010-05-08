@@ -42,7 +42,7 @@ public class EntradaNat extends InstruccionInterprete{
             if(i < 0)
                 throw new InstruccionExc(this,"El dato leído ("
                         +datoLeido.toNatural()+") no es un natural");            
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (InstruccionExc ex) {
             throw ex;
         } catch (Exception ex) {

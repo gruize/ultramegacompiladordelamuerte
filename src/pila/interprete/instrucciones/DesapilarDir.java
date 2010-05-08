@@ -44,7 +44,7 @@ public class DesapilarDir extends InstruccionInterprete{
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila d = pila.removeFirst();
-            interprete.getMemoria()[getDato().toNatural()] = d;
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = d;
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getLocalizedMessage());
         }

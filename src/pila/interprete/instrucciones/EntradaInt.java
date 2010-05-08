@@ -38,7 +38,7 @@ public class EntradaInt extends InstruccionInterprete{
             String leido = interprete.getReader().readLine();
             int i = Integer.valueOf(leido);
             datoLeido = new Entero(i);
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
             }
             catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());

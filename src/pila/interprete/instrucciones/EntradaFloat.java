@@ -39,7 +39,7 @@ public class EntradaFloat extends InstruccionInterprete{
             String leido = interprete.getReader().readLine();
             float i = Float.valueOf(leido);          
             datoLeido = new Real(i);
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }
