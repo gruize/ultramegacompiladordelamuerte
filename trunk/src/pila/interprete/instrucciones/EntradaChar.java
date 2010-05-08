@@ -37,7 +37,7 @@ public class EntradaChar extends InstruccionInterprete{
             interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             datoLeido = new Caracter(leido.charAt(0));
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;           
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;           
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }

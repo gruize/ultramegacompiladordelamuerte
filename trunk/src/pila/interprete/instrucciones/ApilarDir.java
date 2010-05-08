@@ -42,7 +42,7 @@ public class ApilarDir extends InstruccionInterprete {
         try {
             switch (getDato().getTipoDato()) {
                 case DatoPila.NAT_T:
-                    interprete.getPila().addFirst(interprete.getMemoria()[getDato().toNatural()]);
+                    interprete.getPila().addFirst(interprete.getMemoria().getMemoria()[getDato().toNatural()]);
                     break;
                 default:
                     throw new InstruccionExc(this, "Tipo inválido (" + getDato().toString() + ")");

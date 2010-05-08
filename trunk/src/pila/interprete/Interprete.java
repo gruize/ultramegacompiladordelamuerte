@@ -39,7 +39,7 @@ public class Interprete {
      */
     private ArrayDeque<DatoPila> pila;
     private ArrayList<InstruccionInterprete> programa;
-    private DatoPila[] memoria;
+    private Memoria memoria;
     private boolean parar; //true si ha acabado
     private int cp; //el contador de programa
     private boolean modoDepuracion;
@@ -57,7 +57,7 @@ public class Interprete {
     public Interprete(int longMem, boolean depuracion, Reader reader, PrintWriter salida) {
         programa = null;
         pila = null;
-        memoria = new DatoPila[longMem];
+        memoria = new Memoria(longMem);
         modoDepuracion = depuracion;
         if(depuracion)
             sb = new StringBuilder(100);
@@ -112,15 +112,15 @@ public class Interprete {
 
     public String mostrarEstado() {
         sb.delete(0, sb.length()); //se resetea
-        int i = memoria.length-1;
+        int i = memoria.getMemoria().length-1;
         //buscamos la primera direccion de memoria con un dato guardado
         sb.append("Contenido de la memoria:\n");
-        while(i >= 0 && memoria[i] == null)
+        while(i >= 0 && memoria.getMemoria()[i] == null)
             i--;
         if(i < 0)
             sb.append("Vacía\n");
         for(int j = 0; j <= i; j++) {
-            sb.append("\t"+j+") "+memoria[j]+"\n");
+            sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
         }
 
         sb.append("\n\nContenido de la pila:\n");
@@ -201,11 +201,11 @@ public class Interprete {
     	if (cp==programa.size()) setParar(true);
         this.cp = cp;
     }
-
+    
     /**
      * @return la memoria de la máquina
      */
-    public DatoPila[] getMemoria() {
+    public Memoria getMemoria() {
         return memoria;
     }
 

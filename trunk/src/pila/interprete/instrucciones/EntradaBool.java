@@ -48,7 +48,7 @@ public class EntradaBool extends InstruccionInterprete {
             }
             datoLeido = new Bool(b);
             
-            interprete.getMemoria()[getDato().toNatural()] = datoLeido;
+            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (InstruccionExc ex) {
             throw ex;
 
