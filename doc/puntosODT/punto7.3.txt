@@ -69,7 +69,7 @@ DecProc → proc iden FParams Bloque fproc
 
 
 
-POR HACER
+**************************************************POR HACER***************************************
 LAParametros → Expresion LAParametrosRec
 LAParametrosRec → ',' Expresion LAParametrosRec
 LAParametrosRec → λ
@@ -95,7 +95,9 @@ LAParams ::= Exp
     LAParams.etq    = Exp.etq + longPasoParametro
     Exp.parh        = LAParams.fparamsh[1].modo == var
 
-    
+******************************************************************************************************************
+
+
 FParams → ( LFParams )    
 FParams → λ
 
@@ -138,11 +140,10 @@ DecsBloqueRec -> λ
 
 
 Is -> I IsFact
+	I.etqh = Is.etqh
+	IsFact.etqh = I.etq
+	Is.etq = IsFact.etq
 	Is.cod = I.cod || IsFact.cod
-	IsFact.etqh = Is.etqh
-	I.etqh = IsFact.etq !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	Is.etq = I.etq
-	
 IsFact -> ; Is
 	Is.etqh = IsFact.etqh
 	IsFact.etq = Is.etq
@@ -202,153 +203,159 @@ MemRec → λ
 	MemRec.cod = {}
 
 
+Expresion -> ExpresionNiv1 ExpresionFact
+
+	ExpresionNiv1.etqh = Expresion.etqh
+	ExpresionNiv1.parh = Expresion.parh <--(cuidado debería ser false si ExpresionFact no es nula, pero cómo saber?)
+	ExpresionFact.etqh = ExpresionNiv1.etq <--(estaba Expresion.etqh)
+	ExpresionFact.codh = ExpresionNiv1.cod
+	ExpresionFact.tipoh = ExpresionNiv1.tipo
+	ExpresionFact.modoh = ExpresionNiv1.modo
+	Expresion.cod = ExpresionFact.cod
+
+ExpresionFact-> OpNiv0 ExpresionNiv1
+	ExpresionNiv1.parh= false
+	ExpresionNiv1.etqh = ExpresionFact.etqh
+	ExpresionFact.modo = val
+	ExpresionFact.cod =
+		apilarTiposIgualados(ExpresionFact.codh,ExpresionFact.tipoh,ExpresionNiv1.cod,ExpresionNiv1.tipo) ||
+		case (OpNiv0)
+			menor: menor
+			mayor: mayor
+			menor-ig: menorIg
+			mayor-ig: mayorIg
+			igual : igual
+			no-igual: no-igual
+	ExpresionFact.etq = ExpresionNiv1.etq + 1
+
+ExpresionFact -> λ
+	ExpresionFact.cod = ExpresionFact.codh
+	ExpresionFact.modo = ExpresionFact.modoh
+	ExpresionFact.tipo = ExpresionFact.tipoh
+	ExpresionFact.etq = ExpresionFact.etqh
 
 
-(VOY POR AQUI)*****************************************************************************************************
+ExpresionNiv1 -> ExpresionNiv2 ExpresionNiv1Rec
+	ExpresionNiv2.etqh = ExpresionNiv1.etqh
+	ExpresionNiv2.parh = ExpresionNiv1.parh (deberia ser false si ExprNiv1Rec no es vacio, cómo saber?)
+	ExpresionNiv1Rec.etqh = ExpresionNiv2.etq
+	ExpresionNiv1Rec.modoh = ExpresionNiv2.modo
+ 	ExpresionNiv1Rec.codh = ExpresionNiv2.cod
+	ExpresionNiv1Rec.tipoh = ExpresionNiv2.tipo
 
-Exp → ExpNiv1 OpNiv0 ExpNiv1
-    Exp.cod         =
-        apilarTiposIgualados(ExpNiv10.cod,ExpNiv10.tipo,ExpNiv11.cod,ExpNiv11.tipo) ||
-        case (OpNiv0.op)
-            menor:
-                menor
-            mayor
-                mayor
-            menor-ig
-                menorIg
-            mayor-ig
-                mayorIg
-            igual
-                igual
-            no-igual
-                no-igual
-    ExpNiv10.etqh   = Exp.etqh
-    ExpNiv11.etqh   = ExpNiv10.etqh
-    Exp.etq         = ExpNiv11.etq
-    Exp.modo        = val 
-    ExpNiv10.parh   = ExpNiv11.parh = false
 
-Exp → ExpNiv1
-    Exp.cod         = ExpNiv1.cod
-    ExpNiv1.etqh    = Exp.etqh
-    Exp.etq         = ExpNiv1.etq
-    Exp.modo        = ExpNiv1.modo
-    ExpNiv1.parh    = Exp.parh
+	ExpresionNiv1.cod = ExpresionNiv1Rec.cod
+	ExpresionNiv1.etq = ExpresionNiv1Rec.etq
+	ExpresionNiv1.modo = ExpresionNiv1Rec.modo
+ExpresionNiv1Rec -> OpNiv1 ExpresionNiv2 ExpresionNiv1Rec
+	ExpresionNiv2.parh = false
+	ExpresionNiv1Rec1.modoh = val	
+	ExpresionNiv1Rec1.tipoh = ExpresionNiv2.tipo
+	if (opNiv1.op == or):
+		ExpresionNiv2.etqh = ExpresionNiv1Rec0.etqh + 3
+		ExpresionNiv1Rec1.codh =
+			ExpresionNiv1Rec0.codh ||
+			dup ||
+			ir-v (ExpresionNiv2.etq) ||
+			desapila ||
+			ExpresionNiv2.cod
+		ExpresionNiv1Rec1.etqh = ExpresionNiv2.etq
 
-ExpNiv1 → ExpNiv1 or ExpNiv2
-    ExpNiv10.cod  = 
-        ExpNiv11.cod || 
-        dup || 
-        ir-v(ExpNiv2.etqP) ||
-        desapila || 
-        ExpNiv2.cod
-    ExpNiv11.etqh = ExpNiv10.etqh
-    ExpNiv2.etqh  = ExpNiv11.etq + 3
-    ExpNiv10.etq  = ExpNiv2.etq
-    ExpNiv1.modo  = val
-    ExpNiv11.parh = ExpNiv2.parh = false
+	else:
+		ExpresionNiv2.etqh = ExpresionNiv1Rec0.etqh
+		ExpresionNiv1Rec1.etqh = ExpresionNiv2.etq + 1
+		ExpresionNiv1Rec1.codh = 
+			ExpresionNiv1Rec0.codh ||
+			ExpresionNiv2.tipo) ||
+			case (OpNiv1.op)
+				suma: sumar
+				resta: restar
+		
+	ExpresionNiv1Rec0.etq = ExpresionNiv1Rec.etq
+	ExpresionNiv1Rec0.cod = ExpresionNiv1Rec1.cod
+	ExpresionNiv1Rec0.modo = ExpresionNiv1Rec1.modo
 
-ExpNiv1 → ExpNiv1 OpNiv1 ExpNiv2
-    ExpNiv10.cod =
-        apilarTiposIgualados(ExpNiv11.cod,ExpNiv11.tipo,ExpNiv2.cod,ExpNiv2.tipo) ||
-        case (OpNiv1.op)
-            suma:
-                sumar
-            resta:
-                restar
-    ExpNiv11.etqh = ExpNiv10.etqh
-    ExpNiv2.etqh  = 
-        ExpNiv11.etq + longTrasCod1ApilarTiposIgualados(ExpNiv11.tipo,ExpNiv2.tipo)
-    ExpNiv10.etq  =
-        ExpNiv2.etq + longTrasCod2ApilarTiposIgualados(ExpNiv11.tipo,ExpNiv2.tipo)
-    ExpNiv1.modo  = val
-    ExpNiv11.parh = ExpNiv2.parh = false
+ExpresionNiv1Rec ->  λ
+	ExpresionNiv1Rec.etq = ExpresionNiv1Rec.etqh
+	ExpresionNiv1Rec.cod = ExpresionNiv1Rec.codh
+	ExpresionNiv1Rec.modo = ExpresionNiv1Rec.modoh
 
-ExpNiv1 → ExpNiv2
-    ExpNiv1.cod  = ExpNiv2.cod
-    ExpNiv2.etqh = ExpNiv1.etqh
-    ExpNiv1.etq  = ExpNiv2.etq
-    ExpNiv1.modo = ExpNiv2.modo
-    ExpNiv2.parh = ExpNiv1.parh
+*****************************************************************************************************+
 
-ExpNiv2 ::= ExpNiv2 and ExpNiv3
-    ExpNiv20.cod    = 
-        ExpNiv21.cod || 
-        ir-f(Fact.etq + 1) || 
-        Fact.cod || 
-        ir-a(Fact.etq + 2) || 
-        apila(0)
-    ExpNiv21.etqh   = ExpNiv20.etqh
-    Fact.etqh       = ExpNiv21.etq + 1
-    ExpNiv20.etq    = Fact.etq + 2
-    ExpNiv20.modo   = val
-    ExpNiv21.parh   = ExpNiv3.parh = false
+ExpresionNiv2 -> ExpresionNiv3 ExpresionNiv2Rec
+	ExpresionNiv3.etqh = ExpresionNiv2.etqh
+	ExpresionNiv3.parh = ExpresionNiv2.parh
+	ExpresionNiv2Rec.etqh = ExpresionNiv3.etq
+	ExpresionNiv2Rec.codh = ExpresionNiv3.cod
+	ExpresionNiv2Rec.tipoh = ExpresionNiv3.tipo
+	ExpresionNiv2Rec.modoh = ExpresionNiv3.modo
+
+	ExpresionNiv2.cod = ExpresionNiv2Rec.cod
+	ExpresionNiv2.modo = ExpresionNiv2Rec.modo
+	ExpresionNiv2.etq = ExpresionNiv2Rec.etq
+
+ExpresionNiv2Rec -> OpNiv2 ExpresionNiv3 ExpresionNiv2Rec
+	
+
+	ExpresionNiv2Rec1.modoh= val
+	ExpresionNiv2Rec1.tipoh = ExpresionNiv3.tipo
+	if (OpNiv2.op == and)
+		ExpresionNiv2Rec1.cod = 
+			ExpresionNiv2Rec0.codh ||
+			ir-f(ExpresionNiv3.etq + 1) ||
+			ExpresionNiv3.cod ||
+			ir-a(ExpresionNiv3.etq + 2) ||
+			apila(0)
+		ExpresionNiv3.etqh = ExpresionNiv2Rec0.etqh + 1
+		ExpresionNiv2Rec1.etqh = ExpresionNiv3.etq + 2
+
+	else:
+		ExpresionNiv2Rec1.cod = 
+			ExpresionNiv2Rec0.codh ||
+			ExpresionNiv3.cod ||
+			case (OpNiv2.op)
+				Multiplica: mul
+				Divide: div
+				Modulo: Mod
+		ExpresionNiv3.etqh = ExpresionNiv2Rec0.etqh
+		ExpresionNiv3Rec1.etqh = ExpresionNiv3.etq + 1
+
+	ExpresionNiv2Rec0.cod = ExpresionNiv2Rec1.cod
+	ExpresionNiv2Rec0.modo = ExpresionNiv2Rec1.modo
+	ExpresionNiv2Rec0.etq = ExpresionNiv2Rec1.etq
+
+ExpresionNiv2Rec -> λ
+	ExpresionNiv2Rec.modo = ExpresionNiv2Rec.modoh
+	ExpresionNiv2Rec.cod = ExpresionNiv2Rec.codh
+	ExpresionNiv2Rec.etq = ExpresionNiv2Rec.etqh
     
-ExpNiv2 → ExpNiv2 OpNiv2 ExpNiv3
-    ExpNiv20.cod    =
-        case(OpNiv2.op)
-            Multiplica:
-                apilarTiposIgualados(
-                    ExpNiv21.cod,
-                    ExpNiv21.tipo,
-                    ExpNiv3.cod,
-                    ExpNiv3.tipo
-                ) ||
-                Mul
-            Divide:
-                apilarTiposIgualados(
-                    ExpNiv21.cod,
-                    ExpNiv21.tipo,
-                    ExpNiv3.cod,
-                    ExpNiv3.tipo
-                ) ||
-                Div
-            Modulo:
-                ExpNiv21.cod || ExpNiv3.cod || Mod
-            y:
-                ExpNiv21.cod || ExpNiv3.cod || Y
-    ExpNiv21.etqh   = ExpNiv20.etqh
-    ExpNiv3.etqh    = 
-        si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpNiv21.etq + 
-            longTrasCod1ApilarTiposIgualados(ExpNiv21.tipo,ExpNiv3.tipo)
-        si no
-            ExpNiv21.etq
-    ExpNiv20.etq    = 
-        si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpNiv3.etq + 
-            longTrasCod2ApilarTiposIgualados(ExpNiv21.tipo,ExpNiv3.tipo)
-        si no
-            ExpNiv3.etq
-    ExpNiv20.modo   = val
-    ExpNiv21.parh   = ExpNiv3.parh = false
-                
-ExpNiv2 → ExpNiv3
-    ExpNiv3.etqh    = ExpNiv2.etqh
-    ExpNiv2.etq     = ExpNiv3.etq
-    ExpNiv2.cod     = ExNiv3.cod
-    ExpNiv20.modo   = ExpNiv3.modo
-    ExpNiv3.parh    = ExpNiv2.parh;
 
-ExpNiv3 → ExpNiv4 OpNiv3 ExpNiv3
-    ExpNiv30.cod  =
-        case (OpNiv3.op)
-            shl:
-                ExpNiv4.cod || ExpNiv31.cod || shl
-            shr:
-                ExpNiv4.cod || ExpNiv31.cod || shr
-    ExpNiv30.modo = val
-    ExpNiv4.etqh  = ExpNiv30.etqh
-    ExpNiv31.etqh = ExpNiv4.etq
-    ExpNiv30.etqh = ExpNiv31.etq + 1
-    ExpNiv4.parh  = ExpNiv31.parh = false
 
-ExpNiv3 → ExpNiv4
-    ExpNiv4.etqh = ExpNiv3.etqh
-    ExpNiv3.etq  = ExpNiv4.etq
-    ExpNiv3.cod  = ExpNiv4.cod
-    ExpNiv3.modo = ExpNiv4.modo
-    ExpNiv4.parh = ExpNiv3.parh
+ExpresionNiv3 -> ExpresionNiv4 ExpresionNiv3Fact
+	ExpresionNiv4.etqh = ExpresionNiv3.etqh
+	ExpresionNiv4.parh = ExpresionNiv3.h (!!!debería ser false si ExpresionNiv3Fact no es vacio, pero no se sabe)
+	ExpresionNiv3Fact.codh = ExpresionNiv4.cod
+	Expresionniv3Fact.etqh = ExpresionNiv4.etq
+	ExpresionNiv3Fact.modoh = ExpresionNiv4.modo
+
+	ExpresionNiv3.etq = ExpresionNiv3Fact.etq
+	ExpresionNiv3.cod = ExpresionNiv3Fact.cod
+
+ExpresionNiv3Fact -> OpNiv3 ExpresionNiv3
+	ExpresionNiv3.etqh = ExpresionNiv3Fact.etqh
+	ExpresionNiv3.parh = false
+	ExpresionNiv3Fact.cod =
+		case (OpNiv3.op)
+			shl: ExpresionNiv3Fact.codh || ExpresionNiv3.cod || shl
+			shr: ExpresionNiv3Fact.codh || ExpresionNiv3.cod || shr
+	ExpresionNiv3Fact.modo=val
+	ExpresionNiv3Fact.etq = ExpresionNiv3.etq + 1
+	
+ExpresionNiv3Fact -> λ
+	ExpresionNiv3Fact.modo = ExpresionNiv3Fact.modoh
+	ExpresionNiv3Fact.cod = {}
+	ExpresionNiv3Fact.etq = ExpresionNiv3Fact.etqh
+
 
 ExpNiv4 → OpNiv4 ExpNiv4
 ExpNiv4 → | Exp |
