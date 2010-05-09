@@ -237,49 +237,49 @@ Inses → Ins
     Inses.etq   = Ins.etq
 
 
-Ins → InsL
+Ins → InsAsignacion
     Inses.cod               = InsL.cod
-    InsL.etqh     = Ins.etzqh
+    InsAsignacion.etqh      = Ins.etzqh
     Ins.etq                 = InsL.etq
 
 Ins → InsLectura
     Ins.cod                 = InsLectura.cod
-    InsLectura.etqh        = Ins.etqh
+    InsLectura.etqh         = Ins.etqh
     Ins.etq                 = InsLectura.etq
 
 Ins → InsEscritura
     Ins.cod                 = InsEscritura.cod
-    InsEscritura.etqh      = Ins.etqh
+    InsEscritura.etqh       = Ins.etqh
     Ins.etq                 = InsEscritura.etq
 
 Ins → InsCompuesta
     Ins.cod                 = InsCompuesta.cod
-    InsCompuesta.etqh      = Ins.etqh
+    InsCompuesta.etqh       = Ins.etqh
     Ins.etq                 = InsCompuesta.etq
 
 Ins → InsIf
     Ins.cod                 = InsIf.cod
-    InsIf.etqh   = Ins.etqh
+    InsIf.etqh              = Ins.etqh
     Ins.etq                 = InsIf.etq
 
 Ins → InsWhile
     Ins.cod                 = InsWhile.cod
-    InsWhile.etqh          = Ins.etqh
+    InsWhile.etqh           = Ins.etqh
     Ins.etq                 = InsWhile.etq
 
 Ins → InsFor
     Ins.cod                 = InsFor.cod
-    InsFor.etqh            = Ins.etqh
+    InsFor.etqh             = Ins.etqh
     Ins.etq                 = InsFor.etq
 
 Ins → InsNew
     Ins.cod                 = InsNew.cod
-    InsNew.etqh            = Ins.etqh
+    InsNew.etqh             = Ins.etqh
     Ins.etq                 = InsNew.etq
 
 Ins → InsDis
     Ins.cod                 = InsDis.cod
-    InsDis.etqh = Ins.etqh
+    InsDis.etqh             = Ins.etqh
     Ins.etq                 = InsDis.etq
 
 Ins → InsCall
@@ -438,7 +438,8 @@ Mem → Mem.id
 
 Expresion → ExpresionNivel1 OpNiv0 ExpresionNivel1
     Expresion.cod         =
-        apilarTiposIgualados(ExpresionNivel10.cod,ExpresionNivel10.tipo,ExpresionNivel11.cod,ExpresionNivel11.tipo) ||
+        ExpresionNivel10.cod ||
+        ExpresionNivel11.cod ||
         case (OpNiv0.op)
             menor:
                 menor
@@ -454,7 +455,7 @@ Expresion → ExpresionNivel1 OpNiv0 ExpresionNivel1
                 no-igual
     ExpresionNivel10.etqh   = Expresion.etqh
     ExpresionNivel11.etqh   = ExpresionNivel10.etqh
-    Expresion.etq           = ExpresionNivel11.etq
+    Expresion.etq           = ExpresionNivel11.etq +1
     Expresion.modo          = val
     ExpresionNivel10.parh   = ExpresionNivel11.parh = false
 
@@ -480,17 +481,16 @@ ExpresionNiv1 → ExpresionNiv1 or ExpresionNiv2
 
 ExpresionNiv1 → ExpresionNiv1 OpNiv1 ExpresionNiv2
     ExpresionNiv10.cod =
-        apilarTiposIgualados(ExpresionNiv11.cod,ExpresionNiv11.tipo,ExpresionNiv2.cod,ExpresionNiv2.tipo) ||
+        ExpresionNiv11.cod ||
+        ExpresionNiv2.cod ||
         case (OpNiv1.op)
             suma:
                 sumar
             resta:
                 restar
     ExpresionNiv11.etqh = ExpresionNiv10.etqh
-    ExpresionNiv2.etqh  =
-        ExpresionNiv11.etq + longTrasCod1ApilarTiposIgualados(ExpresionNiv11.tipo,ExpresionNiv2.tipo)
-    ExpresionNiv10.etq  =
-        ExpresionNiv2.etq + longTrasCod2ApilarTiposIgualados(ExpresionNiv11.tipo,ExpresionNiv2.tipo)
+    ExpresionNiv2.etqh  = ExpresionNiv11.etq
+    ExpresionNiv10.etq  = ExpresionNiv2.etq + 1
     ExpresionNiv1.modo  = val
     ExpresionNiv11.parh = ExpresionNiv2.parh = false
 
@@ -518,38 +518,24 @@ ExpresionNiv2 → ExpresionNiv2 OpNiv2 ExpresionNiv3
     ExpresionNiv20.cod    =
         case(OpNiv2.op)
             Multiplica:
-                apilarTiposIgualados(
-                    ExpresionNiv21.cod,
-                    ExpresionNiv21.tipo,
-                    ExpresionNiv3.cod,
-                    ExpresionNiv3.tipo
-                ) ||
+                ExpresionNiv21.cod ||
+                ExpresionNiv3.cod  ||
                 Mul
             Divide:
-                apilarTiposIgualados(
-                    ExpresionNiv21.cod,
-                    ExpresionNiv21.tipo,
-                    ExpresionNiv3.cod,
-                    ExpresionNiv3.tipo
-                ) ||
+                ExpresionNiv21.cod ||
+                ExpresionNiv3.cod  ||
                 Div
             Modulo:
-                ExpresionNiv21.cod || ExpresionNiv3.cod || Mod
+                ExpresionNiv21.cod ||
+                ExpresionNiv3.cod  ||
+                Mod
             y:
-                ExpresionNiv21.cod || ExpresionNiv3.cod || Y
+                ExpresionNiv21.cod ||
+                ExpresionNiv3.cod  ||
+                Y
     ExpresionNiv21.etqh   = ExpresionNiv20.etqh
-    ExpresionNiv3.etqh    =
-        si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpresionNiv21.etq +
-            longTrasCod1ApilarTiposIgualados(ExpresionNiv21.tipo,ExpresionNiv3.tipo)
-        si no
-            ExpresionNiv21.etq
-    ExpresionNiv20.etq    =
-        si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpresionNiv3.etq +
-            longTrasCod2ApilarTiposIgualados(ExpresionNiv21.tipo,ExpresionNiv3.tipo)
-        si no
-            ExpresionNiv3.etq
+    ExpresionNiv3.etqh    = ExpresionNiv21.etq
+    ExpresionNiv20.etq    = ExpresionNiv3.etq +1
     ExpresionNiv20.modo   = val
     ExpresionNiv21.parh   = ExpresionNiv3.parh = false
 
