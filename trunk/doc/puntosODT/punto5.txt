@@ -505,12 +505,12 @@ ExpresionNiv2 ::= ExpresionNiv2 and ExpresionNiv3
     ExpresionNiv20.cod    =
         ExpresionNiv21.cod ||
         ir-f(Fact.etq + 1) ||
-        Fact.cod ||
+        ExpresionNiv3.cod ||
         ir-a(Fact.etq + 2) ||
         apila(0)
     ExpresionNiv21.etqh   = ExpresionNiv20.etqh
-    Fact.etqh       = ExpresionNiv21.etq + 1
-    ExpresionNiv20.etq    = Fact.etq + 2
+    ExpresionNiv3.etqh       = ExpresionNiv21.etq + 1
+    ExpresionNiv20.etq    = ExpresionNiv3.etq + 2
     ExpresionNiv20.modo   = val
     ExpresionNiv21.parh   = ExpresionNiv3.parh = false
 
