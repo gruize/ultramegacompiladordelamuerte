@@ -10,50 +10,50 @@ Programa → Decs & Is
     Decs.dirh      = 0
     Decs.nh        = 0
 
-Decs → Decs ; Dec
-    Decs0.ts        = añadeID(Decs1.ts,Dec.id,Dec.props ⊗ Dec.propsop)
-    Decs1.dirh      = Decs0.dirh
-    Decs0.dir       = Decs1.dir + Dec.tam
-    Dec.dirh        = Decs1.dir
-    Decs1.nh        = Decs0.nh
-    Decs0.n         = max(Decs1.n,Dec.n)    
-    Decs1.etqh      = Decs0.etqh
-    Dec.etqh        = Decs1.etq
-    Decs0.etq       = Dec.etq
-    Decs0.cod       = Decs1.cod || Dec.cod
+Declaraciones → Declaraciones ; Declaracion
+    Declaraciones0.ts       = añadeID(Declaraciones1.ts,Declaracion.id,Declaracion.props ⊗ Declaracion.propsop)
+    Declaraciones1.dirh     = Declaraciones0.dirh
+    Declaraciones0.dir      = Declaraciones1.dir + Declaracion.tam
+    Declaracion.dirh        = Declaraciones1.dir
+    Declaraciones1.nh       = Declaraciones0.nh
+    Declaraciones0.n        = max(Declaraciones1.n,Declaracion.n)
+    Declaraciones1.etqh     = Declaraciones0.etqh
+    Declaracion.etqh        = Declaraciones1.etq
+    Declaraciones0.etq      = Declaracion.etq
+    Declaraciones0.cod      = Declaraciones1.cod || Declaracion.cod
 
-Decs → Dec
-    Decs.ts         = añadeID(creaTS(),Dec.id,Dec.props ⊗ Dec.propsop)
-    Decs.dir        = Decs.dirh + Dec.tam
-    Dec.dirh        = Decs.dirh
-    Dec.nh          = Decs.nh
-    Decs.n          = Dec.n
-    Dec.etqh        = Decs.etqh
-    Decs.etq        = Dec.etq
-    Decs.cod        = Dec.cod
+Declaraciones → Declaracion
+    Declaraciones.ts        = añadeID(creaTS(),Declaracion.id,Declaracion.props ⊗ Declaracion.propsop)
+    Declaraciones.dir       = Declaraciones.dirh + Declaracion.tam
+    Declaracion.dirh        = Declaraciones.dirh
+    Declaracion.nh          = Declaraciones.nh
+    Declaraciones.n         = Declaracion.n
+    Declaracion.etqh        = Declaraciones.etqh
+    Declaraciones.etq       = Declaracion.etq
+    Declaraciones.cod       = Declaracion.cod
 
 
-Dec → DecTipo
-    Dec.propsop     = <>
-    Dec.tam         = 0
-    Dec.n           = Dec.nh
-    Dec.cod         = λ
-    Dec.etq         = Dec.etqh
-    
-Dec → DecVar
-    DecVar.propsop  = <dir:Dec.dirh>
-    Dec.tam         = DecVar.props.tipo.tam
-    Dec.n           = Dec.nh
-    Dec.cod         = λ
-    Dec.etq         = Dec.etqh
-    
-Dec → DecProc
-    DecProc.nh      = Dec.nh
-    Dec.n           = DecProc.n
-    DecProc.etqh    = Dec.etqh
-    Dec.etq         = DecProc.etq
-    Dec.cod         = DecProc.cod
-    Dec.propsop     = DecProc.propsop
+Declaracion → DecTipo
+    Declaracion.propsop     = <>
+    Declaracion.tam         = 0
+    Declaracion.n           = Declaracion.nh
+    Declaracion.cod         = λ
+    Declaracion.etq         = Declaracion.etqh
+
+Declaracion → DecVar
+    DecVar.propsop          = <dir:Declaracion.dirh>
+    Declaracion.tam         = DecVar.props.tipo.tam
+    Declaracion.n           = Declaracion.nh
+    Declaracion.cod         = λ
+    Declaracion.etq         = Declaracion.etqh
+
+Declaracion → DecProc
+    DecProc.nh              = Declaracion.nh
+    Declaracion.n           = DecProc.n
+    DecProc.etqh            = Declaracion.etqh
+    Declaracion.etq         = DecProc.etq
+    Declaracion.cod         = DecProc.cod
+    Declaracion.propsop     = DecProc.propsop
 
 
 Tipo → Boolean
@@ -73,7 +73,7 @@ Tipo → Integer
 
 Tipo → iden
     Tipo.tipo =
-        <   
+        <
             t:ref,
             id:iden.lex,
             tam:Tipo.tsh[iden.lex].tipo.tam
@@ -89,7 +89,7 @@ Tipo → array [num] of Tipo
         >
 
 Tipo → ^Tipo
-    Tipo0.tipo = 
+    Tipo0.tipo =
         <
             t:puntero,
             tbase:Tipo1.tipo,
@@ -97,7 +97,7 @@ Tipo → ^Tipo
         >
 
 Tipo → reg Campos freg
-    Tipo.tipo = 
+    Tipo.tipo =
         <
             t:array,
             campos:Campos.campos,
@@ -115,7 +115,7 @@ Campos → Campo
 
 
 Campo → iden: Tipo
-    Campo.campo = 
+    Campo.campo =
         <
             id:iden.lex,
             tipo:Tipo.tipo,
@@ -131,39 +131,39 @@ DecProc → proc iden FParams Bloque fproc
     DecProc.propsop = <inicio:Bloque.inicio>
     Bloque.etqh     = DecProc.etqh
     DecProc.etq     = Bloque.etq
-    Bloque.tsph     = 
+    Bloque.tsph     =
         añadeID(
             FParams.ts,
             DecProp.id,
             DecProc.props⊗{nivel:DecsProp.nh+1}⊗DecProc.propsop
         )
-    
 
-LAParams ::= LAParams, Exp
-    LAParams0.cod   = 
+
+LAParams ::= LAParams, Expresion
+    LAParams0.cod   =
         LAParams1.cod ||
         copia ||
         direccionParFormal(LAParams0.fparams[LAParams0.nparams]) ||
-        Exp.cod ||
-        pasoParametro(Exp.modo,LAParams0.fparams[LAParams0.nparams])
+        Expresion.cod ||
+        pasoParametro(Expresion.modo,LAParams0.fparams[LAParams0.nparams])
     LAParams1.etqh  = LAParams0.etqh
-    Exp.etqh        = LAParams1.etq + 1 + longDireccionParFormal
-    LAParams0.etq   = Exp.etq + longPasoParametro
-    Exp.parh        = LAParams0.fparamsh[LAParams0.nparams].modo == var
+    Expresion.etqh  = LAParams1.etq + 1 + longDireccionParFormal
+    LAParams0.etq   = Expresion.etq + longPasoParametro
+    Expresion.parh  = LAParams0.fparamsh[LAParams0.nparams].modo == var
 
-LAParams ::= Exp
-    LAParams.cod    = 
+LAParams ::= Expresion
+    LAParams.cod    =
         copia ||
-        Exp.cod ||
-        pasoParametro(Exp.modo,LAParams.fparams[1])
-    Exp.etqh        = LAParams.etq + 1
-    LAParams.etq    = Exp.etq + longPasoParametro
-    Exp.parh        = LAParams.fparamsh[1].modo == var
+        Expresion.cod ||
+        pasoParametro(Expresion.modo,LAParams.fparams[1])
+    Expresion.etqh  = LAParams.etq + 1
+    LAParams.etq    = Expresion.etq + longPasoParametro
+    Expresion.parh  = LAParams.fparamsh[1].modo == var
 
-    
+
 FParams → ( LFParams )
     FParams.dir = LFParams.dir
-    
+
 FParams → λ
     FParams.dir = 0
 
@@ -174,157 +174,157 @@ LFParams → LFParams, FParam
     LFParams0.dir   = LFParams1.dir + FParam.tam
     FParam.dirh     = LFParams1.dir
 
-LFParams → FParam
-    LFParams.ts      = añadeID(LFParams.tsph, FParam.id,FParam.props ⊗ <dir:0>)
-    LFParams.dir     = FParam.tam
+LFParam → FParam
+    LFParam.ts      = añadeID(LFParam.tsph, FParam.id,FParam.props ⊗ <dir:0>)
+    LFParam.dir     = FParam.tam
     FParam.dirh     = 0
 
 
 FParam → var iden: Tipo
     FParam.tam      = 1
     Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
-    
+
 FParam → id: Tipo
     FParam.tam      = Tipo.tipo.tam
     Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
 
 
-Bloque → DecsBloque && I
+Bloque → Decs && Ins
     Decs.dirh       = Bloque.dirh
     Decs.nh         = Bloque.nh
     Bloque.n        = Decs.n
     Decs.etqh       = Bloque.etqh
     Bloque.inicio   = Decs.etq
-    I.etqh          = Decs.etq + longPrologo
-    Bloque.etq      = I.etq + longEpilogo + 1
-    Bloque.cod      = 
-            Decs.cod                    || 
+    Ins.etqh          = Decs.etq + longPrologo
+    Bloque.etq      = Ins.etq + longEpilogo + 1
+    Bloque.cod      =
+            Decs.cod                    ||
             prologo(Bloque.nh,Decs.dir) ||
-            I.cod                       ||
+            Ins.cod                     ||
             epilogo(Bloque.nh)          ||
             ir-ind
 
 
-Bloque → I
+Bloque → Ins
     Bloque.n        = Bloque.nh
-    Bloque.cod      = 
+    Bloque.cod      =
         prologo(Bloque.nh,Bloque.dirh)  ||
-        I.cod                           ||
+        Ins.cod                         ||
         epilogo(Bloque.nh)              ||
         ir-ind
-    I.etqh          = Bloque.etqh + longPrologo
+    Ins.etqh        = Bloque.etqh + longPrologo
     Bloque.inicio   = Bloque.etqh
-    Bloque.etq      = I.etq + longEpilogo + 1
+    Bloque.etq      = Ins.etq + longEpilogo + 1
 
-    
-    
-DecsBloque → DecsBloque ; Dec
+
+
+Decs → Decs ; Dec
     Decs1.dirh = Decso.dirh
-    
-DecsBloque → Dec
+
+Decs → Dec
     Decs.dir = Decs.dirh + Dec.tam
     Dec.dirh = Decs.dirh
 
-Is → I ; Is
-    Is0.cod    = I.cod || Is1.cod
-    Is1.etqh   = Is0.etqh
-    I.etqh     = Is1.etq
-    Is0.etq    = I.etq
+Inses → Ins ; Inses
+    Inses0.cod    = Ins.cod || Inses1.cod
+    Ins1.etqh     = Inses0.etqh
+    Inses.etqh    = Ins1.etq
+    Inses0.etq    = Ins.etq
 
-Is → I
-    Is.cod = I.cod
-    I.etqh = Is.etqh
-    Is.etq = I.etq
+Inses → Ins
+    Inses.cod   = Ins.cod
+    Ins.etqh    = Inses.etqh
+    Inses.etq   = Ins.etq
 
 
-I → InsAsignación
-    Is.cod             = InsAsignación.cod
-    InsAsignación.etqh = I.etqh
-    I.etq              = InsAsignación.etq
+Ins → InsL
+    Inses.cod               = InsL.cod
+    InsL.etqh     = Ins.etzqh
+    Ins.etq                 = InsL.etq
 
-I → InsLectura
-    I.cod              = InsLectura.cod
-    InsLectura.etqh    = I.etqh
-    I.etq              = InsLectura.etq
+Ins → InsLectura
+    Ins.cod                 = InsLectura.cod
+    InsLectura.etqh        = Ins.etqh
+    Ins.etq                 = InsLectura.etq
 
-I → InsEscritura
-    I.cod              = InsEscritura.cod
-    InsEscritura.etqh  = I.etqh
-    I.etq              = InsEscritura.etq
+Ins → InsEscritura
+    Ins.cod                 = InsEscritura.cod
+    InsEscritura.etqh      = Ins.etqh
+    Ins.etq                 = InsEscritura.etq
 
-I → InsCompuesta
-    I.cod              = InsCompuesta.cod
-    InsCompuesta.etqh  = I.etqh
-    I.etq              = InsCompuesta.etq
+Ins → InsCompuesta
+    Ins.cod                 = InsCompuesta.cod
+    InsCompuesta.etqh      = Ins.etqh
+    Ins.etq                 = InsCompuesta.etq
 
-I → InsIf
-    I.cod          = InsIf.cod
-    InsIf.etqh     = I.etqh
-    I.etq          = InsIf.etq
+Ins → InsIf
+    Ins.cod                 = InsIf.cod
+    InsIf.etqh   = Ins.etqh
+    Ins.etq                 = InsIf.etq
 
-I → InsWhile
-    I.cod          = InsWhile.cod
-    InsWhile.etqh  = I.etqh
-    I.etq          = InsWhile.etq
+Ins → InsWhile
+    Ins.cod                 = InsWhile.cod
+    InsWhile.etqh          = Ins.etqh
+    Ins.etq                 = InsWhile.etq
 
-I → InsFor
-    I.cod          = InsFor.cod
-    InsFor.etqh    = I.etqh
-    I.etq          = InsFor.etq
+Ins → InsFor
+    Ins.cod                 = InsFor.cod
+    InsFor.etqh            = Ins.etqh
+    Ins.etq                 = InsFor.etq
 
-I → InsNew
-    I.cod          = InsNew.cod
-    InsNew.etqh    = I.etqh
-    I.etq          = InsNew.etq
+Ins → InsNew
+    Ins.cod                 = InsNew.cod
+    InsNew.etqh            = Ins.etqh
+    Ins.etq                 = InsNew.etq
 
-I → InsDis
-    I.cod          = InsDis.cod
-    InsDis.etqh    = I.etqh
-    I.etq          = InsDis.etq
+Ins → InsDis
+    Ins.cod                 = InsDis.cod
+    InsDis.etqh = Ins.etqh
+    Ins.etq                 = InsDis.etq
 
-I → ICall
-    ICall.etqh  = I.etqh
-    I.etq       = ICall.etq
-    I.cod       = ICall.cod
+Ins → InsCall
+    InsCall.etqh            = Ins.etqh
+    Ins.etq                 = InsCall.etq
+    Ins.cod                 = InsCall.cod
 
 InsLectura → in(id)
     InsLectura.cod  = in InsLectura.tsh[id.lex].dir
     InsLectura.etq  = InsLectura.etqh + 1
 
 
-InsEscritura → out(Exp)
-    InsEscritura.cod   = Exp.cod || out
-    Exp.etqh           = InsEscritura.etqh
-    InsEscritura.etq   = Exp.etq + 1
-    Exp.parh           = false
-    
+InsEscritura → out(Expresion)
+    InsEscritura.cod   = Expresion.cod || out
+    Expresion.etqh           = InsEscritura.etqh
+    InsEscritura.etq   = Expresion.etq + 1
+    Expresion.parh           = false
 
-InsAsignación → Mem := Exp
+
+InsAsignación → Mem := Expresion
     InsAsignación.cod =
-        si esCompatibleConTipoBasico(Mem.tipo,Exp.tsh)
-            Mem.cod || Exp.cod || desapila-ind
+        si esCompatibleConTipoBasico(Mem.tipo,Expresion.tsh)
+            Mem.cod || Expresion.cod || desapila-ind
         si no
-            Mem.cod || Exp.cod || mueve(Mem.tipo.tam)
+            Mem.cod || Expresion.cod || mueve(Mem.tipo.tam)
     Mem.etqh          = InsAsignación.etqh
-    Exp.etqh          = Mem.etq
-    InsAsignación.etq = Exp.etq + 1
-    Exp.parh          = false
-    
+    Expresion.etqh          = Mem.etq
+    InsAsignación.etq = Expresion.etq + 1
+    Expresion.parh          = false
+
 
 InsCompuesta → { Is }
     InsCompuesta.cod    = Is.cod
     Is.etqh             = InsCompuesta.etqh
     InsCompuesta.etq    = Is.etq
-    
 
-InsIf → if Exp then I Pelse
-    InsIf.cod   =
-        Exp.cod || ir-f(I.etq + 1) || I.cod || ir-a(PElse.etq) || PElse.cod
-    Exp.etqh    = InsIf.etqh
-    I.etqh      = Exp.etq + 1
-    PElse.etqh  = I.etq + 1
-    InsIf.etq   = PElse.etq
-    Exp.parh    = false
+
+InsIf → if Expresion then I Pelse
+    InsIf.cod       =
+        Expresion.cod || ir-f(I.etq + 1) || I.cod || ir-a(PElse.etq) || PElse.cod
+    Expresion.etqh  = InsIf.etqh
+    I.etqh          = Expresion.etq + 1
+    PElse.etqh      = I.etq + 1
+    InsIf.etq       = PElse.etq
+    Expresion.parh  = false
 
 
 PElse → else I
@@ -337,22 +337,22 @@ PElse → λ
     PElse.etq  = PElse.etqh
 
 
-InsWhile → while Exp do I
+InsWhile → while Expresion do I
     InsWhile.cod   =
-        Exp.cod ||
+        Expresion.cod ||
         ir-f(I.etq + 1) ||
         I.cod ||
         ir-a(InsWhile.etqh)
-    Exp.etqh       = InsWhile.etqh
-    I.etqh         = Exp.etq + 1
+    Expresion.etqh = InsWhile.etqh
+    I.etqh         = Expresion.etq + 1
     InsWhile.etq   = I.etq + 1
 
 
-InsFor → for id=Exp to Exp do I
+InsFor → for id=Expresion to Expresion do I
     InsFor.cod  =
-        Exp0.cod ||
+        Expresion0.cod ||
         desapila-dir InsFor.tsh[id.lex].dir ||
-        Exp1.cod ||
+        Expresion1.cod ||
         dup ||
         apila-dir InsFor.tsh[id.lex].dir ||
         igual ||
@@ -362,30 +362,30 @@ InsFor → for id=Exp to Exp do I
         apilar 1 ||
         sumar ||
         desapila-dir InsFor.tsh[id.lex].dir ||
-        ir-a (Exp1.etq)
+        ir-a (Expresion1.etq)
         pop
-    Exp0.etqh   = InsFor.etqh
-    Exp1.etqh   = Exp0.etq + 1
-    I.etqh      = Exp1.etq + 4
-    InsFor.etq  = I.etq + 6
+    Expresion0.etqh   = InsFor.etqh
+    Expresion1.etqh   = Expresion0.etq + 1
+    I.etqh            = Expresion1.etq + 4
+    InsFor.etq        = I.etq + 6
 
 
 INew → new Mem
-    INew.cod = 
+    INew.cod =
         Mem.cod ||
         new(
             si Mem.tipo.tbase = ref
                 INew.tsh[Mem.tipo.tbase.id].tam
-            si no 
+            si no
                 1
         )
         || desapila-ind
     Mem.etqh = INew.etqh
     INew.etq = Mem.etq + 2
 
-    
+
 IDel → delete Mem
-    IDel.cod = 
+    IDel.cod =
         Mem.cod ||
         del(
             si Mem.tipo.tbase = ref
@@ -398,7 +398,7 @@ IDel → delete Mem
 
 
 ICall → iden AParams
-    ICall.cod       = 
+    ICall.cod       =
         apila-ret(ICall.etq)    ||
         AParams.cod             ||
         ir-a(ICall.tsh[iden.lex].inicio)
@@ -414,31 +414,31 @@ AParams → LAparams
 AParams → λ
     AParams.cod     = λ
     AParams.etq     = AParams.etqh
-    
+
 Mem → id
     Mem.cod    = accesoVar(Mem.tsh[id.lex])
     Mem.etq    = Mem.etqh + longAccesoVar(Mem.tsh[id.lex])
-    
+
 Mem → Mem->
     Mem0.cod   = Mem1.cod || apila-ind
     Mem1.etqh  = Mem0.etqh
     Mem0.etq   = Mem1.etq + 1
-    
+
 Mem → Mem[Expresion]
-    Mem0.cod   =
-        Mem1.cod || Exp.cod || apila Mem1.tipo.tbase.tam || multiplica || suma
-    Mem1.etqh  = Mem0.etqh
-    Exp.etqh   = Mem1.etq
-    Mem0.etq   = Exp.etq + 3
-    
+    Mem0.cod        =
+        Mem1.cod || Expresion.cod || apila Mem1.tipo.tbase.tam || multiplica || suma
+    Mem1.etqh       = Mem0.etqh
+    Expresion.etqh  = Mem1.etq
+    Mem0.etq        = Expresion.etq + 3
+
 Mem → Mem.id
     Mem0.cod   = Mem1.cod || apila(Mem1.tipo.campos[iden.lex].desp) || suma
     Mem1.etqh  = Mem0.etqh
-    Mem0.etq   = Mem1.etq + 2 
+    Mem0.etq   = Mem1.etq + 2
 
-Exp → ExpNiv1 OpNiv0 ExpNiv1
-    Exp.cod         =
-        apilarTiposIgualados(ExpNiv10.cod,ExpNiv10.tipo,ExpNiv11.cod,ExpNiv11.tipo) ||
+Expresion → ExpresionNivel1 OpNiv0 ExpresionNivel1
+    Expresion.cod         =
+        apilarTiposIgualados(ExpresionNivel10.cod,ExpresionNivel10.tipo,ExpresionNivel11.cod,ExpresionNivel11.tipo) ||
         case (OpNiv0.op)
             menor:
                 menor
@@ -452,188 +452,188 @@ Exp → ExpNiv1 OpNiv0 ExpNiv1
                 igual
             no-igual
                 no-igual
-    ExpNiv10.etqh   = Exp.etqh
-    ExpNiv11.etqh   = ExpNiv10.etqh
-    Exp.etq         = ExpNiv11.etq
-    Exp.modo        = val 
-    ExpNiv10.parh   = ExpNiv11.parh = false
+    ExpresionNivel10.etqh   = Expresion.etqh
+    ExpresionNivel11.etqh   = ExpresionNivel10.etqh
+    Expresion.etq           = ExpresionNivel11.etq
+    Expresion.modo          = val
+    ExpresionNivel10.parh   = ExpresionNivel11.parh = false
 
-Exp → ExpNiv1
-    Exp.cod         = ExpNiv1.cod
-    ExpNiv1.etqh    = Exp.etqh
-    Exp.etq         = ExpNiv1.etq
-    Exp.modo        = ExpNiv1.modo
-    ExpNiv1.parh    = Exp.parh
+Expresion → ExpresionNivel1
+    Expresion.cod           = ExpresionNivel1.cod
+    ExpresionNivel1.etqh    = Expresion.etqh
+    Expresion.etq           = ExpresionNivel1.etq
+    Expresion.modo          = ExpresionNivel1.modo
+    ExpresionNivel1.parh    = Expresion.parh
 
-ExpNiv1 → ExpNiv1 or ExpNiv2
-    ExpNiv10.cod  = 
-        ExpNiv11.cod || 
-        dup || 
-        ir-v(ExpNiv2.etqP) ||
-        desapila || 
-        ExpNiv2.cod
-    ExpNiv11.etqh = ExpNiv10.etqh
-    ExpNiv2.etqh  = ExpNiv11.etq + 3
-    ExpNiv10.etq  = ExpNiv2.etq
-    ExpNiv1.modo  = val
-    ExpNiv11.parh = ExpNiv2.parh = false
+ExpresionNiv1 → ExpresionNiv1 or ExpresionNiv2
+    ExpresionNiv10.cod  =
+        ExpresionNiv11.cod ||
+        dup ||
+        ir-v(ExpresionNiv2.etqP) ||
+        desapila ||
+        ExpresionNiv2.cod
+    ExpresionNiv11.etqh = ExpresionNiv10.etqh
+    ExpresionNiv2.etqh  = ExpresionNiv11.etq + 3
+    ExpresionNiv10.etq  = ExpresionNiv2.etq
+    ExpresionNiv1.modo  = val
+    ExpresionNiv11.parh = ExpresionNiv2.parh = false
 
-ExpNiv1 → ExpNiv1 OpNiv1 ExpNiv2
-    ExpNiv10.cod =
-        apilarTiposIgualados(ExpNiv11.cod,ExpNiv11.tipo,ExpNiv2.cod,ExpNiv2.tipo) ||
+ExpresionNiv1 → ExpresionNiv1 OpNiv1 ExpresionNiv2
+    ExpresionNiv10.cod =
+        apilarTiposIgualados(ExpresionNiv11.cod,ExpresionNiv11.tipo,ExpresionNiv2.cod,ExpresionNiv2.tipo) ||
         case (OpNiv1.op)
             suma:
                 sumar
             resta:
                 restar
-    ExpNiv11.etqh = ExpNiv10.etqh
-    ExpNiv2.etqh  = 
-        ExpNiv11.etq + longTrasCod1ApilarTiposIgualados(ExpNiv11.tipo,ExpNiv2.tipo)
-    ExpNiv10.etq  =
-        ExpNiv2.etq + longTrasCod2ApilarTiposIgualados(ExpNiv11.tipo,ExpNiv2.tipo)
-    ExpNiv1.modo  = val
-    ExpNiv11.parh = ExpNiv2.parh = false
+    ExpresionNiv11.etqh = ExpresionNiv10.etqh
+    ExpresionNiv2.etqh  =
+        ExpresionNiv11.etq + longTrasCod1ApilarTiposIgualados(ExpresionNiv11.tipo,ExpresionNiv2.tipo)
+    ExpresionNiv10.etq  =
+        ExpresionNiv2.etq + longTrasCod2ApilarTiposIgualados(ExpresionNiv11.tipo,ExpresionNiv2.tipo)
+    ExpresionNiv1.modo  = val
+    ExpresionNiv11.parh = ExpresionNiv2.parh = false
 
-ExpNiv1 → ExpNiv2
-    ExpNiv1.cod  = ExpNiv2.cod
-    ExpNiv2.etqh = ExpNiv1.etqh
-    ExpNiv1.etq  = ExpNiv2.etq
-    ExpNiv1.modo = ExpNiv2.modo
-    ExpNiv2.parh = ExpNiv1.parh
+ExpresionNiv1 → ExpresionNiv2
+    ExpresionNiv1.cod  = ExpresionNiv2.cod
+    ExpresionNiv2.etqh = ExpresionNiv1.etqh
+    ExpresionNiv1.etq  = ExpresionNiv2.etq
+    ExpresionNiv1.modo = ExpresionNiv2.modo
+    ExpresionNiv2.parh = ExpresionNiv1.parh
 
-ExpNiv2 ::= ExpNiv2 and ExpNiv3
-    ExpNiv20.cod    = 
-        ExpNiv21.cod || 
-        ir-f(Fact.etq + 1) || 
-        Fact.cod || 
-        ir-a(Fact.etq + 2) || 
+ExpresionNiv2 ::= ExpresionNiv2 and ExpresionNiv3
+    ExpresionNiv20.cod    =
+        ExpresionNiv21.cod ||
+        ir-f(Fact.etq + 1) ||
+        Fact.cod ||
+        ir-a(Fact.etq + 2) ||
         apila(0)
-    ExpNiv21.etqh   = ExpNiv20.etqh
-    Fact.etqh       = ExpNiv21.etq + 1
-    ExpNiv20.etq    = Fact.etq + 2
-    ExpNiv20.modo   = val
-    ExpNiv21.parh   = ExpNiv3.parh = false
-    
-ExpNiv2 → ExpNiv2 OpNiv2 ExpNiv3
-    ExpNiv20.cod    =
+    ExpresionNiv21.etqh   = ExpresionNiv20.etqh
+    Fact.etqh       = ExpresionNiv21.etq + 1
+    ExpresionNiv20.etq    = Fact.etq + 2
+    ExpresionNiv20.modo   = val
+    ExpresionNiv21.parh   = ExpresionNiv3.parh = false
+
+ExpresionNiv2 → ExpresionNiv2 OpNiv2 ExpresionNiv3
+    ExpresionNiv20.cod    =
         case(OpNiv2.op)
             Multiplica:
                 apilarTiposIgualados(
-                    ExpNiv21.cod,
-                    ExpNiv21.tipo,
-                    ExpNiv3.cod,
-                    ExpNiv3.tipo
+                    ExpresionNiv21.cod,
+                    ExpresionNiv21.tipo,
+                    ExpresionNiv3.cod,
+                    ExpresionNiv3.tipo
                 ) ||
                 Mul
             Divide:
                 apilarTiposIgualados(
-                    ExpNiv21.cod,
-                    ExpNiv21.tipo,
-                    ExpNiv3.cod,
-                    ExpNiv3.tipo
+                    ExpresionNiv21.cod,
+                    ExpresionNiv21.tipo,
+                    ExpresionNiv3.cod,
+                    ExpresionNiv3.tipo
                 ) ||
                 Div
             Modulo:
-                ExpNiv21.cod || ExpNiv3.cod || Mod
+                ExpresionNiv21.cod || ExpresionNiv3.cod || Mod
             y:
-                ExpNiv21.cod || ExpNiv3.cod || Y
-    ExpNiv21.etqh   = ExpNiv20.etqh
-    ExpNiv3.etqh    = 
+                ExpresionNiv21.cod || ExpresionNiv3.cod || Y
+    ExpresionNiv21.etqh   = ExpresionNiv20.etqh
+    ExpresionNiv3.etqh    =
         si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpNiv21.etq + 
-            longTrasCod1ApilarTiposIgualados(ExpNiv21.tipo,ExpNiv3.tipo)
+            ExpresionNiv21.etq +
+            longTrasCod1ApilarTiposIgualados(ExpresionNiv21.tipo,ExpresionNiv3.tipo)
         si no
-            ExpNiv21.etq
-    ExpNiv20.etq    = 
+            ExpresionNiv21.etq
+    ExpresionNiv20.etq    =
         si OpNiv2.op == Multiplica \/ OpNiv2.op == Divide
-            ExpNiv3.etq + 
-            longTrasCod2ApilarTiposIgualados(ExpNiv21.tipo,ExpNiv3.tipo)
+            ExpresionNiv3.etq +
+            longTrasCod2ApilarTiposIgualados(ExpresionNiv21.tipo,ExpresionNiv3.tipo)
         si no
-            ExpNiv3.etq
-    ExpNiv20.modo   = val
-    ExpNiv21.parh   = ExpNiv3.parh = false
-                
-ExpNiv2 → ExpNiv3
-    ExpNiv3.etqh    = ExpNiv2.etqh
-    ExpNiv2.etq     = ExpNiv3.etq
-    ExpNiv2.cod     = ExNiv3.cod
-    ExpNiv20.modo   = ExpNiv3.modo
-    ExpNiv3.parh    = ExpNiv2.parh;
+            ExpresionNiv3.etq
+    ExpresionNiv20.modo   = val
+    ExpresionNiv21.parh   = ExpresionNiv3.parh = false
 
-ExpNiv3 → ExpNiv4 OpNiv3 ExpNiv3
-    ExpNiv30.cod  =
+ExpresionNiv2 → ExpresionNiv3
+    ExpresionNiv3.etqh    = ExpresionNiv2.etqh
+    ExpresionNiv2.etq     = ExpresionNiv3.etq
+    ExpresionNiv2.cod     = ExNiv3.cod
+    ExpresionNiv20.modo   = ExpresionNiv3.modo
+    ExpresionNiv3.parh    = ExpresionNiv2.parh;
+
+ExpresionNiv3 → ExpresionNiv4 OpNiv3 ExpresionNiv3
+    ExpresionNiv30.cod  =
         case (OpNiv3.op)
             shl:
-                ExpNiv4.cod || ExpNiv31.cod || shl
+                ExpresionNiv4.cod || ExpresionNiv31.cod || shl
             shr:
-                ExpNiv4.cod || ExpNiv31.cod || shr
-    ExpNiv30.modo = val
-    ExpNiv4.etqh  = ExpNiv30.etqh
-    ExpNiv31.etqh = ExpNiv4.etq
-    ExpNiv30.etqh = ExpNiv31.etq + 1
-    ExpNiv4.parh  = ExpNiv31.parh = false
+                ExpresionNiv4.cod || ExpresionNiv31.cod || shr
+    ExpresionNiv30.modo = val
+    ExpresionNiv4.etqh  = ExpresionNiv30.etqh
+    ExpresionNiv31.etqh = ExpresionNiv4.etq
+    ExpresionNiv30.etqh = ExpresionNiv31.etq + 1
+    ExpresionNiv4.parh  = ExpresionNiv31.parh = false
 
-ExpNiv3 → ExpNiv4
-    ExpNiv4.etqh = ExpNiv3.etqh
-    ExpNiv3.etq  = ExpNiv4.etq
-    ExpNiv3.cod  = ExpNiv4.cod
-    ExpNiv3.modo = ExpNiv4.modo
-    ExpNiv4.parh = ExpNiv3.parh
+ExpresionNiv3 → ExpresionNiv4
+    ExpresionNiv4.etqh = ExpresionNiv3.etqh
+    ExpresionNiv3.etq  = ExpresionNiv4.etq
+    ExpresionNiv3.cod  = ExpresionNiv4.cod
+    ExpresionNiv3.modo = ExpresionNiv4.modo
+    ExpresionNiv4.parh = ExpresionNiv3.parh
 
-ExpNiv4 → OpNiv4 ExpNiv4
-    ExpNiv40.cod =
+ExpresionNiv4 → OpNiv4 ExpresionNiv4
+    ExpresionNiv40.cod =
         case (OpNiv4.op)
             no:
-                ExpNiv41.cod || no
+                ExpresionNiv41.cod || no
             negativo:
-                ExpNiv41.cod || negativo
+                ExpresionNiv41.cod || negativo
             cast-float:
-                ExpNiv41.cod || CastFloat
+                ExpresionNiv41.cod || CastFloat
             cast-int:
-                ExpNiv41.cod || CastInt
+                ExpresionNiv41.cod || CastInt
             cast-nat:
-                ExpNiv41.cod || CastNat
+                ExpresionNiv41.cod || CastNat
             cast-char:
-                ExpNiv41.cod || CastChar
-    ExpNiv40.modo = val
-    ExpNiv41.etqh = ExpNiv4.etqh
-    ExpNiv40.etq  = ExpNiv41.etq + 1
-    ExpNiv41.parh = false
+                ExpresionNiv41.cod || CastChar
+    ExpresionNiv40.modo = val
+    ExpresionNiv41.etqh = ExpresionNiv4.etqh
+    ExpresionNiv40.etq  = ExpresionNiv41.etq + 1
+    ExpresionNiv41.parh = false
 
-ExpNiv4 → | Exp |
-    ExpNiv4.cod  = Exp.cod || abs
-    ExpNiv4.modo = Exp.val
-    Exp.etqh     = ExpNiv4.etqh
-    ExpNiv4.etq  = Exp.etq
-    Exp.parh     = false
+ExpresionNiv4 → | Expresion |
+    ExpresionNiv4.cod  = Expresion.cod || abs
+    ExpresionNiv4.modo = Expresion.val
+    Expresion.etqh     = ExpresionNiv4.etqh
+    ExpresionNiv4.etq  = Expresion.etq
+    Expresion.parh     = false
 
-ExpNiv4 → ( Exp )
-    ExpNiv4.cod  = Exp.cod
-    ExpNiv4.modo = Exp.modo
-    Exp.etqh     = ExpNiv4.etqh
-    ExpNiv4.etq  = Exp.etq
-    Exp.parh     = ExpNiv4.parh
+ExpresionNiv4 → ( Expresion )
+    ExpresionNiv4.cod  = Expresion.cod
+    ExpresionNiv4.modo = Expresion.modo
+    Expresion.etqh     = ExpresionNiv4.etqh
+    ExpresionNiv4.etq  = Expresion.etq
+    Expresion.parh     = ExpresionNiv4.parh
 
-ExpNiv4 → Literal
-    ExpNiv4.cod  = Literal.cod
-    ExpNiv4.modo = var
-    Literal.etqh = ExpNiv4.etqh
-    ExpNiv4.etq  = Literal.etq
-    
-ExpNiv4 → Mem
-    ExpNiv4.cod    = 
-        si esCompatibleConTipoBasico(Mem.tipo,ExpNiv4.tsh) /\ not ExpNiv4.parh
+ExpresionNiv4 → Literal
+    ExpresionNiv4.cod  = Literal.cod
+    ExpresionNiv4.modo = var
+    Literal.etqh = ExpresionNiv4.etqh
+    ExpresionNiv4.etq  = Literal.etq
+
+ExpresionNiv4 → Mem
+    ExpresionNiv4.cod    =
+        si esCompatibleConTipoBasico(Mem.tipo,ExpresionNiv4.tsh) /\ not ExpresionNiv4.parh
             Mem.cod || apila-ind
         si no
             Mem.cod
-    Mem.etqh        = ExpNiv4.etqh
-    ExpNiv4.etq     = 
-        si esCompatibleConTipoBasico(Mem.tipo,ExpNiv4.tsh) /\ not ExpNiv4.parh
+    Mem.etqh        = ExpresionNiv4.etqh
+    ExpresionNiv4.etq     =
+        si esCompatibleConTipoBasico(Mem.tipo,ExpresionNiv4.tsh) /\ not ExpresionNiv4.parh
             Mem.etq + 1
-        si no 
+        si no
             Mem.etq
-    ExpNiv4.modo    = var
-    
+    ExpresionNiv4.modo    = var
+
 
 Literal → litNat
     Literal.cod = apila LitNat.lex
