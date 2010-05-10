@@ -184,9 +184,9 @@ FParam → var iden: Tipo
     FParam.tam      = 1
     Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
 
-FParam → id: Tipo
+FParam → Tipo id
     FParam.tam      = Tipo.tipo.tam
-    Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
+    Fparam.param    = <modo: valor, tipo: Tipo.tipo, dir: Fparam.dirh>
 
 
 Bloque → Decs && Ins
@@ -218,12 +218,6 @@ Bloque → Ins
 
 
 
-Decs → Decs ; Dec
-    Decs1.dirh = Decso.dirh
-
-Decs → Dec
-    Decs.dir = Decs.dirh + Dec.tam
-    Dec.dirh = Decs.dirh
 
 Inses → Ins ; Inses
     Inses0.cod    = Ins.cod || Inses1.cod
