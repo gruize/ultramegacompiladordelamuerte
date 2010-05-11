@@ -47,13 +47,14 @@ Declaracion → DecVar
     Declaracion.cod         = λ
     Declaracion.etq         = Declaracion.etqh
 
-Declaracion → DecProc
-    DecProc.nh              = Declaracion.nh
-    Declaracion.n           = DecProc.n
-    DecProc.etqh            = Declaracion.etqh
-    Declaracion.etq         = DecProc.etq
-    Declaracion.cod         = DecProc.cod
-    Declaracion.propsop     = DecProc.propsop
+Declaracion → DeclaracionProcedimiento
+    Declaracion.tam                 = 0
+    DeclaracionProcedimiento.nh     = Declaracion.nh
+    Declaracion.n                   = DeclaracionProcedimiento.n
+    DeclaracionProcedimiento.etqh   = Declaracion.etqh
+    Declaracion.etq                 = DeclaracionProcedimiento.etq
+    Declaracion.cod                 = DeclaracionProcedimiento.cod
+    Declaracion.propsop             = DeclaracionProcedimiento.propsop
 
 
 Tipo → Boolean
@@ -123,70 +124,70 @@ Campo → iden: Tipo
         >
     Campo.tam   = Tipo.tam
 
-DecProc → proc iden FParams Bloque fproc
-    Bloque.dirh     = FParams.dir
-    FParams.nh      = Bloque.nh = DecProc.nh + 1
-    DecProc.n       = Bloque.n
-    DecProc.cod     = Bloque.cod
-    DecProc.propsop = <inicio:Bloque.inicio>
-    Bloque.etqh     = DecProc.etqh
-    DecProc.etq     = Bloque.etq
-    Bloque.tsph     =
+DeclaracionProcedimiento → proc iden FParametros Bloque fproc
+    Bloque.dirh                      = FParametros.dir
+    FParametros.nh                   = Bloque.nh = DeclaracionProcedimiento.nh + 1
+    DeclaracionProcedimiento.n       = Bloque.n
+    DeclaracionProcedimiento.cod     = Bloque.cod
+    DeclaracionProcedimiento.propsop = <inicio:Bloque.inicio>
+    Bloque.etqh                      = DeclaracionProcedimiento.etqh
+    DeclaracionProcedimiento.etq     = Bloque.etq
+    Bloque.tsph                      =
         añadeID(
-            FParams.ts,
+            FParametros.ts,
             DecProp.id,
-            DecProc.props⊗{nivel:DecsProp.nh+1}⊗DecProc.propsop
+            DeclaracionProcedimiento.props⊗{nivel:DecsProp.nh+1}⊗DeclaracionProcedimiento.propsop
         )
 
 
-LAParams ::= LAParams, Expresion
-    LAParams0.cod   =
-        LAParams1.cod ||
+LAParametros ::= LAParametros, Expresion
+    LAParametros0.cod   =
+        LAParametros1.cod ||
         copia ||
-        direccionParFormal(LAParams0.fparams[LAParams0.nparams]) ||
+        direccionParFormal(LAParametros0.fParametros[LAParametros0.nParametros]) ||
         Expresion.cod ||
-        pasoParametro(Expresion.modo,LAParams0.fparams[LAParams0.nparams])
-    LAParams1.etqh  = LAParams0.etqh
-    Expresion.etqh  = LAParams1.etq + 1 + longDireccionParFormal
-    LAParams0.etq   = Expresion.etq + longPasoParametro
-    Expresion.parh  = LAParams0.fparamsh[LAParams0.nparams].modo == var
+        pasoParametro(Expresion.modo,LAParametros0.fParametros[LAParametros0.nParametros])
+    LAParametros1.etqh  = LAParametros0.etqh
+    Expresion.etqh  = LAParametros1.etq + 1 + longDireccionParFormal
+    LAParametros0.etq   = Expresion.etq + longPasoParametro
+    Expresion.parh  = LAParametros0.fParametrosh[LAParametros0.nParametros].modo == var
 
-LAParams ::= Expresion
-    LAParams.cod    =
+LAParametros ::= Expresion
+    LAParametros.cod    =
         copia ||
         Expresion.cod ||
-        pasoParametro(Expresion.modo,LAParams.fparams[1])
-    Expresion.etqh  = LAParams.etq + 1
-    LAParams.etq    = Expresion.etq + longPasoParametro
-    Expresion.parh  = LAParams.fparamsh[1].modo == var
+        pasoParametro(Expresion.modo,LAParametros.fParametros[1])
+    Expresion.etqh  = LAParametros.etq + 1
+    LAParametros.etq    = Expresion.etq + longPasoParametro
+    Expresion.parh  = LAParametros.fParametrosh[1].modo == var
 
 
-FParams → ( LFParams )
-    FParams.dir = LFParams.dir
+FParametros → ( LFParametros )
+    FParametros.dir = LFParametros.dir
 
-FParams → λ
-    FParams.dir = 0
-
-
-LFParams → LFParams, FParam
-    LFParams0.ts    = añadeID(LFParams1.ts,FParam.id,
-                           FParam.props ⊗ <dir:LFParams1.dir>)
-    LFParams0.dir   = LFParams1.dir + FParam.tam
-    FParam.dirh     = LFParams1.dir
-
-LFParam → FParam
-    LFParam.ts      = añadeID(LFParam.tsph, FParam.id,FParam.props ⊗ <dir:0>)
-    LFParam.dir     = FParam.tam
-    FParam.dirh     = 0
+FParametros → λ
+    FParametros.dir = 0
 
 
-FParam → var iden: Tipo
-    FParam.tam      = 1
-    Fparam.param    = <modo: variable, tipo: Tipo.tipo, dir: Fparam.dirh>
+LFParametros → LFParametros, FParametro
+    LFParametros0.ts    = añadeID(LFParametros1.ts,FParametro.id,
+                           FParametro.props ⊗ <dir:LFParametros1.dir>)
+    LFParametros0.dir   = LFParametros1.dir + FParametro.tam
+    FParametro.dirh     = LFParametros1.dir
 
-FParam → Tipo id
-    FParam.tam      = Tipo.tipo.tam
-    Fparam.param    = <modo: valor, tipo: Tipo.tipo, dir: Fparam.dirh>
+LFParametro → FParametro
+    LFParametro.ts      = añadeID(LFParametro.tsph, FParametro.id,FParametro.props ⊗ <dir:0>)
+    LFParametro.dir     = FParametro.tam
+    FParametro.dirh     = 0
+
+
+FParametro → var Tipo id
+    FParametro.tam      = 1
+    FParametro.param    = <modo: variable, tipo: Tipo.tipo, dir: FParametro.dirh>
+
+FParametro → Tipo id
+    FParametro.tam      = Tipo.tipo.tam
+    FParametro.param    = <modo: valor, tipo: Tipo.tipo, dir: FParametro.dirh>
 
 
 Bloque → Decs && Ins
@@ -195,7 +196,7 @@ Bloque → Decs && Ins
     Bloque.n        = Decs.n
     Decs.etqh       = Bloque.etqh
     Bloque.inicio   = Decs.etq
-    Ins.etqh          = Decs.etq + longPrologo
+    Ins.etqh        = Decs.etq + longPrologo
     Bloque.etq      = Ins.etq + longEpilogo + 1
     Bloque.cod      =
             Decs.cod                    ||
@@ -215,9 +216,6 @@ Bloque → Ins
     Ins.etqh        = Bloque.etqh + longPrologo
     Bloque.inicio   = Bloque.etqh
     Bloque.etq      = Ins.etq + longEpilogo + 1
-
-
-
 
 Inses → Ins ; Inses
     Inses0.cod    = Ins.cod || Inses1.cod
@@ -276,10 +274,10 @@ Ins → InsDis
     InsDis.etqh             = Ins.etqh
     Ins.etq                 = InsDis.etq
 
-Ins → InsCall
-    InsCall.etqh            = Ins.etqh
-    Ins.etq                 = InsCall.etq
-    Ins.cod                 = InsCall.cod
+Ins → InsProcedimiento
+    InsProcedimiento.etqh   = Ins.etqh
+    Ins.etq                 = InsProcedimiento.etq
+    Ins.cod                 = InsProcedimiento.cod
 
 InsLectura → in(id)
     InsLectura.cod  = in InsLectura.tsh[id.lex].dir
@@ -364,50 +362,50 @@ InsFor → for id=Expresion to Expresion do I
     InsFor.etq        = I.etq + 6
 
 
-INew → new Mem
-    INew.cod =
+InsNew → new Mem
+    InsNew.cod  =
         Mem.cod ||
         new(
             si Mem.tipo.tbase = ref
-                INew.tsh[Mem.tipo.tbase.id].tam
+                InsNew.tsh[Mem.tipo.tbase.id].tam
             si no
                 1
         )
         || desapila-ind
-    Mem.etqh = INew.etqh
-    INew.etq = Mem.etq + 2
+    Mem.etqh    = InsNew.etqh
+    InsNew.etq  = Mem.etq + 2
 
 
-IDel → delete Mem
-    IDel.cod =
+InsDis → delete Mem
+    InsDis.cod  =
         Mem.cod ||
         del(
             si Mem.tipo.tbase = ref
-                IDel.tsh[Mem.tipo.tbase.id].tam
+                InsDis.tsh[Mem.tipo.tbase.id].tam
             si no
                 1
         )
-    Mem.etqh = IDel.etqh
-    IDel.etq = Mem.etq + 1
+    Mem.etqh    = InsDis.etqh
+    InsDis.etq  = Mem.etq + 1
 
 
-ICall → iden AParams
-    ICall.cod       =
-        apila-ret(ICall.etq)    ||
-        AParams.cod             ||
-        ir-a(ICall.tsh[iden.lex].inicio)
-    AParams.etqh    = Icall.etqh + longApilaRet
-    ICall.etq       = AParams.etq + 1
+InsProcedimiento → iden AParametros
+    InsProcedimiento.cod    =
+        apila-ret(InsProcedimiento.etq)         ||
+        AParametros.cod                         ||
+        ir-a(InsProcedimiento.tsh[iden.lex].inicio)
+    AParametros.etqh            = InsProcedimiento.etqh + longApilaRet
+    InsProcedimiento.etq    = AParametros.etq + 1
 
 
-AParams → LAparams
-    AParams.cod     = inicio-paso || LAParams.cod || fin-paso
-    LAParams.etqh   = AParams.etqh + longInicioPaso
-    AParams.etq     = LAParams.etq + longFinPaso
+AParametros → LAParametros
+    AParametros.cod     = inicio-paso || LAParametros.cod || fin-paso
+    LAParametros.etqh   = AParametros.etqh + longInicioPaso
+    AParametros.etq     = LAParametros.etq + longFinPaso
 
-AParams → λ
-    AParams.cod     = λ
-    AParams.etq     = AParams.etqh
+AParametros → λ
+    AParametros.cod     = λ
+    AParametros.etq     = AParametros.etqh
 
 Mem → id
     Mem.cod    = accesoVar(Mem.tsh[id.lex])
@@ -498,13 +496,13 @@ ExpresionNiv1 → ExpresionNiv2
 ExpresionNiv2 ::= ExpresionNiv2 and ExpresionNiv3
     ExpresionNiv20.cod    =
         ExpresionNiv21.cod ||
-        ir-f(Fact.etq + 1) ||
-        ExpresionNiv3.cod ||
-        ir-a(Fact.etq + 2) ||
+        ir-f(ExpresionNiv2.etq + 1) ||
+        ExpresionNiv2.cod ||
+        ir-a(ExpresionNiv2.etq + 2) ||
         apila(0)
     ExpresionNiv21.etqh   = ExpresionNiv20.etqh
-    ExpresionNiv3.etqh       = ExpresionNiv21.etq + 1
-    ExpresionNiv20.etq    = ExpresionNiv3.etq + 2
+    ExpresionNiv2.etqh       = ExpresionNiv21.etq + 1
+    ExpresionNiv20.etq    = ExpresionNiv2.etq + 2
     ExpresionNiv20.modo   = val
     ExpresionNiv21.parh   = ExpresionNiv3.parh = false
 
