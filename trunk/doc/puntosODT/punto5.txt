@@ -1,14 +1,14 @@
-Programa → Decs & Is
-    Programa.cod  = 
+Programa → Declaraciones & Instrucciones
+    Programa.cod  =
         inicio(Decs.n,Decs.dir) ||
         ir-a(Decs.etq)          ||
         Decs.cod                ||
-        Is.cod                  ||
+        Instrucciones.cod       ||
         stop
-    Decs.etqh      = longInicio + 1
-    Is.etqh        = Decs.etq
-    Decs.dirh      = 0
-    Decs.nh        = 0
+    Declaraciones.etqh      = longInicio + 1
+    Instrucciones.etqh      = Declaraciones.etq
+    Declaraciones.dirh      = 0
+    Declaraciones.nh        = 0
 
 Declaraciones → Declaraciones ; Declaracion
     Declaraciones0.ts       = añadeID(Declaraciones1.ts,Declaracion.id,Declaracion.props ⊗ Declaracion.propsop)
@@ -217,67 +217,67 @@ Bloque → Ins
     Bloque.inicio   = Bloque.etqh
     Bloque.etq      = Ins.etq + longEpilogo + 1
 
-Inses → Ins ; Inses
-    Inses0.cod    = Ins.cod || Inses1.cod
-    Ins1.etqh     = Inses0.etqh
-    Inses.etqh    = Ins1.etq
-    Inses0.etq    = Ins.etq
+Instrucciones → Instruccion ; Instrucciones
+    Instrucciones0.cod    = Instruccion.cod || Instrucciones1.cod
+    Instruccion1.etqh     = Instrucciones0.etqh
+    Instrucciones.etqh    = Instruccion1.etq
+    Instrucciones0.etq    = Instruccion.etq
 
-Inses → Ins
-    Inses.cod   = Ins.cod
-    Ins.etqh    = Inses.etqh
-    Inses.etq   = Ins.etq
+Instrucciones → Instruccion
+    Instrucciones.cod   = Instruccion.cod
+    Instruccion.etqh    = Instrucciones.etqh
+    Instrucciones.etq   = Instruccion.etq
 
 
-Ins → InsAsignacion
-    Inses.cod               = InsL.cod
-    InsAsignacion.etqh      = Ins.etzqh
-    Ins.etq                 = InsL.etq
+Instruccion → InsAsignacion
+    Instrucciones.cod       = InstruccionAsignacion.cod
+    InsAsignacion.etqh      = Instruccion.etzqh
+    Instruccion.etq         = InstruccionAsignacion.etq
 
-Ins → InsLectura
-    Ins.cod                 = InsLectura.cod
-    InsLectura.etqh         = Ins.etqh
-    Ins.etq                 = InsLectura.etq
+Instruccion → InsLectura
+    Instruccion.cod         = InsLectura.cod
+    InsLectura.etqh         = Instruccion.etqh
+    Instruccion.etq         = InsLectura.etq
 
-Ins → InsEscritura
-    Ins.cod                 = InsEscritura.cod
-    InsEscritura.etqh       = Ins.etqh
-    Ins.etq                 = InsEscritura.etq
+Instruccion → InsEscritura
+    Instruccion.cod         = InsEscritura.cod
+    InsEscritura.etqh       = Instruccion.etqh
+    Instruccion.etq         = InsEscritura.etq
 
-Ins → InsCompuesta
-    Ins.cod                 = InsCompuesta.cod
-    InsCompuesta.etqh       = Ins.etqh
-    Ins.etq                 = InsCompuesta.etq
+Instruccion → InsCompuesta
+    Instruccion.cod         = InsCompuesta.cod
+    InsCompuesta.etqh       = Instruccion.etqh
+    Instruccion.etq         = InsCompuesta.etq
 
-Ins → InsIf
-    Ins.cod                 = InsIf.cod
-    InsIf.etqh              = Ins.etqh
-    Ins.etq                 = InsIf.etq
+Instruccion → InsIf
+    Instruccion.cod         = InsIf.cod
+    InsIf.etqh              = Instruccion.etqh
+    Instruccion.etq         = InsIf.etq
 
-Ins → InsWhile
-    Ins.cod                 = InsWhile.cod
-    InsWhile.etqh           = Ins.etqh
-    Ins.etq                 = InsWhile.etq
+Instruccion → InsWhile
+    Instruccion.cod         = InsWhile.cod
+    InsWhile.etqh           = Instruccion.etqh
+    Instruccion.etq         = InsWhile.etq
 
-Ins → InsFor
-    Ins.cod                 = InsFor.cod
-    InsFor.etqh             = Ins.etqh
-    Ins.etq                 = InsFor.etq
+Instruccion → InsFor
+    Instruccion.cod         = InsFor.cod
+    InsFor.etqh             = Instruccion.etqh
+    Instruccion.etq         = InsFor.etq
 
-Ins → InsNew
-    Ins.cod                 = InsNew.cod
-    InsNew.etqh             = Ins.etqh
-    Ins.etq                 = InsNew.etq
+Instruccion → InsNew
+    Instruccion.cod         = InsNew.cod
+    InsNew.etqh             = Instruccion.etqh
+    Instruccion.etq         = InsNew.etq
 
-Ins → InsDis
-    Ins.cod                 = InsDis.cod
-    InsDis.etqh             = Ins.etqh
-    Ins.etq                 = InsDis.etq
+Instruccion → InsDis
+    Instruccion.cod         = InsDis.cod
+    InsDis.etqh             = Instruccion.etqh
+    Instruccion.etq         = InsDis.etq
 
-Ins → InsProcedimiento
-    InsProcedimiento.etqh   = Ins.etqh
-    Ins.etq                 = InsProcedimiento.etq
-    Ins.cod                 = InsProcedimiento.cod
+Instruccion → InsProcedimiento
+    InsProcedimiento.etqh   = Instruccion.etqh
+    Instruccion.etq         = InsProcedimiento.etq
+    Instruccion.cod         = InsProcedimiento.cod
 
 InsLectura → in(id)
     InsLectura.cod  = in InsLectura.tsh[id.lex].dir
@@ -309,57 +309,57 @@ InsCompuesta → { Is }
     InsCompuesta.etq    = Is.etq
 
 
-InsIf → if Expresion then I Pelse
-    InsIf.cod       =
-        Expresion.cod || ir-f(I.etq + 1) || I.cod || ir-a(PElse.etq) || PElse.cod
-    Expresion.etqh  = InsIf.etqh
-    I.etqh          = Expresion.etq + 1
-    PElse.etqh      = I.etq + 1
-    InsIf.etq       = PElse.etq
-    Expresion.parh  = false
+InsIf → if Expresion then Instruccion Pelse
+    InsIf.cod           =
+        Expresion.cod || ir-f(Instruccion.etq + 1) || Instruccion.cod || ir-a(PElse.etq) || PElse.cod
+    Expresion.etqh      = InsIf.etqh
+    Instruccion.etqh    = Expresion.etq + 1
+    PElse.etqh          = Instruccion.etq + 1
+    InsIf.etq           = PElse.etq
+    Expresion.parh      = false
 
 
-PElse → else I
-    PElse.cod  = I.cod
-    PElse.etq  = I.etq
-    I.etqh     = PElse.etqh
+PElse → else Instruccion
+    PElse.cod           = Instruccion.cod
+    PElse.etq           = Instruccion.etq
+    Instruccion.etqh    = PElse.etqh
 
 PElse → λ
     PElse.cod  = λ
     PElse.etq  = PElse.etqh
 
 
-InsWhile → while Expresion do I
-    InsWhile.cod   =
-        Expresion.cod ||
-        ir-f(I.etq + 1) ||
-        I.cod ||
+InsWhile → while Expresion do Instruccion
+    InsWhile.cod        =
+        Expresion.cod               ||
+        ir-f(Instruccion.etq + 1)   ||
+        Instruccion.cod             ||
         ir-a(InsWhile.etqh)
-    Expresion.etqh = InsWhile.etqh
-    I.etqh         = Expresion.etq + 1
-    InsWhile.etq   = I.etq + 1
+    Expresion.etqh      = InsWhile.etqh
+    Instruccion.etqh    = Expresion.etq + 1
+    InsWhile.etq        = Instruccion.etq + 1
 
 
-InsFor → for id=Expresion to Expresion do I
+InsFor → for id=Expresion to Expresion do Instruccion
     InsFor.cod  =
-        Expresion0.cod ||
+        Expresion0.cod                      ||
         desapila-dir InsFor.tsh[id.lex].dir ||
-        Expresion1.cod ||
-        dup ||
-        apila-dir InsFor.tsh[id.lex].dir ||
-        igual ||
-        ir-v( InsFor.etq - 1) ||
-        I.cod ||
-        apila-dir InsFor.tsh[id.lex].dir ||
-        apilar 1 ||
-        sumar ||
+        Expresion1.cod                      ||
+        dup                                 ||
+        apila-dir InsFor.tsh[id.lex].dir    ||
+        igual                               ||
+        ir-v( InsFor.etq - 1)               ||
+        Instruccion.cod                     ||
+        apila-dir InsFor.tsh[id.lex].dir    ||
+        apilar 1                            ||
+        sumar                               ||
         desapila-dir InsFor.tsh[id.lex].dir ||
         ir-a (Expresion1.etq)
         pop
     Expresion0.etqh   = InsFor.etqh
     Expresion1.etqh   = Expresion0.etq + 1
-    I.etqh            = Expresion1.etq + 4
-    InsFor.etq        = I.etq + 6
+    Instruccion.etqh  = Expresion1.etq + 4
+    InsFor.etq        = Instruccion.etq + 6
 
 
 InsNew → new Mem
