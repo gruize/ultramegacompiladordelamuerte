@@ -11,7 +11,7 @@
  */
 package interfaz.compilador;
 
-import compilador.traductor.TraductorCodDual;
+import compilador.traductor.TraductorCodP;
 import java.io.File;
 import java.io.IOException;
 import java.io.PipedReader;
@@ -274,7 +274,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
             }
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
-            TraductorCodDual tcoddual = new TraductorCodDual(tokens);
+            TraductorCodP tcoddual = new TraductorCodP(tokens);
 
             if(classFile != null) {
                 String nombreClase = classFile.getName();
