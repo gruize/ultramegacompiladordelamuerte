@@ -79,12 +79,10 @@ public abstract class Traductor {
     }
 
     public void traducir(String nombreClase) throws Exception {
-        Codigo codP = new Codigo();
-        CodigoJVM codJ = new CodigoJVM();
+        Codigo cod = new Codigo();
         try {
             Object[] resultado = Programa();
-            codP = (Codigo) resultado[1];
-            codJ = (CodigoJVM) resultado[2];
+            cod = (Codigo) resultado[1];
         } catch (Exception e) {
             System.out.println("Traducción no terminada: Error Fatal:");
             //System.out.println(e.getMessage());
@@ -96,14 +94,13 @@ public abstract class Traductor {
             imprimirErrores();
             throw new Exception("Traducción acabada con errores no fatales:\n"+dameErrores());
         }
-        traduccionP = codP.getCod();
+        traduccionP = cod.getCod();
         /*
          * Calcular la altura maxima de la pila es algo complejo, pero al no
          * usar en la traduccion ninguna instruccion que apile dos elementos en
          * la pila, su altura nunca podra ser mayor que el numero de instrucciones
          * del programa
          */
-        traduccionJ = codJ.dameTraduccion(numVars, codJ.size(), nombreClase);
     }
 
     public ArrayList<InstruccionInterprete> getTraduccionP(String nombreClase) throws Exception {
@@ -274,8 +271,7 @@ public abstract class Traductor {
     //Programa(out: error1, cod1)
     protected Object[] Programa() throws Exception {
         boolean error1 = false;
-        Codigo codP1 = null;
-        CodigoJVM codJ1;
+        Codigo cod1 = null;
         error1 |= Declaraciones();
         //ERROR fatal si no hay ampersand
         if (!ampersand()) {
@@ -283,14 +279,13 @@ public abstract class Traductor {
         }
         Object[] resInst = Instrucciones();
         error1 |= (Boolean) resInst[0];
-        codP1 = (Codigo) resInst[1];
-        codJ1 = (CodigoJVM) resInst[2];
+        cod1 = (Codigo) resInst[1];
         if (error1) {
             errores.add(
                     new ErrorTraductor("Info: Se han detectado errores en el programa. "
                     + "El código generado puede no ser válido."));
         }
-        return new Object[]{error1, codP1, codJ1};
+        return new Object[]{error1, cod1};
     }
 
     //Declaraciones (out: error1)→
@@ -373,47 +368,38 @@ public abstract class Traductor {
     //Instrucciones(out: error1,cod1) →
     protected Object[] Instrucciones() throws Exception {
         boolean error1;
-        Codigo codP1;
-        CodigoJVM codJ1;
+        Codigo cod1;
 
         Object[] resIns = Instruccion();
         boolean error2 = (Boolean) resIns[0];
-        Codigo codP2 = (Codigo) resIns[1];
-        CodigoJVM codJ2 = (CodigoJVM) resIns[2];
+        Codigo cod2 = (Codigo) resIns[1];
 
-        Object[] resInsFact = InstruccionesFact(error2, codP2, codJ2);
+        Object[] resInsFact = InstruccionesFact(error2, cod2);
         error1 = (Boolean) resInsFact[0];
-        codP1 = (Codigo) resInsFact[1];
-        codJ1 = (CodigoJVM) resInsFact[2];
-        return new Object[]{error1, codP1, codJ1};
+        cod1 = (Codigo) resInsFact[1];
+        return new Object[]{error1, cod1};
     }
 
     //InstruccionesFact(in: errorh1,codh1; out: error1,cod1) →
-    protected Object[] InstruccionesFact(boolean errorh1, Codigo codPh1, CodigoJVM codJh1) throws Exception {
+    protected Object[] InstruccionesFact(boolean errorh1, Codigo codh1) throws Exception {
         boolean error1;
         boolean error2 = false;
-        Codigo codP1 = new Codigo();
-        CodigoJVM codJ1 = new CodigoJVM();
+        Codigo cod1 = new Codigo();
         if (puntoYComa() && !(i_token >= arrayTokens.size())) { //no lambda
             //fin programa
             Object[] resInst = Instrucciones();
             error2 = (Boolean) resInst[0];
-            Codigo codP2 = (Codigo) resInst[1];
-            CodigoJVM codJ2 = (CodigoJVM) resInst[2];
-            codP1 = codPh1;
-            codP1.appendCod(codP2);
-
-            codJ1 = codJh1;
-            codJ1.append(codJ2);
+            Codigo cod2 = (Codigo) resInst[1];
+            cod1 = codh1;
+            cod1.appendCod(cod2);
         } else if (i_token >= arrayTokens.size()) {//lambda
-            codP1 = codPh1;
-            codJ1 = codJh1;
+            cod1 = codh1;
         } else {
             throw new Exception("FATAL: Instrucción incorrecta: Se esperaba ; o fin de programa" + textoError());
         }
 
         error1 = error2 || errorh1;
-        return new Object[]{error1, codP1, codJ1};
+        return new Object[]{error1, cod1};
     }
 
     //Instrucción(out: error1,cod1) →
@@ -425,23 +411,19 @@ public abstract class Traductor {
         boolean error2L = (Boolean) resLect[0];
         boolean error2E = (Boolean) resEscr[0];
         boolean error2A = (Boolean) resAsig[0];
-        Codigo codP2 = new Codigo();
-        CodigoJVM codJ2 = new CodigoJVM();
+        Codigo cod2 = new Codigo();
 
         if (!error2L) {//ins Lectura
-            codP2 = (Codigo) resLect[1];
-            codJ2 = (CodigoJVM) resLect[2];
+            cod2 = (Codigo) resLect[1];
         } else if (!error2E) {
-            codP2 = (Codigo) resEscr[1];
-            codJ2 = (CodigoJVM) resEscr[2];
+            cod2 = (Codigo) resEscr[1];
         } else if (!error2A) {
-            codP2 = (Codigo) resAsig[1];
-            codJ2 = (CodigoJVM) resAsig[2];
+            cod2 = (Codigo) resAsig[1];
         } else {
             error1 = true;
             errores.add(new ErrorTraductor("Hay errores en la(s) instrucción(es) " + textoError()));
         }
-        return new Object[]{error1, codP2, codJ2};
+        return new Object[]{error1, cod2};
     }
 
     protected abstract Object[] InsLectura() throws Exception;
@@ -453,78 +435,63 @@ public abstract class Traductor {
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
         Tipos tipo1 = null;
-        Codigo codP1 = null;
-        CodigoJVM codJ1;
+        Codigo cod1 = null;
         Object[] resExprN1 = ExpresionNiv1();
         Tipos tipo2 = (Tipos) resExprN1[0];
-        Codigo codP2 = (Codigo) resExprN1[1];
-        CodigoJVM codJ2 = (CodigoJVM) resExprN1[2];
-        Object[] resExprFact = ExpresionFact(tipo2, codP2, codJ2);
+        Codigo cod2 = (Codigo) resExprN1[1];
+        Object[] resExprFact = ExpresionFact(tipo2, cod2);
         tipo1 = (Tipos) resExprFact[0];
-        codP1 = (Codigo) resExprFact[1];
-        codJ1 = (CodigoJVM) resExprFact[2];
-        return new Object[]{tipo1, codP1, codJ1};
+        cod1 = (Codigo) resExprFact[1];
+        return new Object[]{tipo1, cod1};
     }
 
-    //ExpresiónFact(in: tipo1h,codPh1; out: tipo1,codP1) →
-    protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codPh1, CodigoJVM codJh1) throws Exception;
+    //ExpresiónFact(in: tipo1h,codh1; out: tipo1,cod1) →
+    protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codh1) throws Exception;
 
-    //ExpresiónNiv1(out: tipo1, codP1, codJ1) →
+    //ExpresiónNiv1(out: tipo1, cod1, codJ1) →
     protected Object[] ExpresionNiv1() throws Exception {
         Tipos tipo1 = null;
-        Codigo codP1 = null;
-        CodigoJVM codJ1 = null;
+        Codigo cod1 = null;
         Object[] resExprN2 = ExpresionNiv2();
         Tipos tipo2 = (Tipos) resExprN2[0];
-        Codigo codP2 = (Codigo) resExprN2[1];
-        CodigoJVM codJ2 = (CodigoJVM) resExprN2[2];
-        Object[] resExprFact = ExpresionNiv1Rec(tipo2, codP2, codJ2);
+        Codigo cod2 = (Codigo) resExprN2[1];
+        Object[] resExprFact = ExpresionNiv1Rec(tipo2, cod2);
         tipo1 = (Tipos) resExprFact[0];
-        codP1 = (Codigo) resExprFact[1];
-        codJ1 = (CodigoJVM) resExprFact[2];
-        return new Object[]{tipo1, codP1, codJ1};
+        cod1 = (Codigo) resExprFact[1];
+        return new Object[]{tipo1, cod1};
     }
 
     //ExpresiónNiv1Rec(in: tipoh1, codh1; out: tipo1, cod1)
-    protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1) throws Exception;
+    protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1, Codigo codh1) throws Exception;
 
     //ExpresiónNiv2(out: tipo1, cod1) →
     protected Object[] ExpresionNiv2() throws Exception {
         Tipos tipo1 = null;
-        Codigo codP1 = null;
-        CodigoJVM codJ1;
+        Codigo cod1 = null;
         Object[] resExprNiv3 = ExpresionNiv3();
         Tipos tipoh3 = (Tipos) resExprNiv3[0];
-        Codigo codPh3 = (Codigo) resExprNiv3[1];
-        CodigoJVM codJh3 = (CodigoJVM) resExprNiv3[2];
-        Object[] resExprNiv2Rec = ExpresionNiv2Rec(tipoh3, codPh3, codJh3);
-        tipo1 = (Tipos) resExprNiv2Rec[0];
-        codP1 = (Codigo) resExprNiv2Rec[1];
-        codJ1 = (CodigoJVM) resExprNiv2Rec[2];
-        return new Object[]{tipo1, codP1, codJ1};
+        Codigo codh3 = (Codigo) resExprNiv3[1];
+        return new Object[]{tipo1, cod1};
     }
 
-    //ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, codP1)
-    protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1) throws Exception;
+    //ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, cod1)
+    protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codh1) throws Exception;
 
     //ExpresiónNiv3(out: tipo1, codJ1) →
     protected Object[] ExpresionNiv3() throws Exception {
         Tipos tipo1 = null;
-        Codigo codP1 = null;
-        CodigoJVM codJ1;
+        Codigo cod1 = null;
         Object[] resExprN4 = ExpresionNiv4();
         Tipos tipoh3 = (Tipos) resExprN4[0];
-        Codigo codPh3 = (Codigo) resExprN4[1];
-        CodigoJVM codJh3 = (CodigoJVM) resExprN4[2];
-        Object[] resExprN4Fact = ExpresionNiv3Fact(tipoh3, codPh3, codJh3);
+        Codigo codh3 = (Codigo) resExprN4[1];
+        Object[] resExprN4Fact = ExpresionNiv3Fact(tipoh3, codh3);
         tipo1 = (Tipos) resExprN4Fact[0];
-        codP1 = (Codigo) resExprN4Fact[1];
-        codJ1 = (CodigoJVM) resExprN4Fact[2];
-        return new Object[]{tipo1, codP1, codJ1};
+        cod1 = (Codigo) resExprN4Fact[1];
+        return new Object[]{tipo1, cod1};
     }
 
     //ExpresiónNiv3Fact(in: tipoh1, codh1; out: tipo1, cod1)
-    protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codPh1, CodigoJVM codJh1) throws Exception;
+    protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codh1) throws Exception;
 
     protected Object[] ExpresionNiv4() throws Exception {
         Operaciones op2 = OpNiv4();
@@ -548,12 +515,11 @@ public abstract class Traductor {
     protected Object[] ExpresionNiv4_abrePar() throws Exception {
         Object[] resExpr = Expresion();
         Tipos tipo1 = (Tipos) resExpr[0];
-        Codigo codP1 = (Codigo) resExpr[1];
-        CodigoJVM codJ1 = (CodigoJVM) resExpr[2];
+        Codigo cod1 = (Codigo) resExpr[1];
         if (!cierraPar()) {
             throw new Exception("FATAL: Se esperaba cerrar paréntesis" + textoError());
         }
-        return new Object[]{tipo1, codP1, codJ1};
+        return new Object[]{tipo1, cod1};
     }
 
     protected Object[] ExpresionNiv4_Literal() throws Exception {
