@@ -33,19 +33,19 @@ Declaraciones → Declaracion
     Declaraciones.cod       = Declaracion.cod
 
 
-Declaracion → DecTipo
+Declaracion → DeclaracionTipo
     Declaracion.propsop     = <>
     Declaracion.tam         = 0
     Declaracion.n           = Declaracion.nh
     Declaracion.cod         = λ
     Declaracion.etq         = Declaracion.etqh
 
-Declaracion → DecVar
-    DecVar.propsop          = <dir:Declaracion.dirh>
-    Declaracion.tam         = DecVar.props.tipo.tam
-    Declaracion.n           = Declaracion.nh
-    Declaracion.cod         = λ
-    Declaracion.etq         = Declaracion.etqh
+Declaracion → DeclaracionVariable
+    DeclaracionVariable.propsop = <dir:Declaracion.dirh>
+    Declaracion.tam             = DeclaracionVariable.props.tipo.tam
+    Declaracion.n               = Declaracion.nh
+    Declaracion.cod             = λ
+    Declaracion.etq             = Declaracion.etqh
 
 Declaracion → DeclaracionProcedimiento
     Declaracion.tam                 = 0
@@ -217,11 +217,11 @@ Bloque → Ins
     Bloque.inicio   = Bloque.etqh
     Bloque.etq      = Ins.etq + longEpilogo + 1
 
-Instrucciones → Instruccion ; Instrucciones
-    Instrucciones0.cod    = Instruccion.cod || Instrucciones1.cod
-    Instruccion1.etqh     = Instrucciones0.etqh
-    Instrucciones.etqh    = Instruccion1.etq
-    Instrucciones0.etq    = Instruccion.etq
+Instrucciones → Instrucciones ; Instruccion
+    Instrucciones0.cod  = Instrucciones1.cod || Instruccion.cod
+    Instrucciones1.etqh = Instrucciones0.etqh
+    Instruccion.etqh    = Instrucciones1.etq
+    Instrucciones0.etq  = Instruccion.etq
 
 Instrucciones → Instruccion
     Instrucciones.cod   = Instruccion.cod
@@ -303,10 +303,10 @@ InsAsignación → Mem := Expresion
     Expresion.parh          = false
 
 
-InsCompuesta → { Is }
-    InsCompuesta.cod    = Is.cod
-    Is.etqh             = InsCompuesta.etqh
-    InsCompuesta.etq    = Is.etq
+InsCompuesta → { Instrucciones }
+    InsCompuesta.cod    = Instrucciones.cod
+    Instrucciones.etqh  = InsCompuesta.etqh
+    InsCompuesta.etq    = Instrucciones.etq
 
 
 InsIf → if Expresion then Instruccion Pelse
