@@ -5,6 +5,8 @@ public class InfoTs {
 	public enum Tipos{ERROR,ENTERO,NATURAL,REAL,CHAR,BOOL}
 	private Tipos tipo;
 	private int dir;
+        private int nivel;    //verificarlos
+        private String clase; //verificarlos
 	
 	
 	public InfoTs(Tipos tipo, int dir){
@@ -15,6 +17,12 @@ public class InfoTs {
 	public Tipos getTipo() {
 		return tipo;
 	}
+        public int getNivel(){
+            return nivel;
+        }
+        public String getClase(){
+            return clase;
+        }
 	public void setTipo(Tipos tipo) {
 		this.tipo = tipo;
 	}
