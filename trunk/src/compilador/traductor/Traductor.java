@@ -1,11 +1,12 @@
 package compilador.traductor;
 
-import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 import java.util.ArrayList;
 import java.util.Iterator;
+import pila.interprete.excepiones.DatoExc;
+import pila.interprete.excepiones.LectorExc;
 
-import pila.interprete.instrucciones.InstruccionInterprete;
-
+import pila.interprete.instrucciones.*;
+import pila.interprete.datos.*;
 import compilador.lexico.Tokens.Absoluto;
 import compilador.lexico.Tokens.And;
 import compilador.lexico.Tokens.Cast_char;
@@ -38,6 +39,7 @@ import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Token;
 import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.character;
+import compilador.tablaSimbolos.InfoTs;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
 
@@ -49,11 +51,21 @@ import compilador.tablaSimbolos.InfoTs.Tipos;
  */
 public abstract class Traductor {
 
+    public static final int longInicio = 4;
+    public static final int longApilaRet = 5;
+    public static final int longPrologo = 13;
+    public static final int longEpilogo = 13;
+    public static final int longInicioPaso = 3;
+    public static final int longFinPaso = 1;
+    public static final int longDireccionPalFormal = 2;
+    public static final int longPasoParametro = 1;
+
     protected ArrayList<InstruccionInterprete> traduccionP;
-    protected JavaClass traduccionJ;
 
     protected ArrayList<Token> arrayTokens;
+    protected Codigo cod;
     protected TablaSimbolos ts;
+    protected int etq;
     protected int numVars;
     protected int i_token;
     protected ArrayList<ErrorTraductor> errores;
@@ -72,6 +84,8 @@ public abstract class Traductor {
 
     public Traductor(ArrayList<Token> tokens) {
         arrayTokens = tokens;
+        cod = new Codigo();
+        etq = 0;
         numVars = 0;
         i_token = 0;
         errores = new ArrayList<ErrorTraductor>();
@@ -81,8 +95,7 @@ public abstract class Traductor {
     public void traducir(String nombreClase) throws Exception {
         Codigo cod = new Codigo();
         try {
-            Object[] resultado = Programa();
-            cod = (Codigo) resultado[1];
+            Programa();
         } catch (Exception e) {
             System.out.println("Traducción no terminada: Error Fatal:");
             //System.out.println(e.getMessage());
@@ -111,16 +124,6 @@ public abstract class Traductor {
 
     public ArrayList<InstruccionInterprete> getTraduccionP() throws Exception {
         return getTraduccionP("Clase");
-    }
-
-    public JavaClass getTraduccionJ(String nombreClase) throws Exception {
-        if(traduccionJ == null)
-            traducir(nombreClase);
-        return traduccionJ;
-    }
-
-    public JavaClass getTraduccionJ() throws Exception {
-        return getTraduccionJ("Clase");
     }
 
     private String dameErrores() {
@@ -163,6 +166,83 @@ public abstract class Traductor {
         int l = t.getLinea();
         return " en la línea " + l + ".";
     }
+
+    //****FUNCIONES TRADUCCION****
+    protected void inicio(int numNiveles, int tamDatos) throws LectorExc, DatoExc{
+        cod.appendIns(new Apilar(new Nat(numNiveles +2)));
+        cod.appendIns(new DesapilarDir(new Nat(1)));
+        cod.appendIns(new Apilar(new Nat(1+tamDatos+numNiveles)));
+        cod.appendIns(new DesapilarDir(new Nat(0)));
+    }
+
+    protected void apilaRet(int ret) throws DatoExc, LectorExc{
+        cod.appendIns(new ApilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(1)));
+        cod.appendIns(new Suma());
+        cod.appendIns(new Apilar(new Nat(ret)));
+        cod.appendIns(new DesapilaInd());
+    }
+
+    protected void prologo(int nivel, int tamLocales) throws DatoExc, LectorExc{
+        cod.appendIns(new ApilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(2)));
+        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
+        cod.appendIns(new DesapilaInd());
+        cod.appendIns(new ApilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(0)));
+        cod.appendIns(new Suma());
+        cod.appendIns(new DesapilarDir(new Nat(1+nivel)));
+        cod.appendIns(new ApilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(tamLocales+2)));
+        cod.appendIns(new Suma());
+        cod.appendIns(new DesapilarDir());
+    }
+
+    protected void epilogo(int nivel) throws LectorExc, DatoExc{
+        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
+        cod.appendIns(new Apilar(new Nat(2)));
+        cod.appendIns(new Resta());
+        cod.appendIns(new ApilarInd());
+        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
+        cod.appendIns(new Apilar(new Nat(3)));
+        cod.appendIns(new Resta());
+        cod.appendIns(new Copia());
+        cod.appendIns(new DesapilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(2)));
+        cod.appendIns(new ApilarInd());
+
+    }
+
+    protected void accesoVar(InfoTs props) throws LectorExc, DatoExc{
+        cod.appendIns(new ApilarDir(new Nat(1+props.getNivel())));
+        cod.appendIns(new Apilar(new Nat(props.getDir())));
+        cod.appendIns(new Suma());
+        if (props.getClase().equals("pvar"))
+            cod.appendIns(new ApilarInd());
+    }
+
+    protected int longAccesoVar(InfoTs props){
+        int resp;
+        if (props.getClase().equals("pvar"))
+            resp=4;
+        else resp=3;
+        return resp;
+    }
+
+    protected void inicioPaso() throws DatoExc, LectorExc{
+        cod.appendIns(new ApilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Nat(3)));
+        cod.appendIns(new Suma());
+    }
+
+    protected void finPaso() throws LectorExc{
+        cod.appendIns(new Desapilar());
+    }
+
+    protected void direccionPalFormal(){
+    
+    }
+    protected void pasoParametro(){}
 
     //****FUNCIONES AUXILIARES****
     //Devuelven true si encuentran el token esperado
@@ -269,23 +349,22 @@ public abstract class Traductor {
     //-----------------------------------------
     //-------implementación--------------------
     //Programa(out: error1, cod1)
-    protected Object[] Programa() throws Exception {
+    protected boolean Programa() throws Exception {
         boolean error1 = false;
-        Codigo cod1 = null;
+
+        etq = longInicio + 1;
         error1 |= Declaraciones();
         //ERROR fatal si no hay ampersand
         if (!ampersand()) {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
-        Object[] resInst = Instrucciones();
-        error1 |= (Boolean) resInst[0];
-        cod1 = (Codigo) resInst[1];
+        error1 = Instrucciones();
         if (error1) {
             errores.add(
                     new ErrorTraductor("Info: Se han detectado errores en el programa. "
                     + "El código generado puede no ser válido."));
         }
-        return new Object[]{error1, cod1};
+        return error1;
     }
 
     //Declaraciones (out: error1)→
