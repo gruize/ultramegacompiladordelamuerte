@@ -92,6 +92,9 @@ public abstract class Traductor {
         }
         return new String(sb);
     }
+    public Codigo getCod(){
+        return cod;
+    }
     private void imprimirErrores() {
         System.out.println(dameErrores());
     }

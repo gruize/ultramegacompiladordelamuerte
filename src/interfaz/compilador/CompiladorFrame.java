@@ -291,10 +291,11 @@ public class CompiladorFrame extends javax.swing.JFrame {
                 else {
                     classFile = new File(classFile.getParent()+File.separator+nombreClase+".class");
                 }
-                tcoddual.getTraduccionJ(nombreClase).dump(classFile);
+                //tcoddual.getTraduccionJ(nombreClase).dump(classFile);
             }
             if(compilarP) {
-                ArrayList<InstruccionInterprete> ai = tcoddual.getTraduccionP();
+                tcoddual.traducir(codigo);
+                ArrayList<InstruccionInterprete> ai = tcoddual.getCod().getCod();
                 imprimir(ai);
                 File f = new File("./codigo_binario");
                 EscritorPila ep = new EscritorPila();

@@ -2,40 +2,35 @@ package compilador.tablaSimbolos;
 
 
 public class InfoTs {
-	public enum Tipos{ERROR,ENTERO,NATURAL,REAL,CHAR,BOOL}
-	private Tipos tipo;
-	private int dir;
-        private int nivel;    //verificarlos
-        private String clase; //verificarlos
-        private String modo;    //verificarlos
-	
-	
-	public InfoTs(Tipos tipo, int dir){
-		this.tipo=tipo;
-		this.dir=dir;
-	}
-	
-	public Tipos getTipo() {
-		return tipo;
-	}
-        public int getNivel(){
-            return nivel;
-        }
-        public String getClase(){
-            return clase;
-        }
-        public String getModo(){
-            return modo;
-        }
-	public void setTipo(Tipos tipo) {
-		this.tipo = tipo;
-	}
-	public int getDir() {
-		return dir;
-	}
-	public void setDir(int dir) {
-		this.dir = dir;
-	}
-	
+    private enum Clase{tipo,var,proc};
+
+    private Clase clase;
+    private Tipo tipo;
+    private int nivel;
+
+    public InfoTs(Clase c, Tipo t, int n){
+	this.clase = c;
+	this.tipo = t;
+        this.nivel = n;
+}
+
+    public Tipo getTipo() {
+	return tipo;
+    }
+    public void setTipo(Tipo t){
+        tipo=t;
+    }
+    public Clase getClase(){
+        return clase;
+    }
+    public void setClase(Clase c){
+        clase=c;
+    }
+    public int getNivel(){
+        return nivel;
+    }
+    public void setNivel(int n){
+        nivel=n;
+    }
 	
 }
