@@ -48,7 +48,7 @@ import compilador.lexico.Tokens.MiArray;
 import compilador.lexico.Tokens.Token_Modulo;
 import compilador.lexico.Tokens.Token_Multiplicacion;
 import compilador.lexico.Tokens.Token_Natural;
-import compilador.lexico.Tokens.New;
+import compilador.lexico.Tokens.Token_New;
 import compilador.lexico.Tokens.Not;
 import compilador.lexico.Tokens.Null;
 import compilador.lexico.Tokens.Of;
@@ -173,7 +173,7 @@ public class AnalizadorLexico {
                 palabrasReservadas.put("record",new Record());
                 palabrasReservadas.put("pointer",new Pointer());
                 palabrasReservadas.put("null",new Null());
-                palabrasReservadas.put("new",new New());
+                palabrasReservadas.put("new",new Token_New());
                 palabrasReservadas.put("dispose",new Token_Dispose());
                 palabrasReservadas.put("procedure",new Procedure());
                 palabrasReservadas.put("var",new Var());
