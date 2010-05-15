@@ -5,7 +5,7 @@
 
 package pila.interprete.instrucciones;
 
-import pila.interprete.datos.Dato_Nat;
+import pila.interprete.datos.Nat;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
@@ -38,7 +38,7 @@ public class EntradaNat extends InstruccionInterprete{
             interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             int i = Integer.valueOf(leido);
-            datoLeido = new Dato_Nat(i);
+            datoLeido = new Nat(i);
             if(i < 0)
                 throw new InstruccionExc(this,"El dato leído ("
                         +datoLeido.toNatural()+") no es un natural");            

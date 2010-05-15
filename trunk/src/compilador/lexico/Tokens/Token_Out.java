@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class FloatToken extends Token{
-    public FloatToken(){
+public class Token_Out extends Token{
+    public Token_Out(){
         super();
     }
 
     public String toString(){
-        return "Tipo float";
+        return "Salida out";
     }
 }

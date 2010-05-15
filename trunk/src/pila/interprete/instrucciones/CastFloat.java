@@ -2,7 +2,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Real;
+import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -37,7 +37,7 @@ public class CastFloat extends InstruccionInterprete{
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-            Dato_Real e = new Dato_Real(interprete.getPila().removeFirst().toFloat());
+            Real e = new Real(interprete.getPila().removeFirst().toFloat());
             interprete.getPila().addFirst(e);
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getMessage());

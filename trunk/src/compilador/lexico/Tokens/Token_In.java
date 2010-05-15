@@ -9,13 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Or extends Token{
-    public Or(){
+public class Token_In extends Token{
+    public Token_In(){
         super();
     }
 
     public String toString(){
-        return "Or";
+        return "Operador de entrada in";
     }
-
 }

@@ -1,7 +1,7 @@
 package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Dato_Caracter;
+import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -37,7 +37,7 @@ public class CastChar extends InstruccionInterprete{
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-            Dato_Caracter e = new Dato_Caracter(interprete.getPila().removeFirst().toChar());
+            Caracter e = new Caracter(interprete.getPila().removeFirst().toChar());
             interprete.getPila().addFirst(e);
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getMessage());

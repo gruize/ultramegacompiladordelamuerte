@@ -8,9 +8,9 @@ import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Entero;
-import pila.interprete.datos.Dato_Nat;
-import pila.interprete.datos.Dato_Real;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Nat;
+import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -40,17 +40,17 @@ public class Abs extends InstruccionInterprete {
         try {
             switch (d.getTipoDato()) {
                 case DatoPila.NAT_T:
-                    res = new Dato_Nat(d.toNatural());
+                    res = new Nat(d.toNatural());
                     break;
                 case DatoPila.INT_T:
                     if (d.toInt() < 0)
-                        res = new Dato_Entero(-d.toInt());
+                        res = new Entero(-d.toInt());
                     else
                         res = d;
                     break;
                 case DatoPila.FLOAT_T:
                     if (d.toFloat() < 0)
-                        res = new Dato_Real(-d.toFloat());
+                        res = new Real(-d.toFloat());
                     else
                         res = d;
                     break;

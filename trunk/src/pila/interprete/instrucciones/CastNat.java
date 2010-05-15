@@ -7,7 +7,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Nat;
+import pila.interprete.datos.Nat;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -42,7 +42,7 @@ public class CastNat extends InstruccionInterprete{
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
 
         try {
-            Dato_Nat n = new Dato_Nat(interprete.getPila().removeFirst().toNatural());
+            Nat n = new Nat(interprete.getPila().removeFirst().toNatural());
             interprete.getPila().addFirst(n);
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getMessage());
