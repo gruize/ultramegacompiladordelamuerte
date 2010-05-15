@@ -2,7 +2,6 @@ package compilador.tablaSimbolos;
 
 import java.util.Hashtable;
 
-import compilador.tablaSimbolos.InfoTs.Tipos;
 
 /**
  * Tabla de simbolos para cada ámbito
@@ -49,30 +48,6 @@ public class TablaSimbolos {
     public static boolean existe(TablaSimbolos ts, String id) {
     	Hashtable<String,InfoTs> ht= ts.getHashtable();
         return ht.containsKey(id);
-    }
-
-    /**
-     * Devuelve el tipo de la entrada especificada
-     * @param ts Tabla donde se va a buscar la entrada
-     * @param id Identificador de la entrada a modificar
-     * @return El tipo de la entrada especificada si dicha entrada existe. Null en caso contrario.
-     */
-    public static Tipos getTipo(TablaSimbolos ts, String id) {
-    	Hashtable<String,InfoTs> ht= ts.getHashtable();
-        if (ht.containsKey(id)) {
-        	InfoTs i = ht.get(id);
-        	return i.getTipo();
-        }
-        return null;
-    }
-    
-    public static int getDir(TablaSimbolos ts,String id){
-    	Hashtable<String,InfoTs> ht= ts.getHashtable();
-        if (ht.containsKey(id)) {
-        	InfoTs i = ht.get(id);
-        	return i.getDir();
-        }
-        return -1;
     }
 
     public static InfoTs getProps(TablaSimbolos ts,String id){
