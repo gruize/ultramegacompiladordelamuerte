@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-import compilador.lexico.Tokens.Absoluto;
-import compilador.lexico.Tokens.And;
+import compilador.lexico.Tokens.Token_Absoluto;
+import compilador.lexico.Tokens.Token_And;
 import compilador.lexico.Tokens.Token_Boolean;
 import compilador.lexico.Tokens.Cast_char;
 import compilador.lexico.Tokens.Cast_float;
@@ -16,9 +16,9 @@ import compilador.lexico.Tokens.Cast_nat;
 import compilador.lexico.Tokens.Circunflejo;
 import compilador.lexico.Tokens.Corchete_a;
 import compilador.lexico.Tokens.Corchete_c;
-import compilador.lexico.Tokens.Dispose;
-import compilador.lexico.Tokens.Distinto;
-import compilador.lexico.Tokens.Division;
+import compilador.lexico.Tokens.Token_Dispose;
+import compilador.lexico.Tokens.Token_Distinto;
+import compilador.lexico.Tokens.Token_Division;
 import compilador.lexico.Tokens.Do;
 import compilador.lexico.Tokens.Dos_puntos;
 import compilador.lexico.Tokens.Dos_puntos_ig;
@@ -29,7 +29,7 @@ import compilador.lexico.Tokens.For;
 import compilador.lexico.Tokens.Forward;
 import compilador.lexico.Tokens.Identificador;
 import compilador.lexico.Tokens.If;
-import compilador.lexico.Tokens.Igual;
+import compilador.lexico.Tokens.Token_Igual;
 import compilador.lexico.Tokens.In;
 import compilador.lexico.Tokens.Token_Integer;
 import compilador.lexico.Tokens.LitCha;
@@ -39,13 +39,13 @@ import compilador.lexico.Tokens.LitNat;
 import compilador.lexico.Tokens.LitTrue;
 import compilador.lexico.Tokens.Llave_a;
 import compilador.lexico.Tokens.Llave_c;
-import compilador.lexico.Tokens.Mayor;
-import compilador.lexico.Tokens.Mayor_ig;
-import compilador.lexico.Tokens.Menor;
-import compilador.lexico.Tokens.Menor_ig;
+import compilador.lexico.Tokens.Token_Mayor;
+import compilador.lexico.Tokens.Token_Mayor_ig;
+import compilador.lexico.Tokens.Token_Menor;
+import compilador.lexico.Tokens.Token_Menor_ig;
 import compilador.lexico.Tokens.MiArray;
-import compilador.lexico.Tokens.Modulo;
-import compilador.lexico.Tokens.Multiplicacion;
+import compilador.lexico.Tokens.Token_Modulo;
+import compilador.lexico.Tokens.Token_Multiplicacion;
 import compilador.lexico.Tokens.Token_Natural;
 import compilador.lexico.Tokens.New;
 import compilador.lexico.Tokens.Not;
@@ -61,7 +61,7 @@ import compilador.lexico.Tokens.Punto;
 import compilador.lexico.Tokens.Punto_coma;
 import compilador.lexico.Tokens.Record;
 import compilador.lexico.Tokens.Separador;
-import compilador.lexico.Tokens.Shl;
+import compilador.lexico.Tokens.Token_Shl;
 import compilador.lexico.Tokens.Signo_menos;
 import compilador.lexico.Tokens.Token_Suma;
 import compilador.lexico.Tokens.Then;
@@ -154,7 +154,7 @@ public class AnalizadorLexico {
 		palabrasReservadas.put("boolean",new Token_Boolean());
 		palabrasReservadas.put("float",new FloatToken());
 		palabrasReservadas.put("character",new Token_Character());
-		palabrasReservadas.put("and",new And());
+		palabrasReservadas.put("and",new Token_And());
 		palabrasReservadas.put("or",new Or());
 		palabrasReservadas.put("not",new Not());
 		palabrasReservadas.put("in",new In());
@@ -172,7 +172,7 @@ public class AnalizadorLexico {
                 palabrasReservadas.put("pointer",new Pointer());
                 palabrasReservadas.put("null",new Null());
                 palabrasReservadas.put("new",new New());
-                palabrasReservadas.put("dispose",new Dispose());
+                palabrasReservadas.put("dispose",new Token_Dispose());
                 palabrasReservadas.put("procedure",new Procedure());
                 palabrasReservadas.put("var",new Var());
                 palabrasReservadas.put("forward",new Forward());
@@ -600,30 +600,30 @@ public class AnalizadorLexico {
 				switch(buff){
 				case '>': transita(SHL); break;
 				case '=': transita(MAYOR_IG); break;
-				default: arrayTokens.add(new Mayor(numLinea)); terminaEstado();
+				default: arrayTokens.add(new Token_Mayor(numLinea)); terminaEstado();
 				}
 				break;
 			case MAYOR_IG :
-				arrayTokens.add(new Mayor_ig(numLinea));
+				arrayTokens.add(new Token_Mayor_ig(numLinea));
 				terminaEstado();
 				break;
 			case SHL :
-				arrayTokens.add(new Shl(numLinea));
+				arrayTokens.add(new Token_Shl(numLinea));
 				terminaEstado();
 				break;
 			case MENOR :
 				switch(buff){
 				case '<': transita(SHR); break;
 				case '=': transita(MENOR_IG); break;
-				default: arrayTokens.add(new Menor(numLinea)); terminaEstado();
+				default: arrayTokens.add(new Token_Menor(numLinea)); terminaEstado();
 				}
 				break;
 			case MENOR_IG :
-				arrayTokens.add(new Menor_ig(numLinea));
+				arrayTokens.add(new Token_Menor_ig(numLinea));
 				terminaEstado();
 				break;
 			case SHR:
-				arrayTokens.add(new Shl(numLinea));
+				arrayTokens.add(new Token_Shl(numLinea));
 				terminaEstado();
 				break;
 			case DOS_PUNTOS :
@@ -639,7 +639,7 @@ public class AnalizadorLexico {
 			case IGUAL:
 				switch(buff){
 				case '/': transita(DISTINTO1); break;
-				default: arrayTokens.add(new Igual(numLinea)); terminaEstado();
+				default: arrayTokens.add(new Token_Igual(numLinea)); terminaEstado();
 				}
 				break;
 			case DISTINTO1 :
@@ -649,7 +649,7 @@ public class AnalizadorLexico {
 				}
 				break;
 			case DISTINTO:
-				arrayTokens.add(new Distinto(numLinea));
+				arrayTokens.add(new Token_Distinto(numLinea));
 				terminaEstado();
 				break;
 //No se si estara bien
@@ -809,19 +809,19 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 			case MULTIPLICACION:
-				arrayTokens.add(new Multiplicacion(numLinea));
+				arrayTokens.add(new Token_Multiplicacion(numLinea));
 				terminaEstado();
 				break;
 			case DIVISION :
-				arrayTokens.add(new Division(numLinea));
+				arrayTokens.add(new Token_Division(numLinea));
 				terminaEstado();
 				break;
 			case MODULO:
-				arrayTokens.add(new Modulo(numLinea));
+				arrayTokens.add(new Token_Modulo(numLinea));
 				terminaEstado();
 				break;
 			case ABSOLUTO:
-				arrayTokens.add(new Absoluto(numLinea));
+				arrayTokens.add(new Token_Absoluto(numLinea));
 				terminaEstado();
 				break;
 			case CADENA:

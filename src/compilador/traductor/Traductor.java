@@ -272,7 +272,7 @@ public abstract class Traductor {
     protected boolean valorAbs() {
         Token t = sigToken();
         boolean error = false;
-        if (!(t instanceof Absoluto)) {
+        if (!(t instanceof Token_Absoluto)) {
             error = true;
             atrasToken(); //tal vez hemos leído un token que no había que leer
         }
@@ -669,7 +669,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected Object[] FParametro(){
+    protected Object[] FParametro() throws Exception{
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
@@ -679,7 +679,7 @@ public abstract class Traductor {
         boolean error2= (Boolean) tipoRes[0];
         Tipos tipo2 = (Tipos) tipoRes[1];
 
-        String lex = id();
+        String lex = identificador();
 
         if (var()){
             //tam1      = 1
@@ -698,7 +698,7 @@ public abstract class Traductor {
 
         return new Object[]{error1,id1,props1,tam1};
     }
-    protected Object[] Tipo(){
+    protected Object[] Tipo() throws Exception{
         Token t= sigToken();
         if (t instanceof Identificador){
             return Tipo_id(t);
@@ -741,7 +741,7 @@ public abstract class Traductor {
 		        sino
                         ⵁ*/
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Boolean(){
         boolean error1 =false;
@@ -750,7 +750,7 @@ public abstract class Traductor {
         //tipo1 = <t:boolean,tam:1>
 	//error1 = false
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Character(){
         boolean error1 =false;
@@ -759,7 +759,7 @@ public abstract class Traductor {
         //tipo1 = <t:character,tam:1>
 	//error1 = false
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Float(){
         boolean error1 =false;
@@ -768,7 +768,7 @@ public abstract class Traductor {
         //tipo1 = <t:float,tam:1>
 	//error1 = false
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Natural(){
         boolean error1 =false;
@@ -777,7 +777,7 @@ public abstract class Traductor {
         //tipo1 = <t:natural,tam:1>
 	//error1 = false
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Integer(){
         boolean error1 =false;
@@ -786,7 +786,7 @@ public abstract class Traductor {
         //tipo1 = <t:integer,tam:1>
 	//error1 = false
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Array(){
         boolean error1 =false;
@@ -796,7 +796,7 @@ public abstract class Traductor {
             String lex = numero();
             if (cierraCorchete())
                 if (of()){
-                    Object[] TipoRes=Tipo();
+                    Object[] tipoRes=Tipo();
                     boolean error2 = (Boolean) tipoRes[0];
                     Tipos tipo2 = (Tipos) tipoRes[1];
                     
@@ -810,13 +810,13 @@ public abstract class Traductor {
                     error1 = tipo2.error v ¬existeRef (ts ,tipo2*/
                 }
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Puntero(){
         boolean error1 =false;
         Tipos tipo1 = null;
 
-        Object[] TipoRes=Tipo();
+        Object[] tipoRes=Tipo();
         boolean error2 = (Boolean) tipoRes[0];
         Tipos tipo2 = (Tipos) tipoRes[1];
 
@@ -827,13 +827,13 @@ public abstract class Traductor {
 	            tam:1
 	        >
 	error1 = error2*/
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Record(){
         boolean error1 =false;
         Tipos tipo1 = null;
 
-        return new Object[]{error1, tipo1}
+        return new Object[]{error1, tipo1};
     }
 
 
@@ -1054,22 +1054,22 @@ public abstract class Traductor {
 
     protected Operaciones OpNiv0() {
         Token t = sigToken();
-        if (t instanceof compilador.lexico.Tokens.Menor) {
+        if (t instanceof compilador.lexico.Tokens.Token_Menor) {
             return Operaciones.MENOR;
         }
-        if (t instanceof compilador.lexico.Tokens.Mayor) {
+        if (t instanceof compilador.lexico.Tokens.Token_Mayor) {
             return Operaciones.MAYOR;
         }
-        if (t instanceof Menor_ig) {
+        if (t instanceof Token_Menor_ig) {
             return Operaciones.MENORIG;
         }
-        if (t instanceof Mayor_ig) {
+        if (t instanceof Token_Mayor_ig) {
             return Operaciones.MAYORIG;
         }
-        if (t instanceof compilador.lexico.Tokens.Igual) {
+        if (t instanceof compilador.lexico.Tokens.Token_Igual) {
             return Operaciones.IGUAL;
         }
-        if (t instanceof Distinto) {
+        if (t instanceof Token_Distinto) {
             return Operaciones.DISTINTO;
         }
         atrasToken();
@@ -1093,16 +1093,16 @@ public abstract class Traductor {
 
     protected Operaciones OpNiv2() {
         Token t = sigToken();
-        if (t instanceof Multiplicacion) {
+        if (t instanceof Token_Multiplicacion) {
             return Operaciones.MULT;
         }
-        if (t instanceof Division) {
+        if (t instanceof Token_Division) {
             return Operaciones.DIV;
         }
-        if (t instanceof compilador.lexico.Tokens.Modulo) {
+        if (t instanceof compilador.lexico.Tokens.Token_Modulo) {
             return Operaciones.MOD;
         }
-        if (t instanceof And) {
+        if (t instanceof Token_And) {
             return Operaciones.AND;
         }
         atrasToken();
@@ -1111,10 +1111,10 @@ public abstract class Traductor {
 
     protected Operaciones OpNiv3() {
         Token t = sigToken();
-        if (t instanceof compilador.lexico.Tokens.Shl) {
+        if (t instanceof compilador.lexico.Tokens.Token_Shl) {
             return Operaciones.SHL;
         }
-        if (t instanceof compilador.lexico.Tokens.Shr) {
+        if (t instanceof compilador.lexico.Tokens.Token_Shr) {
             return Operaciones.SHR;
         }
         atrasToken();

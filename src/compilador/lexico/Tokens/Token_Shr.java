@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Mayor_ig extends Token{
-    public Mayor_ig(int n){
+public class Token_Shr extends Token{
+    public Token_Shr(int n){
         super(n);
     }
 
     public String toString(){
-        return "Simbolo >=";
+        return "Shr";
     }
 }

@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Mayor extends Token{
-    public Mayor(int n){
+public class Token_Absoluto extends Token{
+    public Token_Absoluto(int n){
         super(n);
     }
 
     public String toString(){
-        return "Simbolo >";
+        return "Barra de valor Absoluto";
     }
 }

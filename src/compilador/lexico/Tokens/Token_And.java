@@ -8,8 +8,8 @@ package compilador.lexico.Tokens;
 /**
  *@author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class And extends Token{
-    public And(){
+public class Token_And extends Token{
+    public Token_And(){
         super();
     }
 

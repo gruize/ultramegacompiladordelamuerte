@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Shl extends Token{
-    public Shl(int n){
+public class Token_Multiplicacion extends Token{
+    public Token_Multiplicacion(int n){
         super(n);
     }
 
     public String toString(){
-        return "Shl";
+        return "Simbolo *";
     }
 }

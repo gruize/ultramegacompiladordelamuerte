@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Multiplicacion extends Token{
-    public Multiplicacion(int n){
+public class Token_Distinto extends Token{
+    public Token_Distinto(int n){
         super(n);
     }
 
     public String toString(){
-        return "Simbolo *";
+        return "Simbolo =/=";
     }
 }

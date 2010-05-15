@@ -9,13 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Dispose extends Token{
-    public Dispose(){
-        super();
+public class Token_Menor_ig extends Token{
+    public Token_Menor_ig(int n){
+        super(n);
     }
 
-    @Override
     public String toString(){
-        return "Palabra dispose";
+        return "Simbolo <=";
     }
 }

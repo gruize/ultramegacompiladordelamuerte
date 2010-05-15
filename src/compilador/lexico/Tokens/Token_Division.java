@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Menor_ig extends Token{
-    public Menor_ig(int n){
+public class Token_Division extends Token{
+    public Token_Division(int n){
         super(n);
     }
 
     public String toString(){
-        return "Simbolo <=";
+        return "Simbolo /";
     }
 }
