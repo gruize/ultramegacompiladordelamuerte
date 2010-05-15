@@ -9,12 +9,8 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Natural extends Token{
-    public Natural(){
+public class Token_Float extends Token{
+    public Token_Float(){
         super();
-    }
-
-    public String toString(){
-        return "Tipo natural";
     }
 }

@@ -7,38 +7,7 @@ import pila.interprete.excepiones.LectorExc;
 
 import pila.interprete.instrucciones.*;
 import pila.interprete.datos.*;
-import compilador.lexico.Tokens.Absoluto;
-import compilador.lexico.Tokens.And;
-import compilador.lexico.Tokens.Cast_char;
-import compilador.lexico.Tokens.Cast_float;
-import compilador.lexico.Tokens.Cast_int;
-import compilador.lexico.Tokens.Cast_nat;
-import compilador.lexico.Tokens.Distinto;
-import compilador.lexico.Tokens.Division;
-import compilador.lexico.Tokens.Dos_puntos;
-import compilador.lexico.Tokens.Dos_puntos_ig;
-import compilador.lexico.Tokens.LitFalse;
-import compilador.lexico.Tokens.FloatToken;
-import compilador.lexico.Tokens.Identificador;
-import compilador.lexico.Tokens.In;
-import compilador.lexico.Tokens.LitCha;
-import compilador.lexico.Tokens.LitFlo;
-import compilador.lexico.Tokens.LitNat;
-import compilador.lexico.Tokens.Mayor_ig;
-import compilador.lexico.Tokens.Menor_ig;
-import compilador.lexico.Tokens.Multiplicacion;
-import compilador.lexico.Tokens.Natural;
-import compilador.lexico.Tokens.Not;
-import compilador.lexico.Tokens.Or;
-import compilador.lexico.Tokens.Out;
-import compilador.lexico.Tokens.Parentesis_a;
-import compilador.lexico.Tokens.Parentesis_c;
-import compilador.lexico.Tokens.Punto_coma;
-import compilador.lexico.Tokens.Separador;
-import compilador.lexico.Tokens.Signo_menos;
-import compilador.lexico.Tokens.Token;
-import compilador.lexico.Tokens.LitTrue;
-import compilador.lexico.Tokens.character;
+import compilador.lexico.Tokens.*;
 import compilador.tablaSimbolos.InfoTs;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
@@ -309,7 +278,7 @@ public abstract class Traductor {
         }
         return !error;
     }
-    protected String Identificador() {
+    protected String identificador() {
         Token t = sigToken();
         if (!(t instanceof Identificador)) {
             atrasToken();
@@ -318,18 +287,125 @@ public abstract class Traductor {
             return t.getLex();
         }
     }
+    protected String numero() {
+        Token t = sigToken();
+        if (!(t instanceof LitNat)) {
+            atrasToken();
+            return null;
+        } else {
+            return t.getLex();
+        }
+    }
+    protected boolean tipo() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Tipo)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean procedure() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Procedure)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean igual() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Igual)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean coma() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Coma)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean var() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Var)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean array() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof MiArray)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean circunflejo() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Circunflejo)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean record() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Record)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean abreCorchete() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Corchete_a)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean cierraCorchete() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Corchete_c)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean of() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Of)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
 
     //-----------------------------------------
     //-------implementación--------------------
-    //Programa(out: error1, cod1)
     protected boolean Programa() throws Exception {
         boolean error1 = false;
 
-        etq = longInicio + 1;
-        dir = 0;
-        n = 0;
-        ts = new TablaSimbolos();
-        cod = new Codigo();
+        //etq = longInicio + 1;
+        //dir = 0;
+        //n = 0;
+        //ts = new TablaSimbolos();
+        //cod = new Codigo();
 
         boolean error2 = Declaraciones();
         //ERROR fatal si no hay ampersand
@@ -337,13 +413,13 @@ public abstract class Traductor {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
 
-        inicio(n,dir);
-        cod.appendIns(new IrA(new Nat(etq)));
+        //inicio(n,dir);
+        //cod.appendIns(new IrA(new Nat(etq)));
 
         boolean error3 = Instrucciones();
 
-        cod.append(new Stop());
-        error1 = error2 || error3;
+        //cod.append(new Stop());
+        //error1 = error2 || error3;
 
         if (error1) {
             errores.add(
@@ -352,64 +428,41 @@ public abstract class Traductor {
         }
         return error1;
     }
-    //Declaraciones (out: error1)→
     private boolean Declaraciones() throws Exception {
         boolean errorh3 = false;
 
-        Object[] decRes = Declaracion(tam2, did2, props2);
+        Object[] decRes = Declaracion();
         boolean error2 = (Boolean) decRes[0];
         int tam2 = (Integer) decRes[1];
         String id2 = (String) decRes[2];
         InfoTs props2 = (InfoTs) decRes[3];
 
-        dir+=tam2;
-        errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
-        TablaSimbolos.inserta(ts,id2,props2);
-        if (props2.getClase().equals("tipo"))
-            pend.remove(id2);
+        //dir+=tam2;
+        //errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+        //TablaSimbolos.inserta(ts,id2,props2);
+        //if (props2.getClase().equals("tipo"))
+        //    pend.remove(id2);
 
         boolean error3 = DeclaracionesRec(errorh3);
 
         return error3;
     }
-
-    protected Tipos Tipo() {
-        Token t = sigToken();
-        if (t instanceof compilador.lexico.Tokens.Integer) {
-            return Tipos.ENTERO;
-        }
-        if (t instanceof Natural) {
-            return Tipos.NATURAL;
-        }
-        if (t instanceof compilador.lexico.Tokens.Boolean) {
-            return Tipos.BOOL;
-        }
-        if (t instanceof FloatToken) {
-            return Tipos.REAL;
-        }
-        if (t instanceof character) {
-            return Tipos.CHAR;
-        }
-        return Tipos.ERROR;
-    }
-
-    //DeclaracionesFact(in: idh1, tipoh1, errorh1; out: error1) →
     protected boolean DeclaracionesRec(boolean errorh1) throws Exception {
         boolean error1 = false;
         if (puntoYComa()) {//no lambda
 
-            Object[] decRes = Declaracion(tam2, id2, props2);
+            Object[] decRes = Declaracion();
             boolean error2 = (Boolean) decRes[0];
             int tam2 = (Integer) decRes[1];
             String id2 = (String) decRes[2];
             InfoTs props2 = (InfoTs) decRes[3];
 
-            dir+=tam2;
-            boolean errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+            //dir+=tam2;
+            //boolean errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
 
             boolean error3 = DeclaracionesRec(errorh3);
 
-            error1 = error3;
+            //error1 = error3;
         } else {
             error1 = errorh1;
         return error1;
@@ -417,28 +470,391 @@ public abstract class Traductor {
 
         return error1;
     }
-    //Declaración(out: error1, id1, tipo1) → id : tipo
-    private Object[] Declaracion(int tam1, String id1, InfoTs props1) throws Exception {
+    private Object[] Declaracion() throws Exception {
         boolean error1 = false;
+        int tam1 = 0;
+        String id1 = "";
+        InfoTs props1 = null;
 
-        boolean error2 = DeclaracionTipo
-        tam = 0;
-        String id1 = null;
-        Tipos tipo1 = null;
-        boolean error1 = false;
-        id1 = Identificador();
-        if (id1 == null) {
-            throw new Exception("FATAL: Se esperaba un identificador" + textoError());
-        }
-        if (!dosPuntos()) {
-            throw new Exception("FATAL: Se esperaban dos puntos" + textoError());
-        }
-        tipo1 = Tipo();
-        if (tipo1 == Tipos.ERROR) {
-            errores.add(new ErrorTraductor("Info: Error identificando tipo en declaración" + textoError()));
+        Object[] decVarRes = DeclaracionVariable();
+        Object[] decProcRes = DeclaracionProcedimiento();
+        Object[] decTipoRes = DeclaracionTipo();
+        boolean error2V = (Boolean) decVarRes[0];
+        boolean error2P = (Boolean) decProcRes[0];
+        boolean error2T = (Boolean) decTipoRes[0];
+        String id2;
+        InfoTs props2;
+
+        if (!error2V){
+            id2 = (String) decVarRes[1];
+            props2 = (InfoTs) decVarRes[2];
+
+            //error1 = true;
+            //id1= id2;
+            //tam1 = props2.getTipo().getTam();
+            //props1= props2 ++ <dir:dir>;
+
+        }else if (! error2P){
+            id2 = (String) decProcRes[1];
+            props2 = (InfoTs) decProcRes[2];
+
+            //error1 = true;
+            //tam1= 0;
+            //id1=id2;
+            //props1=props2;
+
+        }else if (! error2T){
+            id2 = (String) decTipoRes[1];
+
+            //tam1 = 0;
+            //error1 = true;
+            //id1=id2;
+            //props1 = <>;
+        }else {
             error1 = true;
+            errores.add(new ErrorTraductor("Hay errores en la(s) declaraciones(es) " + textoError()));
         }
-        return new Object[]{error1, id1, tipo1};
+        
+        return new Object[]{error1, tam1, id1, props1};
+
+    }
+    protected Object[] DeclaracionTipo(){
+        boolean error1 = false;
+        String id1 = "";
+        InfoTs props1 = null;
+
+        if( tipo()){
+            String lex= identificador();
+            if(igual()){
+                Object[] tipoRes = Tipo();
+                boolean error2 = (Boolean) tipoRes[0];
+                Tipos tipo2 = (Tipos) tipoRes[1];
+
+                //id1 = lex;
+                //props1 = <clase: tipo, tipo: tipo2, nivel: n>
+                //error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+            }
+        }
+        return new Object[]{error1, id1, props1};
+    }
+    protected Object[] DeclaracionVariable(){
+        boolean error1 = false;
+        String id1 = "";
+        InfoTs props1 = null;
+
+        String lex= identificador();
+        if(dosPuntos()){
+            Object[] tipoRes = Tipo();
+            boolean error2 = (Boolean) tipoRes[0];
+            Tipos tipo2 = (Tipos) tipoRes[1];
+
+            //id1 = lex;
+            //props1 = <clase: var, tipo: tipo2, nivel: n>
+            //error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+        }
+        return new Object[]{error1, id1, props1};
+    }
+    protected Object[] DeclaracionProcedimiento(){
+        boolean error1 = false;
+        String id1 = "";
+        InfoTs props1 = null;
+
+        if (procedure()){
+            String lex= Tipo();
+            //ts_aux = ts;
+            //ts = creaTS(ts_aux)
+            //n += 1;
+        }
+
+        boolean error2 = FParametros();
+
+        //ts = inserta(ts, lex, <clase:proc, tipo: <t:proc, parametros: params>,  nivel: n>)
+	//params = {}
+
+        Object[] bloqueRes=Bloque();
+        boolean error3= (Boolean) bloqueRes[0];
+        int inicio3 = (Integer) bloqueRes[1];
+
+        //error1 = error2 v error3 v (existeID(FParametros.ts, id.lex)  ٨ ts[lex].nivel = n)
+	//id1 = lex
+	//props1 = <clase:proc, tipo: <t:proc, parametros: params>, nivel: n, inicio: inicio3>
+	//n - = 1;
+	//ts = ts_aux
+
+        return new Object[]{error1, id1, props1};
+
+    }
+    protected Object[] Bloque() throws Exception{
+        boolean error1=false;
+        int inicio1 = 0;
+
+        boolean error2=Declaraciones();
+
+        if (!error2){
+            if (ampersand()){
+                //inicio = etq
+                //etq + = longPrologo
+                //cod += prologo(n, dir)
+            }
+        }
+        else{
+            //inicio1 = etq
+            //etq += longPrologo
+            //cod += prologo(n,dir)
+        }
+
+        boolean error3 = Instrucciones();
+
+        //error1 = error2 v error3
+	//etq += longEpilogo + 1
+	//cod += epilogo(n)
+	//cod += ir-ind
+
+        return new Object[]{error1, inicio1};
+    }
+    protected boolean FParametros(){
+        boolean error1;
+        if (abrePar()){
+            boolean error2 = LFParametros();
+            //error1=error2
+            if (cierraPar()){
+            }
+        }
+        else{
+            //dir = 0
+            //error1 = false
+        }
+        return error1;
+    }
+    protected boolean LFParametros(){
+        boolean error1=false;
+        boolean errorh3 = false;
+
+        Object[] FParamRes=FParametro();
+        boolean error2 = (Boolean) FParamRes[0];
+        String id2 = (String) FParamRes[1];
+        InfoTs props2 = (InfoTs) FParamRes[2];
+        int tam2 = (Integer) FParamRes[3];
+
+        //errorh3 = error2 v existeID(ts,id2)  ٨ ts[id2].nivel = n)
+	//ts = inserta(ts, id2, FParametro.props ++ <dir:0>)
+	//dir = tam2
+        //return error1;
+
+        boolean error3 = LFParametrosRec(errorh3);
+
+        return error1;
+    }
+    protected boolean LFParametrosRec(boolean errorh1){
+        boolean error1= false;
+        boolean errorh3 = false;
+
+        if (coma()){
+            Object[] FParamRes=FParametro();
+            boolean error2 = (Boolean) FParamRes[0];
+            String id2 = (String) FParamRes[1];
+            InfoTs props2 = (InfoTs) FParamRes[2];
+            int tam2 = (Integer) FParamRes[3];
+
+            //dir += tam2
+            //errorh3 = errorh1 v error2 v (existeID(ts,id2)  ٨ ts[id2].nivel = n)
+            //ts = inserta(ts, id2, props2)
+
+            boolean error3 = LFParametrosRec(erro3h);
+
+            //error1 = error3
+        }
+        else{
+            //error1 = errorh1
+        }
+        return error1;
+    }
+    protected Object[] FParametro(){
+        boolean error1 = false;
+        String id1 = "";
+        InfoTs props1 = null;
+        int tam1 = 0;
+
+        Object[] tipoRes= Tipo();
+        boolean error2= (Boolean) tipoRes[0];
+        Tipos tipo2 = (Tipos) tipoRes[1];
+
+        String lex = id();
+
+        if (var()){
+            //tam1      = 1
+            //params    += <modo: variable, tipo: tipo2, dir: dir>
+            //id = lex
+            //props1 = <clase: pvar, tipo: tipo2, nivel: n>
+            //error1 = error2
+        }
+        else{
+            //tam1 = tipo2.tam
+            //params    += <modo: valor, tipo: tipo2, dir: dir>
+            //id1 = lex
+            //props1 = <clase: var, tipo: tipo2, nivel: n>
+            //error1 = error2
+        }
+
+        return new Object[]{error1,id1,props1,tam1};
+    }
+    protected Object[] Tipo(){
+        Token t= sigToken();
+        if (t instanceof Identificador){
+            return Tipo_id(t);
+        }else if (t instanceof compilador.lexico.Tokens.Token_Boolean){
+            return Tipo_Boolean();
+        }else if (t instanceof compilador.lexico.Tokens.Token_Character){
+            return Tipo_Character();
+        }else if (t instanceof compilador.lexico.Tokens.Token_Float){
+            return Tipo_Float();
+        }else if (t instanceof compilador.lexico.Tokens.Token_Natural){
+            return Tipo_Natural();
+        }else if (t instanceof compilador.lexico.Tokens.Token_Integer){
+            return Tipo_Integer();
+        }else if (array()){
+            return Tipo_Array();
+        }else if (circunflejo()){
+            return Tipo_Puntero();
+        }else if (record()){
+            return Tipo_Record();
+        }else
+            throw new Exception("Error: se esperaba un literal" + textoError());
+    }
+    protected Object[] Tipo_id(Token t){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+        String lex= t.getLex();
+
+        /*tipo1 =
+        <
+            t:ref,
+            id:lex,
+            tam:ts[lex].tipo.tam
+        >
+	error1 =  si existeID(ts,lex)
+			ts[lex].clase != tipo
+		        sino
+                            false
+	pend +=  si (¬existeID(ts,lex))
+			{lex}
+		        sino
+                        ⵁ*/
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Boolean(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        //tipo1 = <t:boolean,tam:1>
+	//error1 = false
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Character(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        //tipo1 = <t:character,tam:1>
+	//error1 = false
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Float(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        //tipo1 = <t:float,tam:1>
+	//error1 = false
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Natural(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        //tipo1 = <t:natural,tam:1>
+	//error1 = false
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Integer(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        //tipo1 = <t:integer,tam:1>
+	//error1 = false
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Array(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+        
+        if (abreCorchete())
+            String lex = numero();
+            if (cierraCorchete())
+                if (of()){
+                    Object[] TipoRes=Tipo();
+                    boolean error2 = (Boolean) tipoRes[0];
+                    Tipos tipo2 = (Tipos) tipoRes[1];
+                    
+                    /*tipo1 =
+        		<
+                            t:array,
+                            nelems:valorDe(lex),
+                            tbase:tipo2,
+                            tam:valorDe(lex)*tipo2.tam
+                        >
+                    error1 = tipo2.error v ¬existeRef (ts ,tipo2*/
+                }
+
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Puntero(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        Object[] TipoRes=Tipo();
+        boolean error2 = (Boolean) tipoRes[0];
+        Tipos tipo2 = (Tipos) tipoRes[1];
+
+        /*tipo1 =
+	        <
+	            t:puntero,
+	            tbase:tipo2,
+	            tam:1
+	        >
+	error1 = error2*/
+        return new Object[]{error1, tipo1}
+    }
+    protected Object[] Tipo_Record(){
+        boolean error1 =false;
+        Tipos tipo1 = null;
+
+        return new Object[]{error1, tipo1}
+    }
+
+
+//Literal(out: tipo1, cod1)
+    protected Object[] Literal() throws Exception {
+        Token t = sigToken();
+        if (t instanceof Identificador) {
+            return Literal_Id(t);
+        } else if (t instanceof LitNat) {
+            return Literal_LitNat(t);
+        } else if (t instanceof LitFlo) {
+            return Literal_LitFlo(t);
+        } else if (t instanceof LitTrue) {
+            return Literal_LitTrue();
+        } else if (t instanceof LitFalse) {
+            return Literal_LitFalse();
+        } else if (t instanceof LitCha) {
+            return Literal_LitCha(t);
+        } else {
+            throw new Exception("Error: se esperaba un literal" + textoError());
+        }
     }
     //Instrucciones(out: error1,cod1) →
     protected Object[] Instrucciones() throws Exception {
