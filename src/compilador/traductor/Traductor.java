@@ -83,7 +83,6 @@ public abstract class Traductor {
          * del programa
          */
     }
-
     private String dameErrores() {
         StringBuilder sb = new StringBuilder();
         Iterator<ErrorTraductor> it = errores.iterator();
@@ -788,15 +787,15 @@ public abstract class Traductor {
 
         return new Object[]{error1, tipo1};
     }
-    protected Object[] Tipo_Array(){
+    protected Object[] Tipo_Array() throws Exception{
         boolean error1 =false;
         Tipos tipo1 = null;
         
-        if (abreCorchete())
+        if (abreCorchete()){
             String lex = numero();
             if (cierraCorchete())
                 if (of()){
-                    Object[] tipoRes=Tipo();
+                    Object[] tipoRes = Tipo();
                     boolean error2 = (Boolean) tipoRes[0];
                     Tipos tipo2 = (Tipos) tipoRes[1];
                     
@@ -809,10 +808,11 @@ public abstract class Traductor {
                         >
                     error1 = tipo2.error v ¬existeRef (ts ,tipo2*/
                 }
+        }
 
         return new Object[]{error1, tipo1};
     }
-    protected Object[] Tipo_Puntero(){
+    protected Object[] Tipo_Puntero() throws Exception{
         boolean error1 =false;
         Tipos tipo1 = null;
 
@@ -829,99 +829,191 @@ public abstract class Traductor {
 	error1 = error2*/
         return new Object[]{error1, tipo1};
     }
-    protected Object[] Tipo_Record(){
+    protected Object[] Tipo_Record() throws Exception{
         boolean error1 =false;
         Tipos tipo1 = null;
 
+        if (abreCorchete()){
+            Object[] tipoRes=Campos();
+            boolean error2 = (Boolean) tipoRes[0];
+            Campos campos2 = (Tipos) tipoRes[1];
+            int tam2 = (Integer) tipoRes[2];
+
+            if (cierraCorchete()){
+                /*Tipo.tipo =
+                    <
+                        t:array,
+                        campos: campos2,
+                        tam: tam2
+                    >
+                error1 = error2*/
+            }
+        }
         return new Object[]{error1, tipo1};
     }
-
-
-//Literal(out: tipo1, cod1)
-    protected Object[] Literal() throws Exception {
-        Token t = sigToken();
-        if (t instanceof Identificador) {
-            return Literal_Id(t);
-        } else if (t instanceof LitNat) {
-            return Literal_LitNat(t);
-        } else if (t instanceof LitFlo) {
-            return Literal_LitFlo(t);
-        } else if (t instanceof LitTrue) {
-            return Literal_LitTrue();
-        } else if (t instanceof LitFalse) {
-            return Literal_LitFalse();
-        } else if (t instanceof LitCha) {
-            return Literal_LitCha(t);
-        } else {
-            throw new Exception("Error: se esperaba un literal" + textoError());
-        }
-    }
-    //Instrucciones(out: error1,cod1) →
-    protected Object[] Instrucciones() throws Exception {
-        boolean error1;
-        Codigo cod1;
-
-        Object[] resIns = Instruccion();
-        boolean error2 = (Boolean) resIns[0];
-        Codigo cod2 = (Codigo) resIns[1];
-
-        Object[] resInsFact = InstruccionesFact(error2, cod2);
-        error1 = (Boolean) resInsFact[0];
-        cod1 = (Codigo) resInsFact[1];
-        return new Object[]{error1, cod1};
-    }
-
-    //InstruccionesFact(in: errorh1,codh1; out: error1,cod1) →
-    protected Object[] InstruccionesFact(boolean errorh1, Codigo codh1) throws Exception {
-        boolean error1;
-        boolean error2 = false;
-        Codigo cod1 = new Codigo();
-        if (puntoYComa() && !(i_token >= arrayTokens.size())) { //no lambda
-            //fin programa
-            Object[] resInst = Instrucciones();
-            error2 = (Boolean) resInst[0];
-            Codigo cod2 = (Codigo) resInst[1];
-            cod1 = codh1;
-            cod1.appendCod(cod2);
-        } else if (i_token >= arrayTokens.size()) {//lambda
-            cod1 = codh1;
-        } else {
-            throw new Exception("FATAL: Instrucción incorrecta: Se esperaba ; o fin de programa" + textoError());
-        }
-
-        error1 = error2 || errorh1;
-        return new Object[]{error1, cod1};
-    }
-
-    //Instrucción(out: error1,cod1) →
-    private Object[] Instruccion() throws Exception {
+    protected Object[] Campos(){
         boolean error1 = false;
-        Object[] resLect = InsLectura();
-        Object[] resEscr = InsEscritura();
-        Object[] resAsig = InsAsignacion();
-        boolean error2L = (Boolean) resLect[0];
-        boolean error2E = (Boolean) resEscr[0];
-        boolean error2A = (Boolean) resAsig[0];
-        Codigo cod2 = new Codigo();
+        Campos campos1 = null;
+        int tam1 = 0;
+        int desh2 = 0;
+        boolean errorh3 = false;
+        Campos camposh3 = null;
+        int desh3 = 0;
 
-        if (!error2L) {//ins Lectura
-            cod2 = (Codigo) resLect[1];
-        } else if (!error2E) {
-            cod2 = (Codigo) resEscr[1];
-        } else if (!error2A) {
-            cod2 = (Codigo) resAsig[1];
-        } else {
-            error1 = true;
-            errores.add(new ErrorTraductor("Hay errores en la(s) instrucción(es) " + textoError()));
+        //desh2=0;
+
+        Object[] campoRes = Campo(desh2);
+        boolean error2 = (Boolean) campoRes[0];
+        String id2 = (String) campoRes[1];
+        Campos campo2 = (Campos) campoRes[2];
+        int tam2 = (Integer) camposRes[3];
+
+        //camposh3 = [campo2]
+	//errorh3 = error2
+	//desh3 = tam2
+
+        Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
+        boolean error3= (Boolean) camposRecRes[0];
+        Campos campos3 = (Campos) camposRecRes[1];
+        int tam3 = (Integer) camposRecRes[2];
+
+        //error1 = error3
+	//campos1 = campos3
+	//tam1 = tam3
+
+        return new Object[]{error1,campos1,tam1};
+    }
+    protected Object[] CamposRec(boolean errorh1, Campos camposh1, int desh1){
+        boolean error1 = false;
+        Campos campos1 = null;
+        int tam1 = 0;
+        int desh2=0;
+        boolean errorh3=false;
+        Campo camposh3 = null;
+        int desh3 = 0;
+        
+        if (puntoYComa()){
+            //desh2 = desh1
+            Object[] campoRes = Campo(desh2);
+            boolean error2= (Boolean) campoRes[0];
+            String id2 = (String) campoRes[1];
+            Campos campo2 = (Campos) campoRes[2];
+            int tam2 = (Integer) campoRes[3];
+            
+            //camposh3 = camposh1 ++ campo2
+            //errorh3 = errorh1 v error2 v existeCampo(camposh1, id2)
+            //desh3 = tam2 + desh1
+            
+            Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
+            boolean error3 = (Boolean) camposRecRes[0];
+            Campos campos3 = (Campos) camposRecRes[1];
+            int tam3 = (Integer) camposRecRes[2];
+            
+            //error1 = error3
+            //campos1 = campos3
+            //tam1 = tam3
         }
-        return new Object[]{error1, cod2};
+        else{
+            //error1= errorh1;
+            //campos1 = camposh1
+            //tam1 = desh1
+        }
+        return new Object[]{error1, campos1, tam1};
+    }
+    protected Object[] Campo(int desh1) throws Exception{
+        boolean error1 = false;
+        String id1 = "";
+        Campos campo1 = null;
+        int tam1 = 0;
+
+        String lex = identificador();
+        if (dosPuntos()){
+            Object[] tipoRes= Tipo();
+            boolean error2= (Boolean) tipoRes[0];
+            Tipos tipo2 = (Tipos) tipoRes[1];
+
+            /*campo1 =
+                <
+                    id:lex,
+                    tipo:tipo2,
+                    desp:desh1
+                >
+            tam1   = tipo2.tam
+            error1 = error2 v ¬existeRef(ts,tipo2)*/
+        }
+        return new Object[]{error1, id1, campo1, tam1};
     }
 
-    protected abstract Object[] InsLectura() throws Exception;
 
-    protected abstract Object[] InsEscritura() throws Exception;
+    protected boolean Instrucciones(){
+        boolean error1 = false;
+        boolean errorh3 = false;
 
-    protected abstract Object[] InsAsignacion() throws Exception;
+        boolean error2 = Instruccion()
+
+        errorh3 = error2;
+
+        boolean error3 = InstrucionesRec(errorh3);
+
+        error1 = error3;
+
+        return error1;
+    }
+    protected boolean InstruccionesRec(boolean errorh1){
+        boolean error1 =false;
+        boolean errorh3 = false;
+
+        if (puntoYComa()){
+            boolean error2 = Instruccion();
+
+            errorh3 = error1 || errorh1;
+
+            boolean error3 = InstruccionesRec(errorh3);
+
+            error1 = error3;
+
+            return error1;
+        }
+        else {
+            error1 = error1h;
+        }
+    }
+    protected boolean Instruccion(){
+        boolean error1 = false;
+        boolean error2Proc = InsProcedimiento();
+        boolean error2Lect = InsLectura();
+        boolean error2Escr = InsEscritura();
+        boolean error2Comp = InsCompuesta();
+        boolean error2If= InsIf();
+        boolean error2While = InsWhile();
+        boolean error2For = InsFor();
+        boolean error2New = InsNew();
+        boolean error2Dis = InsDis();
+
+        if(! error2Proc){
+
+        }else if (!error2Lect){
+            error1 = error2Lect;
+        }else if (!error2Escr){
+            error1 = error2Escr;
+        }else if (!error2Comp){
+            error1 = error2Comp;
+        }else if (!error2If){
+            error1 = error2If;
+        }else if (!error2While){
+            error1 = error2While;
+        }else if (!error2For){
+            error1 = error2For;
+        }else if (!error2New){
+            error1 = error2New;
+        }else if (!error2Dis){
+            error1 = error2Dis;
+        }else {
+            error1 = true;
+            errores.add(new ErrorTraductor("Hay errores en la(s) Instrucciones(es) " + textoError()));
+        }
+        return error1;
+    }
 
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
