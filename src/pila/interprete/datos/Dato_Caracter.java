@@ -7,15 +7,15 @@ import java.io.IOException;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- * Este DatoPila representa a un Real (float).
+ * Este DatoPila representa a un caracter
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Real extends DatoPila {
+public class Dato_Caracter extends DatoPila {
 
-    private float valor;
+    private char valor;
 
-    public Real(float valor) {
-        super(FLOAT_T);
+    public Dato_Caracter(char valor) {
+        super(CHAR_T);
         this.valor = valor;
     }
 
@@ -25,32 +25,37 @@ public class Real extends DatoPila {
     }
 
     @Override
+    public int toInt() {
+        return valor;
+    }
+
+    @Override
+    public int toNatural() {
+        return valor;
+    }
+
+    @Override
     public float toFloat() {
         return valor;
     }
 
     @Override
-    public int toInt() {
-        return (int) valor; //por defecto trunca
+    public char toChar() {
+        return valor;
     }
-
-    /*La memoria dice que no se admite estos castings
-    public int toNatural()
-    public char toChar()
-     */
 
     @Override
     public String toString() {
-        return "Real ("+Float.toString(valor)+")";
+        return "Caracter ("+Character.toString(valor)+")";
     }
 
     public int comparar(DatoPila arg0) throws DatoExc {
         //TODO: Permitir comprar mediante casting automatico
         if(arg0.getTipoDato() != this.getTipoDato())
             throw new DatoExc(this);
-        if(valor < arg0.toFloat())
+        if(valor < arg0.toChar())
             return -1;
-        else if (valor > arg0.toFloat())
+        else if (valor > arg0.toChar())
             return 1;
         else
             return 0;
@@ -59,6 +64,6 @@ public class Real extends DatoPila {
     @Override
     public void escribete(DataOutputStream dos) throws IOException {
         super.escribete(dos);
-        dos.writeFloat(valor);
+        dos.writeChar(valor);
     }
 }

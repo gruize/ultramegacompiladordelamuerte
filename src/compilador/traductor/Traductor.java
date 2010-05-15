@@ -62,7 +62,7 @@ public abstract class Traductor {
 
     //****FUNCIONES PRINCIPALES
     public void traducir(String nombreClase) throws Exception {
-        Codigo cod = new Codigo();
+        cod = new Codigo();
         try {
             Programa();
         } catch (Exception e) {
@@ -123,49 +123,49 @@ public abstract class Traductor {
 
     //****FUNCIONES TRADUCCION****
     protected void inicio(int numNiveles, int tamDatos) throws LectorExc, DatoExc{
-        cod.appendIns(new Apilar(new Nat(numNiveles +2)));
-        cod.appendIns(new DesapilarDir(new Nat(1)));
-        cod.appendIns(new Apilar(new Nat(1+tamDatos+numNiveles)));
-        cod.appendIns(new DesapilarDir(new Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(numNiveles +2)));
+        cod.appendIns(new DesapilarDir(new Dato_Nat(1)));
+        cod.appendIns(new Apilar(new Dato_Nat(1+tamDatos+numNiveles)));
+        cod.appendIns(new DesapilarDir(new Dato_Nat(0)));
     }
     protected void apilaRet(int ret) throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(1)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(1)));
         cod.appendIns(new Suma());
-        cod.appendIns(new Apilar(new Nat(ret)));
+        cod.appendIns(new Apilar(new Dato_Nat(ret)));
         cod.appendIns(new DesapilaInd());
     }
     protected void prologo(int nivel, int tamLocales) throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(2)));
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(2)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(1+nivel)));
         cod.appendIns(new DesapilaInd());
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(0)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(0)));
         cod.appendIns(new Suma());
-        cod.appendIns(new DesapilarDir(new Nat(1+nivel)));
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(tamLocales+2)));
+        cod.appendIns(new DesapilarDir(new Dato_Nat(1+nivel)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(tamLocales+2)));
         cod.appendIns(new Suma());
         cod.appendIns(new DesapilarDir());
     }
     protected void epilogo(int nivel) throws LectorExc, DatoExc{
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
-        cod.appendIns(new Apilar(new Nat(2)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(1+nivel)));
+        cod.appendIns(new Apilar(new Dato_Nat(2)));
         cod.appendIns(new Resta());
         cod.appendIns(new ApilarInd());
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
-        cod.appendIns(new Apilar(new Nat(3)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(1+nivel)));
+        cod.appendIns(new Apilar(new Dato_Nat(3)));
         cod.appendIns(new Resta());
         cod.appendIns(new Copia());
-        cod.appendIns(new DesapilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(2)));
+        cod.appendIns(new DesapilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(2)));
         cod.appendIns(new ApilarInd());
 
     }
     protected void accesoVar(InfoTs props) throws LectorExc, DatoExc{
-        cod.appendIns(new ApilarDir(new Nat(1+props.getNivel())));
-        cod.appendIns(new Apilar(new Nat(props.getDir())));
+        cod.appendIns(new ApilarDir(new Dato_Nat(1+props.getNivel())));
+        cod.appendIns(new Apilar(new Dato_Nat(props.getDir())));
         cod.appendIns(new Suma());
         if (props.getClase().equals("pvar"))
             cod.appendIns(new ApilarInd());
@@ -178,15 +178,15 @@ public abstract class Traductor {
         return resp;
     }
     protected void inicioPaso() throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(3)));
+        cod.appendIns(new ApilarDir(new Dato_Nat(0)));
+        cod.appendIns(new Apilar(new Dato_Nat(3)));
         cod.appendIns(new Suma());
     }
     protected void finPaso() throws LectorExc{
         cod.appendIns(new Desapilar());
     }
     protected void direccionPalFormal(InfoTs props) throws LectorExc, DatoExc{
-        cod.appendIns(new Apilar(new Nat(props.getDir())));
+        cod.appendIns(new Apilar(new Dato_Nat(props.getDir())));
         cod.appendIns(new Suma());
     }
     protected void pasoParametro(String modoReal, InfoTs pFormal) throws LectorExc, DatoExc{
@@ -1078,7 +1078,7 @@ public abstract class Traductor {
 
     protected Operaciones OpNiv1() {
         Token t = sigToken();
-        if (t instanceof compilador.lexico.Tokens.Suma) {
+        if (t instanceof compilador.lexico.Tokens.Token_Suma) {
             return Operaciones.SUMA;
         }
         if (t instanceof Signo_menos) {

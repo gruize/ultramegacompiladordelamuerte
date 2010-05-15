@@ -4,8 +4,8 @@ import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Entero;
-import pila.interprete.datos.Real;
+import pila.interprete.datos.Dato_Entero;
+import pila.interprete.datos.Dato_Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -44,10 +44,10 @@ public class Menos extends InstruccionInterprete {
         try {
             switch (d1.getTipoDato()) {
                 case DatoPila.INT_T:
-                    res = new Entero(- d1.toInt());
+                    res = new Dato_Entero(- d1.toInt());
                     break;
                 case DatoPila.FLOAT_T:
-                    res = new Real(- d1.toFloat());
+                    res = new Dato_Real(- d1.toFloat());
                     break;
                 default:
                     throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

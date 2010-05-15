@@ -2,7 +2,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Entero;
+import pila.interprete.datos.Dato_Entero;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -39,8 +39,8 @@ public class New extends InstruccionInterprete
 
     /**
      * Semantica:
-     * 1. reservar memoria para ese tamaño
-     * 1. apilar la dirección donde se ha reservado
+     * 1. reservar memoria para ese tamaï¿½o
+     * 1. apilar la direcciï¿½n donde se ha reservado
      * @return siempre true (nunca modifica el cp del interprete)
      */
     @Override
@@ -51,7 +51,7 @@ public class New extends InstruccionInterprete
             switch (getDato().getTipoDato()) 
             {
                 case DatoPila.INT_T:
-                	Entero e = new Entero(interprete.getMemoria().reservar(getDato().toInt()));
+                	Dato_Entero e = new Dato_Entero(interprete.getMemoria().reservar(getDato().toInt()));
                     interprete.getPila().addFirst(e);
                     break;
                 default:

@@ -3,7 +3,7 @@ package pila.interprete.instrucciones;
 import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Bool;
+import pila.interprete.datos.Dato_Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -53,7 +53,7 @@ public class Y extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.BOOL_T:
-                        res = new Bool(d2.toBoolean() && d1.toBoolean());
+                        res = new Dato_Bool(d2.toBoolean() && d1.toBoolean());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

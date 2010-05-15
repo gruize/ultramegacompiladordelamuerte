@@ -83,7 +83,6 @@ public class TablaSimbolos {
         }
         return null;
     }
-    }
     
     public Hashtable<String,InfoTs> getHashtable(){
     	return ht;

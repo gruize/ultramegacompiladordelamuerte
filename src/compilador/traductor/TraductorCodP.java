@@ -2,14 +2,14 @@ package compilador.traductor;
 
 import java.util.ArrayList;
 
-import pila.interprete.datos.Bool;
-import pila.interprete.datos.Caracter;
-import pila.interprete.datos.Nat;
+import pila.interprete.datos.Dato_Bool;
+import pila.interprete.datos.Dato_Caracter;
+import pila.interprete.datos.Dato_Nat;
 import pila.interprete.instrucciones.*;
 import compilador.lexico.Tokens.Token;
 import compilador.tablaSimbolos.TablaSimbolos;
 import compilador.tablaSimbolos.InfoTs.Tipos;
-import pila.interprete.datos.Real;
+import pila.interprete.datos.Dato_Real;
 
 
     // Literal(out: tipo1, cod11) → litFlo
@@ -39,7 +39,7 @@ public class TraductorCodP extends Traductor {
                     + "no declarada" + textoError()));
         } else {
             int dir = TablaSimbolos.getDir(ts, id);
-            Nat n = new Nat(dir);
+            Dato_Nat n = new Dato_Nat(dir);
             Tipos t = TablaSimbolos.getTipo(ts, id);
             switch (t) {
                 case BOOL:
@@ -132,7 +132,7 @@ public class TraductorCodP extends Traductor {
                     || (tipoTs == Tipos.CHAR && tipo3 != Tipos.CHAR)
                     || (tipoTs == Tipos.BOOL && tipo3 != Tipos.BOOL);
 
-            cod1.appendIns(new DesapilarDir(new Nat(dir)));
+            cod1.appendIns(new DesapilarDir(new Dato_Nat(dir)));
         }
         return new Object[]{error1, cod1};
     }
@@ -919,7 +919,7 @@ public class TraductorCodP extends Traductor {
 
         Tipos tipo1 = TablaSimbolos.getTipo(ts, t.getLex());
         int dir = TablaSimbolos.getDir(ts, t.getLex());
-        Codigo cod1 = new Codigo(new ApilarDir(new Nat(dir)));
+        Codigo cod1 = new Codigo(new ApilarDir(new Dato_Nat(dir)));
         return new Object[]{tipo1, cod1};
     }
 
@@ -927,7 +927,7 @@ public class TraductorCodP extends Traductor {
     protected Object[] Literal_LitTrue() throws Exception {
         boolean valor = true;
         Apilar i = null;
-        i = new Apilar(new Bool(valor));
+        i = new Apilar(new Dato_Bool(valor));
         return new Object[]{Tipos.BOOL, new Codigo(i)};
     }
 
@@ -935,14 +935,14 @@ public class TraductorCodP extends Traductor {
     protected Object[] Literal_LitFalse() throws Exception {
         boolean valor = false;
         Apilar i = null;
-        i = new Apilar(new Bool(valor));
+        i = new Apilar(new Dato_Bool(valor));
         return new Object[]{Tipos.BOOL, new Codigo(i)};
     }
 
     protected Object[] Literal_LitCha(Token t) throws Exception {
         char c = t.getLex().charAt(0);
         Apilar i = null;
-        i = new Apilar(new Caracter(c));
+        i = new Apilar(new Dato_Caracter(c));
         return new Object[]{Tipos.CHAR, new Codigo(i)};
     }
 
@@ -950,13 +950,13 @@ public class TraductorCodP extends Traductor {
     protected Object[] Literal_LitNat(Token t) throws Exception {
         int valor = Integer.parseInt(t.getLex());
         Apilar i = null;
-        i = new Apilar(new Nat(valor));
+        i = new Apilar(new Dato_Nat(valor));
         return new Object[]{Tipos.NATURAL, new Codigo(i)};
     }
     protected Object[] Literal_LitFlo(Token t) throws Exception {
         float valor = Float.parseFloat(t.getLex());
         Apilar i = null;
-        i = new Apilar(new Real(valor));
+        i = new Apilar(new Dato_Real(valor));
         return new Object[]{Tipos.REAL, new Codigo(i)};
     }
 }
