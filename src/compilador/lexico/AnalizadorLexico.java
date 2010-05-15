@@ -14,6 +14,7 @@ import compilador.lexico.Tokens.Cast_float;
 import compilador.lexico.Tokens.Cast_int;
 import compilador.lexico.Tokens.Cast_nat;
 import compilador.lexico.Tokens.Circunflejo;
+import compilador.lexico.Tokens.Coma;
 import compilador.lexico.Tokens.Corchete_a;
 import compilador.lexico.Tokens.Corchete_c;
 import compilador.lexico.Tokens.Token_Dispose;
@@ -144,6 +145,7 @@ public class AnalizadorLexico {
 	private static final int CORCHETE_A = 60;
 	private static final int CORCHETE_C = 61;
         private static final int FLECHA = 62;
+        private static final int COMA = 63;
 	
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
@@ -291,6 +293,7 @@ public class AnalizadorLexico {
             case CORCHETE_A:
             case CORCHETE_C:
             case FLECHA:
+            case COMA:
             case CADENA: sal="No puedes definir un token con nombre de palabra reservada"+linea; break;
             default:
     		}
@@ -331,6 +334,7 @@ public class AnalizadorLexico {
                                 case '.': transita(PUNTO); break;
                                 case '[': transita(CORCHETE_A); break;
                                 case ']': transita(CORCHETE_C); break;
+                                case ',': transita(COMA); break;
 				default:
 					if (Character.isDigit(buff)){
 						switch(buff){
@@ -888,7 +892,10 @@ public class AnalizadorLexico {
                                 arrayTokens.add(new Flecha(numLinea));
                                 terminaEstado();
                                 break;
-
+                        case COMA :
+                                arrayTokens.add(new Coma(numLinea));
+                                terminaEstado();
+                                break;
 
 			}
 		}
