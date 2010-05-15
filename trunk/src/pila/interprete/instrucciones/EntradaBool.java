@@ -5,7 +5,7 @@
 package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Bool;
+import pila.interprete.datos.Dato_Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -46,7 +46,7 @@ public class EntradaBool extends InstruccionInterprete {
                 throw new InstruccionExc(this, "El dato leido no " +
                         "es un un booleano");
             }
-            datoLeido = new Bool(b);
+            datoLeido = new Dato_Bool(b);
             
             interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (InstruccionExc ex) {

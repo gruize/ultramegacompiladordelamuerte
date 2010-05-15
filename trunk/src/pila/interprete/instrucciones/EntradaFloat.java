@@ -5,7 +5,7 @@
 
 package pila.interprete.instrucciones;
 
-import pila.interprete.datos.Real;
+import pila.interprete.datos.Dato_Real;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
@@ -38,7 +38,7 @@ public class EntradaFloat extends InstruccionInterprete{
             interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             float i = Float.valueOf(leido);          
-            datoLeido = new Real(i);
+            datoLeido = new Dato_Real(i);
             interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());

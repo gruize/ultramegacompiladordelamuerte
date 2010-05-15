@@ -10,11 +10,11 @@ import pila.interprete.excepiones.DatoExc;
  * Este DatoPila representa a un booleano
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Bool extends DatoPila {
+public class Dato_Bool extends DatoPila {
 
     private boolean valor;
 
-    public Bool(boolean valor) {
+    public Dato_Bool(boolean valor) {
         super(BOOL_T);
         this.valor = valor;
     }

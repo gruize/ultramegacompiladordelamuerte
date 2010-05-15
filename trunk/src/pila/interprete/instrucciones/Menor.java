@@ -3,7 +3,7 @@ package pila.interprete.instrucciones;
 import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Bool;
+import pila.interprete.datos.Dato_Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -53,22 +53,22 @@ public class Menor extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Bool(d2.toNatural() < d1.toNatural());
+                        res = new Dato_Bool(d2.toNatural() < d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Bool(d2.toInt() < d1.toInt());
+                        res = new Dato_Bool(d2.toInt() < d1.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Bool(d2.toFloat() < d1.toFloat());
+                        res = new Dato_Bool(d2.toFloat() < d1.toFloat());
                         break;
                     case DatoPila.CHAR_T:
-                    	res = new Bool(d2.toChar() < d1.toChar());
+                    	res = new Dato_Bool(d2.toChar() < d1.toChar());
                     	break;
                     case DatoPila.BOOL_T:
                         if (!d2.toBoolean() && d1.toBoolean()) //false < true
-                            res = new Bool(true);
+                            res = new Dato_Bool(true);
                         else
-                            res = new Bool(false);
+                            res = new Dato_Bool(false);
                         break;
                       
                     default:

@@ -7,12 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import pila.interprete.datos.Bool;
-import pila.interprete.datos.Caracter;
+import pila.interprete.datos.Dato_Bool;
+import pila.interprete.datos.Dato_Caracter;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Entero;
-import pila.interprete.datos.Nat;
-import pila.interprete.datos.Real;
+import pila.interprete.datos.Dato_Entero;
+import pila.interprete.datos.Dato_Nat;
+import pila.interprete.datos.Dato_Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.*;
@@ -32,19 +32,19 @@ public class LectorPila {
             byte tipo = dis.readByte(); //se lee el tipo
             switch(tipo) { //segun el tipo se crea un DatoPila distinto
                 case DatoPila.BOOL_T:
-                    return new Bool(dis.readBoolean());
+                    return new Dato_Bool(dis.readBoolean());
                 case DatoPila.CHAR_T:
-                    return new Caracter(dis.readChar());
+                    return new Dato_Caracter(dis.readChar());
                 case DatoPila.NAT_T:
                     try {
-                        return new Nat(dis.readInt());
+                        return new Dato_Nat(dis.readInt());
                     } catch (DatoExc ex) {
                         throw new LectorExc(ex.getLocalizedMessage());
                     }
                 case DatoPila.INT_T:
-                    return new Entero(dis.readInt());
+                    return new Dato_Entero(dis.readInt());
                 case DatoPila.FLOAT_T:
-                    return new Real(dis.readFloat());
+                    return new Dato_Real(dis.readFloat());
                 default:
                     throw new LectorExc("Tipo de dato "+
                             Byte.toString(tipo)+"inválido");

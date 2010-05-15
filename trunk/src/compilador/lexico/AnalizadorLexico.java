@@ -63,7 +63,7 @@ import compilador.lexico.Tokens.Record;
 import compilador.lexico.Tokens.Separador;
 import compilador.lexico.Tokens.Shl;
 import compilador.lexico.Tokens.Signo_menos;
-import compilador.lexico.Tokens.Suma;
+import compilador.lexico.Tokens.Token_Suma;
 import compilador.lexico.Tokens.Then;
 import compilador.lexico.Tokens.Tipo;
 import compilador.lexico.Tokens.To;
@@ -805,7 +805,7 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 			case SUMA:
-				arrayTokens.add(new Suma(numLinea));
+				arrayTokens.add(new Token_Suma(numLinea));
 				terminaEstado();
 				break;
 			case MULTIPLICACION:

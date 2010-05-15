@@ -9,8 +9,8 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Suma extends Token{
-    public Suma(int n){
+public class Token_Suma extends Token{
+    public Token_Suma(int n){
         super(n);
     }
 

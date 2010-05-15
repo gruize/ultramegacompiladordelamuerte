@@ -5,7 +5,7 @@
 
 package pila.interprete.instrucciones;
 
-import pila.interprete.datos.Caracter;
+import pila.interprete.datos.Dato_Caracter;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.InstruccionExc;
@@ -36,7 +36,7 @@ public class EntradaChar extends InstruccionInterprete{
             interprete.getWriter().print("Introduzca un caracter >>>");
             interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
-            datoLeido = new Caracter(leido.charAt(0));
+            datoLeido = new Dato_Caracter(leido.charAt(0));
             interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;           
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
