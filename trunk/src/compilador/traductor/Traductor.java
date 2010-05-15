@@ -448,6 +448,33 @@ public abstract class Traductor {
         }
         return !error;
     }
+    protected boolean to() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof To)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean New() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Token_New)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean dispose() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Token_Dispose)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
 
 
 
@@ -1299,8 +1326,84 @@ public abstract class Traductor {
                 //error1 = tipo2 != <t:bool> v error3
             }
         }
+        return error1;
     }
-    
+    protected boolean InsFor(){
+        boolean error1 = false;
+        boolean parh2 = false;
+        boolean parh3 = false;
+        
+        if(For()){
+            //etq_for = etq
+            //parh2= false (supongo? no estaba)
+            //parh3 = false
+            
+            String lex = identificador();
+            if (igual()){
+                
+                Object[] expRes = Expresion(parh2);
+                Tipos tipo2 = (Tipos) expRes[0];
+                String modo2 = (String) expRes[1];
+                
+                if (To()){
+                    //etq += 1
+                    //cod += desapila-dir ts[lex].dir
+                    
+                    Object[] expRes = Expresion(parh3);
+                    Tipos tipo3 = (Tipos) expRes[0];
+                    String modo3 = (String) expRes[1];
+                    
+                    if (Do()){
+                        /*etq+=4
+                        cod+= dup
+                        cod+= apilar-dir ts[lex].dir
+                        cod+= igual
+                        cod+= noop
+                        aux = etq*/
+                        
+                        boolean error4 = Instruccion();
+                        
+                        /*error1 = error4 v (tipo2 != <t:natural> AND tipo2 != <t:integer>) v
+                                (tipo3 != <t:natural> AND tipo2 != <t:integer>) v
+                                (ts[lex].tipo != <t:natural> AND ts[lex].tipo != <t:integer>
+                                    inserta(cod, ir-v(etq -1), aux)
+	
+                        cod += apila-dir ts[lex].dir
+                        cod += apilar 1
+                        cod += sumar
+                        cod += desapila-dir ts[lex].dir
+                        cod += ir-a(aux) //creo q está bien asi
+                        cod += pop
+                        etq += 6
+                        InsFor.etq        = Instruccion.etq + 6*/
+                    }
+                }
+                
+            }
+
+        }
+        return error1;
+    }
+    protected boolean InsNew(){
+        boolean error1 = false;
+        if (New()){
+            Tipos tipo2 = Mem();
+
+            /*error1 = tipo2 != <t:puntero>
+            etq += 2
+            cod += new
+			si tipo2.tbase = ref
+				ts[tipo2.tbase.id].tam
+			si no
+				1
+		        )
+            cod+= desapila-ind*/
+
+        }
+        return error1;
+    }
+
+
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
         Tipos tipo1 = null;

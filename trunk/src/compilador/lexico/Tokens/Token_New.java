@@ -9,8 +9,8 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class New extends Token{
-    public New(){
+public class Token_New extends Token{
+    public Token_New(){
         super();
     }
 
