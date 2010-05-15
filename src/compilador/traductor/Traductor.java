@@ -50,7 +50,7 @@ import compilador.tablaSimbolos.InfoTs.Tipos;
  *
  */
 public abstract class Traductor {
-
+    //*****ATRIBUTOS****
     public static final int longInicio = 4;
     public static final int longApilaRet = 5;
     public static final int longPrologo = 13;
@@ -60,14 +60,14 @@ public abstract class Traductor {
     public static final int longDireccionPalFormal = 2;
     public static final int longPasoParametro = 1;
 
-    protected ArrayList<InstruccionInterprete> traduccionP;
-
     protected ArrayList<Token> arrayTokens;
     protected Codigo cod;
     protected TablaSimbolos ts;
     protected int etq;
-    protected int numVars;
+    protected int dir;
+    protected int n;
     protected int i_token;
+    protected ArrayList<String> pend;
     protected ArrayList<ErrorTraductor> errores;
 
     protected enum Operaciones {
@@ -76,7 +76,6 @@ public abstract class Traductor {
         DISTINTO, OR, AND, NOT, MOD, VALORABS, SHL, SHR, NEG, CASTENT,
         CASTREAL, CASTCHAR, CASTNAT
     }
-
     protected enum Fallo {
 
         NO, FALTAL, NO_FATAL
@@ -86,12 +85,13 @@ public abstract class Traductor {
         arrayTokens = tokens;
         cod = new Codigo();
         etq = 0;
-        numVars = 0;
         i_token = 0;
+        pend = new ArrayList<String>();
         errores = new ArrayList<ErrorTraductor>();
         ts = new TablaSimbolos();
     }
 
+    //****FUNCIONES PRINCIPALES
     public void traducir(String nombreClase) throws Exception {
         Codigo cod = new Codigo();
         try {
@@ -107,23 +107,12 @@ public abstract class Traductor {
             imprimirErrores();
             throw new Exception("Traducción acabada con errores no fatales:\n"+dameErrores());
         }
-        traduccionP = cod.getCod();
         /*
          * Calcular la altura maxima de la pila es algo complejo, pero al no
          * usar en la traduccion ninguna instruccion que apile dos elementos en
          * la pila, su altura nunca podra ser mayor que el numero de instrucciones
          * del programa
          */
-    }
-
-    public ArrayList<InstruccionInterprete> getTraduccionP(String nombreClase) throws Exception {
-        if(traduccionP == null)
-            traducir(nombreClase);
-        return traduccionP;
-    }
-
-    public ArrayList<InstruccionInterprete> getTraduccionP() throws Exception {
-        return getTraduccionP("Clase");
     }
 
     private String dameErrores() {
@@ -135,11 +124,9 @@ public abstract class Traductor {
         }
         return new String(sb);
     }
-
     private void imprimirErrores() {
         System.out.println(dameErrores());
     }
-
     protected Token sigToken() {
         Token t;
         if (i_token < arrayTokens.size()) {
@@ -151,11 +138,9 @@ public abstract class Traductor {
         }
         return t;
     }
-
     protected void atrasToken() {
         i_token--;
     }
-
     protected String textoError() {
         Token t;
         if (i_token >= arrayTokens.size()) {
@@ -174,7 +159,6 @@ public abstract class Traductor {
         cod.appendIns(new Apilar(new Nat(1+tamDatos+numNiveles)));
         cod.appendIns(new DesapilarDir(new Nat(0)));
     }
-
     protected void apilaRet(int ret) throws DatoExc, LectorExc{
         cod.appendIns(new ApilarDir(new Nat(0)));
         cod.appendIns(new Apilar(new Nat(1)));
@@ -182,7 +166,6 @@ public abstract class Traductor {
         cod.appendIns(new Apilar(new Nat(ret)));
         cod.appendIns(new DesapilaInd());
     }
-
     protected void prologo(int nivel, int tamLocales) throws DatoExc, LectorExc{
         cod.appendIns(new ApilarDir(new Nat(0)));
         cod.appendIns(new Apilar(new Nat(2)));
@@ -197,7 +180,6 @@ public abstract class Traductor {
         cod.appendIns(new Suma());
         cod.appendIns(new DesapilarDir());
     }
-
     protected void epilogo(int nivel) throws LectorExc, DatoExc{
         cod.appendIns(new ApilarDir(new Nat(1+nivel)));
         cod.appendIns(new Apilar(new Nat(2)));
@@ -212,7 +194,6 @@ public abstract class Traductor {
         cod.appendIns(new ApilarInd());
 
     }
-
     protected void accesoVar(InfoTs props) throws LectorExc, DatoExc{
         cod.appendIns(new ApilarDir(new Nat(1+props.getNivel())));
         cod.appendIns(new Apilar(new Nat(props.getDir())));
@@ -220,7 +201,6 @@ public abstract class Traductor {
         if (props.getClase().equals("pvar"))
             cod.appendIns(new ApilarInd());
     }
-
     protected int longAccesoVar(InfoTs props){
         int resp;
         if (props.getClase().equals("pvar"))
@@ -228,21 +208,23 @@ public abstract class Traductor {
         else resp=3;
         return resp;
     }
-
     protected void inicioPaso() throws DatoExc, LectorExc{
         cod.appendIns(new ApilarDir(new Nat(0)));
         cod.appendIns(new Apilar(new Nat(3)));
         cod.appendIns(new Suma());
     }
-
     protected void finPaso() throws LectorExc{
         cod.appendIns(new Desapilar());
     }
-
-    protected void direccionPalFormal(){
-    
+    protected void direccionPalFormal(InfoTs props) throws LectorExc, DatoExc{
+        cod.appendIns(new Apilar(new Nat(props.getDir())));
+        cod.appendIns(new Suma());
     }
-    protected void pasoParametro(){}
+    protected void pasoParametro(String modoReal, InfoTs pFormal) throws LectorExc, DatoExc{
+        if (pFormal.getModo().equals("valor") && modoReal.equals("var"))
+            cod.appendIns(new Mueve(pFormal.getTipo().getTam()));
+        else cod.appendIns(new DesapilaInd());
+    }
 
     //****FUNCIONES AUXILIARES****
     //Devuelven true si encuentran el token esperado
@@ -255,7 +237,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean dosPuntos() {
         Token t = sigToken();
         boolean error = false;
@@ -265,7 +246,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean puntoYComa() {
         Token t = sigToken();
         boolean error = false;
@@ -275,7 +255,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean in() {
         Token t = sigToken();
         boolean error = false;
@@ -285,7 +264,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean out() {
         Token t = sigToken();
         boolean error = false;
@@ -295,7 +273,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean abrePar() {
         Token t = sigToken();
         boolean error = false;
@@ -305,7 +282,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean cierraPar() {
         Token t = sigToken();
         boolean error = false;
@@ -315,7 +291,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean dosPuntosIgual() {
         Token t = sigToken();
         boolean error = false;
@@ -325,7 +300,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected boolean valorAbs() {
         Token t = sigToken();
         boolean error = false;
@@ -335,7 +309,6 @@ public abstract class Traductor {
         }
         return !error;
     }
-
     protected String Identificador() {
         Token t = sigToken();
         if (!(t instanceof Identificador)) {
@@ -353,12 +326,25 @@ public abstract class Traductor {
         boolean error1 = false;
 
         etq = longInicio + 1;
-        error1 |= Declaraciones();
+        dir = 0;
+        n = 0;
+        ts = new TablaSimbolos();
+        cod = new Codigo();
+
+        boolean error2 = Declaraciones();
         //ERROR fatal si no hay ampersand
         if (!ampersand()) {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
-        error1 = Instrucciones();
+
+        inicio(n,dir);
+        cod.appendIns(new IrA(new Nat(etq)));
+
+        boolean error3 = Instrucciones();
+
+        cod.append(new Stop());
+        error1 = error2 || error3;
+
         if (error1) {
             errores.add(
                     new ErrorTraductor("Info: Se han detectado errores en el programa. "
@@ -366,35 +352,25 @@ public abstract class Traductor {
         }
         return error1;
     }
-
     //Declaraciones (out: error1)→
     private boolean Declaraciones() throws Exception {
-        Object[] decRes = Declaracion();
-        boolean errorh3 = (Boolean) decRes[0];
-        String idh3 = (String) decRes[1];
-        Tipos tipoh3 = (Tipos) decRes[2];
-        boolean error3 = DeclaracionesFact(idh3, tipoh3, errorh3);
-        return error3;
-    }
+        boolean errorh3 = false;
 
-    //Declaración(out: error1, id1, tipo1) → id : tipo
-    private Object[] Declaracion() throws Exception {
-        String id1 = null;
-        Tipos tipo1 = null;
-        boolean error1 = false;
-        id1 = Identificador();
-        if (id1 == null) {
-            throw new Exception("FATAL: Se esperaba un identificador" + textoError());
-        }
-        if (!dosPuntos()) {
-            throw new Exception("FATAL: Se esperaban dos puntos" + textoError());
-        }
-        tipo1 = Tipo();
-        if (tipo1 == Tipos.ERROR) {
-            errores.add(new ErrorTraductor("Info: Error identificando tipo en declaración" + textoError()));
-            error1 = true;
-        }
-        return new Object[]{error1, id1, tipo1};
+        Object[] decRes = Declaracion(tam2, did2, props2);
+        boolean error2 = (Boolean) decRes[0];
+        int tam2 = (Integer) decRes[1];
+        String id2 = (String) decRes[2];
+        InfoTs props2 = (InfoTs) decRes[3];
+
+        dir+=tam2;
+        errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+        TablaSimbolos.inserta(ts,id2,props2);
+        if (props2.getClase().equals("tipo"))
+            pend.remove(id2);
+
+        boolean error3 = DeclaracionesRec(errorh3);
+
+        return error3;
     }
 
     protected Tipos Tipo() {
@@ -418,32 +394,52 @@ public abstract class Traductor {
     }
 
     //DeclaracionesFact(in: idh1, tipoh1, errorh1; out: error1) →
-    protected boolean DeclaracionesFact(String idh1, Tipos tipoh1, boolean errorh1) throws Exception {
-        boolean error1;
-        boolean error2 = false;
+    protected boolean DeclaracionesRec(boolean errorh1) throws Exception {
+        boolean error1 = false;
         if (puntoYComa()) {//no lambda
-            //atención! si todas las declaraciones acaban en PYC.
-            if (ampersand()) {
-                numVars = 0;
-                atrasToken();
-            } else {
-                error2 = Declaraciones();
-            }
+
+            Object[] decRes = Declaracion(tam2, id2, props2);
+            boolean error2 = (Boolean) decRes[0];
+            int tam2 = (Integer) decRes[1];
+            String id2 = (String) decRes[2];
+            InfoTs props2 = (InfoTs) decRes[3];
+
+            dir+=tam2;
+            boolean errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+
+            boolean error3 = DeclaracionesRec(errorh3);
+
+            error1 = error3;
         } else {
-            numVars = 0;
+            error1 = errorh1;
+        return error1;
         }
 
-        if (!errorh1 && !TablaSimbolos.existe(ts, idh1)) {
-            ts = TablaSimbolos.inserta(ts, idh1, tipoh1, numVars);
-            numVars++;
-        } else {
-            errores.add(new ErrorTraductor("Error en declaracion o variable ya declarada. Omitiendo"));
-        }
-
-        error1 = errorh1 || error2;
         return error1;
     }
+    //Declaración(out: error1, id1, tipo1) → id : tipo
+    private Object[] Declaracion(int tam1, String id1, InfoTs props1) throws Exception {
+        boolean error1 = false;
 
+        boolean error2 = DeclaracionTipo
+        tam = 0;
+        String id1 = null;
+        Tipos tipo1 = null;
+        boolean error1 = false;
+        id1 = Identificador();
+        if (id1 == null) {
+            throw new Exception("FATAL: Se esperaba un identificador" + textoError());
+        }
+        if (!dosPuntos()) {
+            throw new Exception("FATAL: Se esperaban dos puntos" + textoError());
+        }
+        tipo1 = Tipo();
+        if (tipo1 == Tipos.ERROR) {
+            errores.add(new ErrorTraductor("Info: Error identificando tipo en declaración" + textoError()));
+            error1 = true;
+        }
+        return new Object[]{error1, id1, tipo1};
+    }
     //Instrucciones(out: error1,cod1) →
     protected Object[] Instrucciones() throws Exception {
         boolean error1;

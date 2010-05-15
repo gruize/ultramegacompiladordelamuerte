@@ -32,10 +32,10 @@ public class TablaSimbolos {
      * @param tipo Tipo del identificador
      * @return La tabla de símbolos resultante de añadir la entrada con id y tipo a ts
      */
-    public static TablaSimbolos inserta(TablaSimbolos ts, String id, Tipos tipo, int dir) {
+    public static TablaSimbolos inserta(TablaSimbolos ts, String id, InfoTs props) {
     	if (!existe(ts,id)){
     		Hashtable<String,InfoTs> ht= ts.getHashtable();
-    		ht.put(id, new InfoTs(tipo,dir));
+    		ht.put(id, props);
     	}
         return ts;
     }
@@ -73,6 +73,16 @@ public class TablaSimbolos {
         	return i.getDir();
         }
         return -1;
+    }
+
+    public static InfoTs getProps(TablaSimbolos ts,String id){
+        Hashtable<String,InfoTs> ht= ts.getHashtable();
+        if (ht.containsKey(id)) {
+        	InfoTs i = ht.get(id);
+        	return i;
+        }
+        return null;
+    }
     }
     
     public Hashtable<String,InfoTs> getHashtable(){

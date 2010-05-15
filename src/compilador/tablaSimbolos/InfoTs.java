@@ -7,6 +7,7 @@ public class InfoTs {
 	private int dir;
         private int nivel;    //verificarlos
         private String clase; //verificarlos
+        private String modo;    //verificarlos
 	
 	
 	public InfoTs(Tipos tipo, int dir){
@@ -22,6 +23,9 @@ public class InfoTs {
         }
         public String getClase(){
             return clase;
+        }
+        public String getModo(){
+            return modo;
         }
 	public void setTipo(Tipos tipo) {
 		this.tipo = tipo;
