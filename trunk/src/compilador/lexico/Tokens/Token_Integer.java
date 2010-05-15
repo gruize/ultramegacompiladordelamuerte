@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Boolean extends Token{
-    public Boolean(){
+public class Token_Integer extends Token{
+    public Token_Integer(){
         super();
     }
 
     public String toString(){
-        return "Tipo boolean";
+        return "Tipo integer";
     }
 }
