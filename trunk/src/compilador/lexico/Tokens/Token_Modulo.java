@@ -9,12 +9,12 @@ package compilador.lexico.Tokens;
  *
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Igual extends Token{
-    public Igual(int n){
+public class Token_Modulo extends Token{
+    public Token_Modulo(int n){
         super(n);
     }
 
     public String toString(){
-        return "Simbolo =";
+        return "Simbolo %";
     }
 }
