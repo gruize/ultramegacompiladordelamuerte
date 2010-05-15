@@ -2,7 +2,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Entero;
+import pila.interprete.datos.Entero;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -51,7 +51,7 @@ public class New extends InstruccionInterprete
             switch (getDato().getTipoDato()) 
             {
                 case DatoPila.INT_T:
-                	Dato_Entero e = new Dato_Entero(interprete.getMemoria().reservar(getDato().toInt()));
+                	Entero e = new Entero(interprete.getMemoria().reservar(getDato().toInt()));
                     interprete.getPila().addFirst(e);
                     break;
                 default:

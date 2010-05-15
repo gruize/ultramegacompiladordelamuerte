@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Entero;
-import pila.interprete.datos.Dato_Nat;
-import pila.interprete.datos.Dato_Real;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Nat;
+import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -57,13 +57,13 @@ public class Resta extends InstruccionInterprete{
                         if (d1.comparar(d2) > 0) {
                             throw new InstruccionExc(this, d1.toString() + " mayor que " + d2.toString());
                         }
-                        res = new Dato_Nat(d2.toNatural() - d1.toNatural());
+                        res = new Nat(d2.toNatural() - d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Dato_Entero(d2.toInt() - d1.toInt());
+                        res = new Entero(d2.toInt() - d1.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Dato_Real(d2.toFloat() - d1.toFloat());
+                        res = new Real(d2.toFloat() - d1.toFloat());
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

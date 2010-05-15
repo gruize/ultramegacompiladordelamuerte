@@ -7,19 +7,16 @@ import java.io.IOException;
 import pila.interprete.excepiones.DatoExc;
 
 /**
- * Este DatoPila representa a un Natural.
+ * Este DatoPila representa a un Entero
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
-public class Dato_Nat extends DatoPila {
+public class Entero extends DatoPila {
 
     private int valor;
 
-
-    public Dato_Nat(int valor) throws DatoExc {
-        super(NAT_T);
+    public Entero(int valor) {
+        super(INT_T);
         this.valor = valor;
-        if(valor < 0)
-            throw new DatoExc(this, "No puede asignarse un valor negativo a un natural");
     }
 
     @Override
@@ -27,19 +24,11 @@ public class Dato_Nat extends DatoPila {
         return valor;
     }
 
-    @Override
-    public int toNatural() {
-        return valor;
-    }
-
-    @Override
-    public char toChar() throws DatoExc {
-        char c = (char)valor;
-        if(c != valor)
-            super.toChar(); //esto lanzara excepcion
-        return c;
-    }
-
+    /*La memoria dice que no se admite estos castings
+    public int toNatural()
+    public char toChar()
+     */
+    
     @Override
     public int toInt() {
         return valor;
@@ -47,21 +36,21 @@ public class Dato_Nat extends DatoPila {
 
     @Override
     public float toFloat() {
-        return valor;
+        return (float)valor;
     }
 
     @Override
     public String toString() {
-        return "Natural ("+Long.toString(valor)+")";
+        return "Entero ("+Integer.toString(valor)+")";
     }
 
     public int comparar(DatoPila arg0) throws DatoExc {
         //TODO: Permitir comprar mediante casting automatico
         if(arg0.getTipoDato() != this.getTipoDato())
             throw new DatoExc(this);
-        if(valor < arg0.toNatural())
+        if(valor < arg0.toInt())
             return -1;
-        else if (valor > arg0.toNatural())
+        else if (valor > arg0.toInt())
             return 1;
         else
             return 0;

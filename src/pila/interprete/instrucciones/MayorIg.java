@@ -3,7 +3,7 @@ package pila.interprete.instrucciones;
 import java.util.ArrayDeque;
 
 import pila.interprete.Interprete;
-import pila.interprete.datos.Dato_Bool;
+import pila.interprete.datos.Bool;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
@@ -53,23 +53,23 @@ public class MayorIg extends InstruccionInterprete{
             try {
                 switch (d1.getTipoDato()) {
                     case DatoPila.NAT_T:
-                        res = new Dato_Bool(d2.toNatural() >= d1.toNatural());
+                        res = new Bool(d2.toNatural() >= d1.toNatural());
                         break;
                     case DatoPila.INT_T:
-                        res = new Dato_Bool(d2.toInt() >= d1.toInt());
+                        res = new Bool(d2.toInt() >= d1.toInt());
                         break;
                     case DatoPila.FLOAT_T:
-                        res = new Dato_Bool(d2.toFloat() >= d1.toFloat());
+                        res = new Bool(d2.toFloat() >= d1.toFloat());
                         break;
                     case DatoPila.CHAR_T:
-                    	res = new Dato_Bool(d2.toChar() >= d1.toChar());
+                    	res = new Bool(d2.toChar() >= d1.toChar());
                     	break;
                     case DatoPila.BOOL_T:
                         if ((d2.toBoolean() && !d1.toBoolean()) //true > false
                                 || (d2.toBoolean() == d1.toBoolean())) //ambos iguales
-                            res = new Dato_Bool(true);
+                            res = new Bool(true);
                         else
-                            res = new Dato_Bool(false);
+                            res = new Bool(false);
                         break;
                     default:
                         throw new InstruccionExc(this, "Tipo inválido (" + d1.toString() + ")");

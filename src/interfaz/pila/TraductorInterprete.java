@@ -4,12 +4,12 @@ package interfaz.pila;
 import java.util.StringTokenizer;
 
 
-import pila.interprete.datos.Dato_Bool;
-import pila.interprete.datos.Dato_Caracter;
+import pila.interprete.datos.Bool;
+import pila.interprete.datos.Caracter;
 import pila.interprete.datos.DatoPila;
-import pila.interprete.datos.Dato_Entero;
-import pila.interprete.datos.Dato_Nat;
-import pila.interprete.datos.Dato_Real;
+import pila.interprete.datos.Entero;
+import pila.interprete.datos.Nat;
+import pila.interprete.datos.Real;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.instrucciones.*;
 
@@ -191,27 +191,27 @@ public class TraductorInterprete extends TraductorPila {
 
     @Override
     protected DatoPila traducirInt(String str) throws Exception {
-        return new Dato_Entero(Integer.valueOf(str));
+        return new Entero(Integer.valueOf(str));
     }
 
     @Override
     protected DatoPila traducirNat(String str) throws DatoExc {
-        return new Dato_Nat(Integer.valueOf(str));
+        return new Nat(Integer.valueOf(str));
     }
 
     @Override
     protected DatoPila traducirFloat(String str) {
-        return new Dato_Real(Float.valueOf(str));
+        return new Real(Float.valueOf(str));
     }
 
     @Override
     protected DatoPila traducirChar(String str) {
-        return new Dato_Caracter(str.charAt(0));
+        return new Caracter(str.charAt(0));
     }
 
     @Override
     protected DatoPila traducirBool(String str) {
-        return new Dato_Bool(Boolean.valueOf(str));
+        return new Bool(Boolean.valueOf(str));
     }
 
     @Override
