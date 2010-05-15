@@ -394,6 +394,62 @@ public abstract class Traductor {
         }
         return !error;
     }
+    protected boolean If() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof If)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean then() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Then)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean Else() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Else)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean While() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof While)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean Do() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Do)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean For() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof For)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+
+
 
     //-----------------------------------------
     //-------implementación--------------------
@@ -1014,7 +1070,237 @@ public abstract class Traductor {
         }
         return error1;
     }
+    protected boolean InsProcedimiento(){
+        boolean error1 = false;
 
+        String lex = identificador();
+
+        //params = ts[lex].tipo.parametros
+	//cod + = apilar-ret
+	//etq += longApilaRet
+
+        boolean error2 = AParametros();
+
+        //error1 = error2 v ¬existeID(lex) v ts[lex].clase != proc
+	//cod += ir-a(ts[lex].inicio)
+	//etq += 1
+
+        return error1;
+    }
+    protected boolean AParametros(){
+        boolean error1 =false;
+        
+        if (abrePar()){
+            //etq += longInicioPaso
+            //cod += inicio-paso
+
+            boolean error2 = LAParametros();
+            if (cierraPar()){
+                //error1 = error2
+                //cod += fin-paso
+                //etq += longFinPase
+            }
+        }else{
+            //error1 = |params| >0;
+        }
+        return error1;
+    }
+    protected boolean LAParametros(){
+        boolean error1 =false;
+        int parh2 = 0;
+        int nparamh3 = 0;
+        boolean errorh3 = false;
+
+        //etq += 1
+	//cod += copia
+	//parh2 = params[0].modo == var
+
+        Object[] expRes = Expresion(parh2);
+        Tipos tipo2 = (Tipos) expRes[0];
+        String modo2 = (String) expRes[1];
+
+        /*nparam_h3 = 1
+	errorh3 = (tipo2 == <t:error>) v (|params|) < 1 v (params[0].modo = var ٨ modo2 = val) v
+			NOT compatibles(params[0].tipo, tipo, ts)
+        cod += pasoParametro(modo2,params[0])
+	etq += longPaseoParametro*/
+
+        boolean error3 = LAParametrosRec(nparamh3,errorh3);
+
+        //error1 = error3
+
+        return error1;
+    }
+    protected boolean LAParametrosRec(int nparamh1, boolean errorh1){
+        boolean error1 = false;
+        int parh2 = 0;
+        int nparamh3 = 0;
+        boolean errorh3 = false;
+
+        if (coma()){
+            //etq += longDireccionParFormal + 1
+            //cod += copia
+            //cod += direccionParFormal(fparamsh1[nparamh1])
+            //parh2 = params[nparamh1].modo == var
+
+            Object[] expRes = Expresion(parh2);
+            Tipos tipo2 = (Tipos) expRes[0];
+            String modo2 = (String) expRes[1];
+
+            /*nparamh3 = nparamh1 + 1
+            errorh3 = errorh1 v tipo2==<t:error> v |params| < nparamh1 + 1 v
+				(params[nparamh1].modo ==var  ٨ modo2 == val) v
+				NOT compatibles(params[nparamh1].tipo, tipo2, ts)
+            etq += longPasoParametro
+            cod += pasoParametro(modo2,params[nparamsh1])*/
+
+            boolean error3 = LAParametrosRec(nparamh3,errorh3);
+
+            //error1 = error3
+
+        }else{
+            //error1 = errorh1;
+        }
+        return error1;
+
+    }
+    protected boolean InsLectura(){
+        boolean error1 = false;
+        
+        if (in())
+            if (abrePar()){
+                String lex = identificador();
+                if (cierraPar()){
+                    //error1 = NOT existeID(ts,lex)
+                    //cod += in ts[lex].dir
+                    //etq += 1
+                }
+            }
+        return error1;
+    }
+    protected boolean InsEscritura(){
+        boolean error1 = false;
+        boolean parh2 = false;
+        if (out())
+            if (abrePar()){
+                //parh2= false
+
+                Object[] expRes= Expresion(parh2);
+                Tipos tipo2 = (Tipos) expRes[0];
+                String modo2 = (String) expRes[1];
+
+                //error1 = (tipo2 = <t:error>)
+                //etq += 1
+                //cod += out
+
+                if (cierraPar()){
+
+                }
+
+            }
+        return error1;
+    }
+    protected boolean InsAsignacion(){
+        boolean error1 = false;
+        boolean parh3 = false;
+
+        boolean error2 = Mem();
+
+        if (dosPuntosIgual()){
+            //parh3 = false;
+            Object[] expRes= Expresion(parh3);
+            Tipos tipo3 = (Tipos) expRes[0];
+            String modo3 = (String) expRes[1];
+
+            /*etq += 1
+            error1 = ¬ esCompatible(tipo2, tipo3,ts)
+            si esCompatibleConTipoBasico(tipo2, ts)
+                    cod += desapila-ind
+            si no
+                    cod += mueve(tipo2.tam)*/
+
+        }
+        return error1;
+    }
+    protected boolean InsCompuesta(){
+        boolean error1 = false;
+
+        if (abreCorchete()){
+            boolean error2 = Instrucciones();
+            if (cierraCorchete()){
+                //error1 = error2;
+            }
+        }
+        return false;
+    }
+    protected boolean InsIf(){
+        boolean error1 = false;
+        boolean parh2 = false;
+        if (If()){
+            parh2 = false;
+
+            Object[] expRes = Expresion(parh2);
+            Tipos tipo2 = (Tipos) expRes[0];
+            String modo2 = (String) expRes[1];
+
+            if (then()){
+                /*etq += 1
+                PARCHE: no puedo hacer el ir-f!!
+                cod += noop
+                aux = etq*/
+
+                boolean error3 = Instruccion();
+
+                /*insertar(cod, ir-f(etq+1), aux) //reemplaza el noop con el ir-f. en la posicion del código aux
+		etq += 1
+		aux=etq
+		cod + = noop*/
+
+                boolean error4 = PElse();
+
+                /*insertar(cod, ir-a(etq),aux) //mismo problema
+                error1 = tipo2 != <t:bool> v error3 v error4
+                InsIf.error = Expresion.tipo != <t:bool> v Instrucción.error v Pelse.error*/
+            }
+        }
+        return error1;
+    }
+    protected boolean PElse(){
+        boolean error1 = false;
+        if (Else()){
+            boolean error2 = Instruccion();
+            //error1 = error2;
+        }
+        else{
+            //error1 =false;
+        }
+        return error1;
+    }
+    protected boolean InsWhile(){
+        boolean error1 = false;
+        boolean parh2 = false;
+        if( While()){
+            //etq_while = etq;
+            
+            Object[] expRes = Expresion(parh2);
+            Tipos tipo2 = (Tipos) expRes[0];
+            String modo2 = (String) expRes[1];
+            
+            if (Do()){
+                //etq += 1
+                //aux = etq
+                //cod += noop
+                
+                boolean error3 = Instruccion();
+                
+                //inserta(cod, ir-f(etq + 1), aux) (parche)
+                //etq += 1
+                //cod+= ir-a(etq_while)
+                //error1 = tipo2 != <t:bool> v error3
+            }
+        }
+    }
+    
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
         Tipos tipo1 = null;
