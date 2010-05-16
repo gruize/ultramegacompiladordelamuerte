@@ -9,10 +9,12 @@ package compilador.tablaSimbolos;
 public class Parametro {
     private String modo;
     private TipoTs tipo;
+    private int dir;
 
-    public Parametro(String m, TipoTs t){
+    public Parametro(String m, TipoTs t, int dir){
         this.modo=m;
         this.tipo=t;
+        this.dir=dir;
     }
 
     public String getModo(){
@@ -20,5 +22,8 @@ public class Parametro {
     }
     public TipoTs getTipo(){
         return tipo;
+    }
+    public int getDir(){
+        return dir;
     }
 }

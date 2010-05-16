@@ -64,6 +64,9 @@ public class TipoTs {
     public String getId(){
         return id;
     }
+    public TipoTs getBase(){
+        return tbase;
+    }
     public TipoTs clone(TipoTs tipo){
         TipoTs res=new TipoTs();
         res.t = tipo.t;

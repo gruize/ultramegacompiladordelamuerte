@@ -25,7 +25,7 @@ public abstract class Traductor {
     public static final int longEpilogo = 13;
     public static final int longInicioPaso = 3;
     public static final int longFinPaso = 1;
-    public static final int longDireccionPalFormal = 2;
+    public static final int longDireccionParFormal = 2;
     public static final int longPasoParametro = 1;
 
     protected ArrayList<Token> arrayTokens;
@@ -200,9 +200,9 @@ public abstract class Traductor {
         res.appendIns(new Desapilar());
         return res;
     }
-    protected Codigo direccionPalFormal(InfoTs props) throws LectorExc, DatoExc{
+    protected Codigo direccionParFormal(Parametro pFormal) throws LectorExc, DatoExc{
         Codigo res = new Codigo();
-        res.appendIns(new Apilar(new Nat(props.getDir())));
+        res.appendIns(new Apilar(new Nat(pFormal.getDir())));
         res.appendIns(new Suma());
         return res;
     }
@@ -791,14 +791,14 @@ public abstract class Traductor {
 
         if (var()){
             tam1 = 1;
-            parametros.add(new Parametro("variable", tipo2));
+            parametros.add(new Parametro("variable", tipo2, dir));
             id1 = lex;
             props1 = new InfoTs("pvar", tipo2, n);
             error1 = error2;
         }
         else{
             tam1 = tipo2.getTam();
-            parametros.add ( new Parametro("valor", tipo2));
+            parametros.add ( new Parametro("valor", tipo2, dir));
             id1 = lex;
             props1 = new InfoTs("var", tipo2, n);
             error1 = error2;
@@ -1067,7 +1067,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean Instruccion(){
+    protected boolean Instruccion() throws DatoExc, LectorExc{
         boolean error1 = false;
         boolean error2Proc = InsProcedimiento();
         boolean error2Lect = InsLectura();
@@ -1166,49 +1166,65 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected boolean LAParametrosRec(int nparamh1, boolean errorh1){
+    protected boolean LAParametrosRec(int nparamh1, boolean errorh1) throws LectorExc, DatoExc{
         boolean error1 = false;
-        int parh2 = 0;
+        boolean parh2 = false;
         int nparamh3 = 0;
         boolean errorh3 = false;
 
         if (coma()){
             etq += longDireccionParFormal + 1;
             cod.appendIns(Copia());
-            cod.appendCod(direccionParFormal(fparamsh1[nparamh1]));
-            parh2 = params[nparamh1].modo == var
-
+            cod.appendCod(direccionParFormal(parametros.get(nparamh1)));
+            parh2 = parametros.get(nparamh1).getModo().equals("var");
             Object[] expRes = Expresion(parh2);
-            Tipo tipo2 = (Tipo) expRes[0];
+            TipoTs tipo2 = (TipoTs) expRes[0];
             String modo2 = (String) expRes[1];
 
-            /*nparamh3 = nparamh1 + 1
-            errorh3 = errorh1 v tipo2==<t:error> v |params| < nparamh1 + 1 v
-				(params[nparamh1].modo ==var  ٨ modo2 == val) v
-				NOT compatibles(params[nparamh1].tipo, tipo2, ts)
-            etq += longPasoParametro
-            cod += pasoParametro(modo2,params[nparamsh1])*/
+            nparamh3 = nparamh1 + 1;
+            errorh3 = errorh1 ||
+                    tipo2.getT().equals("error") ||
+                    parametros.size() < nparamh1 +1 ||
+                    parametros.get(nparamh1).getModo().equals("var") ||
+                    ! TablaSimbolos.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
+
+            etq += longPasoParametro;
+            cod.appendCod(pasoParametro(modo2,parametros.get(nparamh1)));
 
             boolean error3 = LAParametrosRec(nparamh3,errorh3);
 
-            //error1 = error3
+            error1 = error3;
 
         }else{
-            //error1 = errorh1;
+            error1 = errorh1;
         }
         return error1;
 
     }
-    protected boolean InsLectura(){
+    protected boolean InsLectura() throws LectorExc, DatoExc{
         boolean error1 = false;
+        Codigo cod1 = null;
         
         if (in())
             if (abrePar()){
                 String lex = identificador();
+
                 if (cierraPar()){
-                    //error1 = NOT existeID(ts,lex)
-                    //cod += in ts[lex].dir
-                    //etq += 1
+                    error1 = TablaSimbolos.existe(ts,lex);
+
+                    int d = TablaSimbolos.getProps(ts, lex).getDir();
+                    Nat nd = new Nat(d);
+                    String t = TablaSimbolos.getProps(ts, lex).getTipo().getT();
+                    if (t.equals("boolean"))
+                        cod1 = new Codigo(new EntradaBool(nd));
+                    else if (t.equals("entero"))
+                        cod1 = new Codigo(new EntradaInt(nd));
+                    else if (t.equals("char"))
+                        cod1 = new Codigo(new EntradaChar(nd));
+                    else if (t.equals("natural"))
+                        cod1 = new Codigo(new EntradaNat(nd));
+                    else if (t.equals("float"))
+                        cod1 = new Codigo(new EntradaFloat(nd));
                 }
             }
         return error1;
@@ -1218,17 +1234,17 @@ public abstract class Traductor {
         boolean parh2 = false;
         if (out())
             if (abrePar()){
-                //parh2= false
+                parh2= false;
 
                 Object[] expRes= Expresion(parh2);
-                Tipo tipo2 = (Tipo) expRes[0];
+                TipoTs tipo2 = (TipoTs) expRes[0];
                 String modo2 = (String) expRes[1];
 
-                //error1 = (tipo2 = <t:error>)
-                //etq += 1
-                //cod += out
+                error1 = (tipo2.getT().equals("error"));
+                etq += 1;
+                cod.appendIns(new Salida());
 
-                if (cierraPar()){
+                if ( !cierraPar()){
 
                 }
 
@@ -1239,20 +1255,21 @@ public abstract class Traductor {
         boolean error1 = false;
         boolean parh3 = false;
 
-        boolean error2 = Mem();
+        TipoTs tipo2 = Mem();
 
         if (dosPuntosIgual()){
-            //parh3 = false;
+            parh3 = false;
+
             Object[] expRes= Expresion(parh3);
-            Tipo tipo3 = (Tipo) expRes[0];
+            TipoTs tipo3 = (TipoTs) expRes[0];
             String modo3 = (String) expRes[1];
 
-            /*etq += 1
-            error1 = ¬ esCompatible(tipo2, tipo3,ts)
-            si esCompatibleConTipoBasico(tipo2, ts)
-                    cod += desapila-ind
-            si no
-                    cod += mueve(tipo2.tam)*/
+            etq += 1;
+            error1 = ! TablaSimbolos.compatibles(tipo2, tipo3,ts);
+            if (esCompatibleConTipoBasico(tipo2, ts))
+                    cod.appendIns(new DesapilaInd());
+            else
+                    cod.appendIns(new Mueve(tipo2.getTam()));
 
         }
         return error1;
@@ -1263,7 +1280,7 @@ public abstract class Traductor {
         if (abreCorchete()){
             boolean error2 = Instrucciones();
             if (cierraCorchete()){
-                //error1 = error2;
+                error1 = error2;
             }
         }
         return false;
@@ -1279,8 +1296,8 @@ public abstract class Traductor {
             String modo2 = (String) expRes[1];
 
             if (then()){
-                /*etq += 1
-                PARCHE: no puedo hacer el ir-f!!
+                etq += 1
+                /*PARCHE: no puedo hacer el ir-f!!
                 cod += noop
                 aux = etq*/
 
@@ -1304,10 +1321,10 @@ public abstract class Traductor {
         boolean error1 = false;
         if (Else()){
             boolean error2 = Instruccion();
-            //error1 = error2;
+            error1 = error2;
         }
         else{
-            //error1 =false;
+            error1 =false;
         }
         return error1;
     }
@@ -1392,24 +1409,26 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean InsNew(){
+    protected boolean InsNew() throws LectorExc, DatoExc{
         boolean error1 = false;
         if (New()){
-            Tipos tipo2 = Mem();
+            TipoTs tipo2 = Mem();
 
-            /*error1 = tipo2 != <t:puntero>
-            etq += 2
-            cod += new
-			si tipo2.tbase = ref
-				ts[tipo2.tbase.id].tam
-			si no
-				1
-		        )
-            cod+= desapila-ind*/
-
+            error1 = tipo2.getT().equals("puntero");
+            etq += 2;
+            int num;
+            if (tipo2.getBase().getT().equals("ref"))
+                num = TablaSimbolos.getProps(ts,tipo2.getBase().getId()).getTipo().getTam(); //no se si esta bien
+            else num = 1;
+            cod.appendIns(new New(new Nat(num)));
+            cod.appendIns(new DesapilaInd());
         }
         return error1;
     }
+
+    /*/***********************************************************************
+     * ***************************POR AQUI *********************************
+     */
 
 
     //Expresión(out: tipo1,cod1) →
