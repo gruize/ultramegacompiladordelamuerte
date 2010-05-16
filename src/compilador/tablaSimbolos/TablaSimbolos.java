@@ -66,4 +66,9 @@ public class TablaSimbolos {
     public void setHashTable(Hashtable<String,InfoTs> ht){
     	this.ht=ht;
     }
+
+    public static boolean existeRef(TablaSimbolos ts, TipoTs tipo){
+        return false;
+        //sin implementar
+    }
 }
