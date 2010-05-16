@@ -10,8 +10,9 @@ public class Parametro {
     private String modo;
     private TipoTs tipo;
 
-    public Parametro(){
-
+    public Parametro(String m, TipoTs t){
+        this.modo=m;
+        this.tipo=t;
     }
 
     public String getModo(){
