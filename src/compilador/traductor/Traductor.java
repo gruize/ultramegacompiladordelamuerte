@@ -8,9 +8,8 @@ import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.*;
 import pila.interprete.datos.*;
 import compilador.lexico.Tokens.*;
-import compilador.tablaSimbolos.InfoTs;
-import compilador.tablaSimbolos.TablaSimbolos;
-import compilador.tablaSimbolos.InfoTs.Tipos;
+import compilador.tablaSimbolos.*;
+
 
 /**
  * Esta clase contiene las funciones de traducción que sólo dependen de la
@@ -191,9 +190,9 @@ public abstract class Traductor {
         cod.appendIns(new Apilar(new Nat(props.getDir())));
         cod.appendIns(new Suma());
     }
-    protected void pasoParametro(String modoReal, InfoTs pFormal) throws LectorExc, DatoExc{
+    protected void pasoParametro(String modoReal, Parametro pFormal) throws LectorExc, DatoExc{
         if (pFormal.getModo().equals("valor") && modoReal.equals("var"))
-            cod.appendIns(new Mueve(pFormal.getTipo().getTam()));
+            cod.appendIns(new Mueve(new Nat(pFormal.getTipo().getTam())));
         else cod.appendIns(new DesapilaInd());
     }
 
@@ -319,7 +318,7 @@ public abstract class Traductor {
     protected boolean igual() {
         Token t = sigToken();
         boolean error = false;
-        if (!(t instanceof Igual)){
+        if (!(t instanceof Token_Igual)){
             atrasToken();
             error = true;
         }
@@ -483,6 +482,7 @@ public abstract class Traductor {
 
     //-----------------------------------------
     //-------implementación--------------------
+
     protected boolean Programa() throws Exception {
         boolean error1 = false;
 
@@ -534,6 +534,7 @@ public abstract class Traductor {
     }
     protected boolean DeclaracionesRec(boolean errorh1) throws Exception {
         boolean error1 = false;
+        boolean errorh3 = false;
         if (puntoYComa()) {//no lambda
 
             Object[] decRes = Declaracion();
@@ -603,7 +604,7 @@ public abstract class Traductor {
         return new Object[]{error1, tam1, id1, props1};
 
     }
-    protected Object[] DeclaracionTipo(){
+    protected Object[] DeclaracionTipo() throws Exception{
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
@@ -613,7 +614,7 @@ public abstract class Traductor {
             if(igual()){
                 Object[] tipoRes = Tipo();
                 boolean error2 = (Boolean) tipoRes[0];
-                Tipos tipo2 = (Tipos) tipoRes[1];
+                Tipo tipo2 = (Tipo) tipoRes[1];
 
                 //id1 = lex;
                 //props1 = <clase: tipo, tipo: tipo2, nivel: n>
@@ -622,7 +623,7 @@ public abstract class Traductor {
         }
         return new Object[]{error1, id1, props1};
     }
-    protected Object[] DeclaracionVariable(){
+    protected Object[] DeclaracionVariable() throws Exception{
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
@@ -631,7 +632,7 @@ public abstract class Traductor {
         if(dosPuntos()){
             Object[] tipoRes = Tipo();
             boolean error2 = (Boolean) tipoRes[0];
-            Tipos tipo2 = (Tipos) tipoRes[1];
+            Tipo tipo2 = (Tipo) tipoRes[1];
 
             //id1 = lex;
             //props1 = <clase: var, tipo: tipo2, nivel: n>
@@ -639,13 +640,13 @@ public abstract class Traductor {
         }
         return new Object[]{error1, id1, props1};
     }
-    protected Object[] DeclaracionProcedimiento(){
+    protected Object[] DeclaracionProcedimiento() throws Exception{
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
 
         if (procedure()){
-            String lex= Tipo();
+            String lex= identificador();
             //ts_aux = ts;
             //ts = creaTS(ts_aux)
             //n += 1;
@@ -656,7 +657,7 @@ public abstract class Traductor {
         //ts = inserta(ts, lex, <clase:proc, tipo: <t:proc, parametros: params>,  nivel: n>)
 	//params = {}
 
-        Object[] bloqueRes=Bloque();
+        Object[] bloqueRes = Bloque();
         boolean error3= (Boolean) bloqueRes[0];
         int inicio3 = (Integer) bloqueRes[1];
 
@@ -697,8 +698,8 @@ public abstract class Traductor {
 
         return new Object[]{error1, inicio1};
     }
-    protected boolean FParametros(){
-        boolean error1;
+    protected boolean FParametros() throws Exception{
+        boolean error1 = false;
         if (abrePar()){
             boolean error2 = LFParametros();
             //error1=error2
@@ -711,11 +712,11 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean LFParametros(){
+    protected boolean LFParametros() throws Exception{
         boolean error1=false;
         boolean errorh3 = false;
 
-        Object[] FParamRes=FParametro();
+        Object[] FParamRes = FParametro();
         boolean error2 = (Boolean) FParamRes[0];
         String id2 = (String) FParamRes[1];
         InfoTs props2 = (InfoTs) FParamRes[2];
@@ -730,12 +731,12 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected boolean LFParametrosRec(boolean errorh1){
+    protected boolean LFParametrosRec(boolean errorh1) throws Exception{
         boolean error1= false;
         boolean errorh3 = false;
 
         if (coma()){
-            Object[] FParamRes=FParametro();
+            Object[] FParamRes = FParametro();
             boolean error2 = (Boolean) FParamRes[0];
             String id2 = (String) FParamRes[1];
             InfoTs props2 = (InfoTs) FParamRes[2];
@@ -745,7 +746,7 @@ public abstract class Traductor {
             //errorh3 = errorh1 v error2 v (existeID(ts,id2)  ٨ ts[id2].nivel = n)
             //ts = inserta(ts, id2, props2)
 
-            boolean error3 = LFParametrosRec(erro3h);
+            boolean error3 = LFParametrosRec(errorh3);
 
             //error1 = error3
         }
@@ -762,7 +763,7 @@ public abstract class Traductor {
 
         Object[] tipoRes= Tipo();
         boolean error2= (Boolean) tipoRes[0];
-        Tipos tipo2 = (Tipos) tipoRes[1];
+        Tipo tipo2 = (Tipo) tipoRes[1];
 
         String lex = identificador();
 
@@ -808,7 +809,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_id(Token t){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         String lex= t.getLex();
 
         /*tipo1 =
@@ -830,7 +831,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Boolean(){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         //tipo1 = <t:boolean,tam:1>
 	//error1 = false
@@ -839,7 +840,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Character(){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         //tipo1 = <t:character,tam:1>
 	//error1 = false
@@ -848,7 +849,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Float(){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         //tipo1 = <t:float,tam:1>
 	//error1 = false
@@ -857,7 +858,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Natural(){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         //tipo1 = <t:natural,tam:1>
 	//error1 = false
@@ -866,7 +867,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Integer(){
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         //tipo1 = <t:integer,tam:1>
 	//error1 = false
@@ -875,7 +876,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Array() throws Exception{
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         
         if (abreCorchete()){
             String lex = numero();
@@ -883,7 +884,7 @@ public abstract class Traductor {
                 if (of()){
                     Object[] tipoRes = Tipo();
                     boolean error2 = (Boolean) tipoRes[0];
-                    Tipos tipo2 = (Tipos) tipoRes[1];
+                    Tipo tipo2 = (Tipo) tipoRes[1];
                     
                     /*tipo1 =
         		<
@@ -900,11 +901,11 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Puntero() throws Exception{
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         Object[] tipoRes=Tipo();
         boolean error2 = (Boolean) tipoRes[0];
-        Tipos tipo2 = (Tipos) tipoRes[1];
+        Tipo tipo2 = (Tipo) tipoRes[1];
 
         /*tipo1 =
 	        <
@@ -917,12 +918,12 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Record() throws Exception{
         boolean error1 =false;
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
 
         if (abreCorchete()){
             Object[] tipoRes=Campos();
             boolean error2 = (Boolean) tipoRes[0];
-            Campos campos2 = (Tipos) tipoRes[1];
+            ArrayList<Campo> campos2 = (ArrayList<Campo>) tipoRes[1];
             int tam2 = (Integer) tipoRes[2];
 
             if (cierraCorchete()){
@@ -937,13 +938,13 @@ public abstract class Traductor {
         }
         return new Object[]{error1, tipo1};
     }
-    protected Object[] Campos(){
+    protected Object[] Campos() throws Exception{
         boolean error1 = false;
-        Campos campos1 = null;
+        ArrayList<Campo> campos1 = null;
         int tam1 = 0;
         int desh2 = 0;
         boolean errorh3 = false;
-        Campos camposh3 = null;
+        ArrayList<Campo> camposh3 = null;
         int desh3 = 0;
 
         //desh2=0;
@@ -951,8 +952,8 @@ public abstract class Traductor {
         Object[] campoRes = Campo(desh2);
         boolean error2 = (Boolean) campoRes[0];
         String id2 = (String) campoRes[1];
-        Campos campo2 = (Campos) campoRes[2];
-        int tam2 = (Integer) camposRes[3];
+        Campo campo2 = (Campo) campoRes[2];
+        int tam2 = (Integer) campoRes[3];
 
         //camposh3 = [campo2]
 	//errorh3 = error2
@@ -960,7 +961,7 @@ public abstract class Traductor {
 
         Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
         boolean error3= (Boolean) camposRecRes[0];
-        Campos campos3 = (Campos) camposRecRes[1];
+        ArrayList<Campo> campos3 = (ArrayList<Campo>) camposRecRes[1];
         int tam3 = (Integer) camposRecRes[2];
 
         //error1 = error3
@@ -969,13 +970,13 @@ public abstract class Traductor {
 
         return new Object[]{error1,campos1,tam1};
     }
-    protected Object[] CamposRec(boolean errorh1, Campos camposh1, int desh1){
+    protected Object[] CamposRec(boolean errorh1, ArrayList<Campo> camposh1, int desh1) throws Exception{
         boolean error1 = false;
-        Campos campos1 = null;
+        ArrayList<Campo> campos1 = null;
         int tam1 = 0;
         int desh2=0;
         boolean errorh3=false;
-        Campo camposh3 = null;
+        ArrayList<Campo> camposh3 = null;
         int desh3 = 0;
         
         if (puntoYComa()){
@@ -983,7 +984,7 @@ public abstract class Traductor {
             Object[] campoRes = Campo(desh2);
             boolean error2= (Boolean) campoRes[0];
             String id2 = (String) campoRes[1];
-            Campos campo2 = (Campos) campoRes[2];
+            Campo campo2 = (Campo) campoRes[2];
             int tam2 = (Integer) campoRes[3];
             
             //camposh3 = camposh1 ++ campo2
@@ -992,7 +993,7 @@ public abstract class Traductor {
             
             Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
             boolean error3 = (Boolean) camposRecRes[0];
-            Campos campos3 = (Campos) camposRecRes[1];
+            ArrayList<Campo> campos3 = (ArrayList<Campo>) camposRecRes[1];
             int tam3 = (Integer) camposRecRes[2];
             
             //error1 = error3
@@ -1009,14 +1010,14 @@ public abstract class Traductor {
     protected Object[] Campo(int desh1) throws Exception{
         boolean error1 = false;
         String id1 = "";
-        Campos campo1 = null;
+        Campo campo1 = null;
         int tam1 = 0;
 
         String lex = identificador();
         if (dosPuntos()){
             Object[] tipoRes= Tipo();
             boolean error2= (Boolean) tipoRes[0];
-            Tipos tipo2 = (Tipos) tipoRes[1];
+            Tipo tipo2 = (Tipo) tipoRes[1];
 
             /*campo1 =
                 <
@@ -1030,6 +1031,9 @@ public abstract class Traductor {
         return new Object[]{error1, id1, campo1, tam1};
     }
 
+/*/********************************************************************
+*********************************POR AQUI******************************
+ * *******************************************************************/
 
     protected boolean Instrucciones(){
         boolean error1 = false;
@@ -1061,8 +1065,9 @@ public abstract class Traductor {
             return error1;
         }
         else {
-            error1 = error1h;
+            error1 = errorh1;
         }
+        return error1;
     }
     protected boolean Instruccion(){
         boolean error1 = false;
@@ -1146,7 +1151,7 @@ public abstract class Traductor {
 	//parh2 = params[0].modo == var
 
         Object[] expRes = Expresion(parh2);
-        Tipos tipo2 = (Tipos) expRes[0];
+        Tipo tipo2 = (Tipo) expRes[0];
         String modo2 = (String) expRes[1];
 
         /*nparam_h3 = 1
@@ -1174,7 +1179,7 @@ public abstract class Traductor {
             //parh2 = params[nparamh1].modo == var
 
             Object[] expRes = Expresion(parh2);
-            Tipos tipo2 = (Tipos) expRes[0];
+            Tipo tipo2 = (Tipo) expRes[0];
             String modo2 = (String) expRes[1];
 
             /*nparamh3 = nparamh1 + 1
@@ -1216,7 +1221,7 @@ public abstract class Traductor {
                 //parh2= false
 
                 Object[] expRes= Expresion(parh2);
-                Tipos tipo2 = (Tipos) expRes[0];
+                Tipo tipo2 = (Tipo) expRes[0];
                 String modo2 = (String) expRes[1];
 
                 //error1 = (tipo2 = <t:error>)
@@ -1239,7 +1244,7 @@ public abstract class Traductor {
         if (dosPuntosIgual()){
             //parh3 = false;
             Object[] expRes= Expresion(parh3);
-            Tipos tipo3 = (Tipos) expRes[0];
+            Tipo tipo3 = (Tipo) expRes[0];
             String modo3 = (String) expRes[1];
 
             /*etq += 1
@@ -1270,7 +1275,7 @@ public abstract class Traductor {
             parh2 = false;
 
             Object[] expRes = Expresion(parh2);
-            Tipos tipo2 = (Tipos) expRes[0];
+            Tipo tipo2 = (Tipo) expRes[0];
             String modo2 = (String) expRes[1];
 
             if (then()){
@@ -1313,7 +1318,7 @@ public abstract class Traductor {
             //etq_while = etq;
             
             Object[] expRes = Expresion(parh2);
-            Tipos tipo2 = (Tipos) expRes[0];
+            Tipo tipo2 = (Tipo) expRes[0];
             String modo2 = (String) expRes[1];
             
             if (Do()){
@@ -1345,7 +1350,7 @@ public abstract class Traductor {
             if (igual()){
                 
                 Object[] expRes = Expresion(parh2);
-                Tipos tipo2 = (Tipos) expRes[0];
+                Tipo tipo2 = (Tipo) expRes[0];
                 String modo2 = (String) expRes[1];
                 
                 if (To()){
@@ -1353,7 +1358,7 @@ public abstract class Traductor {
                     //cod += desapila-dir ts[lex].dir
                     
                     Object[] expRes = Expresion(parh3);
-                    Tipos tipo3 = (Tipos) expRes[0];
+                    Tipo tipo3 = (Tipo) expRes[0];
                     String modo3 = (String) expRes[1];
                     
                     if (Do()){
@@ -1409,13 +1414,13 @@ public abstract class Traductor {
 
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         Codigo cod1 = null;
         Object[] resExprN1 = ExpresionNiv1();
-        Tipos tipo2 = (Tipos) resExprN1[0];
+        Tipo tipo2 = (Tipo) resExprN1[0];
         Codigo cod2 = (Codigo) resExprN1[1];
         Object[] resExprFact = ExpresionFact(tipo2, cod2);
-        tipo1 = (Tipos) resExprFact[0];
+        tipo1 = (Tipo) resExprFact[0];
         cod1 = (Codigo) resExprFact[1];
         return new Object[]{tipo1, cod1};
     }
@@ -1425,13 +1430,13 @@ public abstract class Traductor {
 
     //ExpresiónNiv1(out: tipo1, cod1, codJ1) →
     protected Object[] ExpresionNiv1() throws Exception {
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         Codigo cod1 = null;
         Object[] resExprN2 = ExpresionNiv2();
-        Tipos tipo2 = (Tipos) resExprN2[0];
+        Tipo tipo2 = (Tipo) resExprN2[0];
         Codigo cod2 = (Codigo) resExprN2[1];
         Object[] resExprFact = ExpresionNiv1Rec(tipo2, cod2);
-        tipo1 = (Tipos) resExprFact[0];
+        tipo1 = (Tipo) resExprFact[0];
         cod1 = (Codigo) resExprFact[1];
         return new Object[]{tipo1, cod1};
     }
@@ -1441,10 +1446,10 @@ public abstract class Traductor {
 
     //ExpresiónNiv2(out: tipo1, cod1) →
     protected Object[] ExpresionNiv2() throws Exception {
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         Codigo cod1 = null;
         Object[] resExprNiv3 = ExpresionNiv3();
-        Tipos tipoh3 = (Tipos) resExprNiv3[0];
+        Tipo tipoh3 = (Tipo) resExprNiv3[0];
         Codigo codh3 = (Codigo) resExprNiv3[1];
         return new Object[]{tipo1, cod1};
     }
@@ -1454,13 +1459,13 @@ public abstract class Traductor {
 
     //ExpresiónNiv3(out: tipo1, codJ1) →
     protected Object[] ExpresionNiv3() throws Exception {
-        Tipos tipo1 = null;
+        Tipo tipo1 = null;
         Codigo cod1 = null;
         Object[] resExprN4 = ExpresionNiv4();
-        Tipos tipoh3 = (Tipos) resExprN4[0];
+        Tipo tipoh3 = (Tipo) resExprN4[0];
         Codigo codh3 = (Codigo) resExprN4[1];
         Object[] resExprN4Fact = ExpresionNiv3Fact(tipoh3, codh3);
-        tipo1 = (Tipos) resExprN4Fact[0];
+        tipo1 = (Tipo) resExprN4Fact[0];
         cod1 = (Codigo) resExprN4Fact[1];
         return new Object[]{tipo1, cod1};
     }
@@ -1489,7 +1494,7 @@ public abstract class Traductor {
     //ExpresiónNiv4(out: tipo1, cod1)
     protected Object[] ExpresionNiv4_abrePar() throws Exception {
         Object[] resExpr = Expresion();
-        Tipos tipo1 = (Tipos) resExpr[0];
+        Tipo tipo1 = (Tipo) resExpr[0];
         Codigo cod1 = (Codigo) resExpr[1];
         if (!cierraPar()) {
             throw new Exception("FATAL: Se esperaba cerrar paréntesis" + textoError());

@@ -2,28 +2,28 @@ package compilador.tablaSimbolos;
 
 
 public class InfoTs {
-    private enum Clase{tipo,var,proc};
 
-    private Clase clase;
-    private Tipo tipo;
+    private String clase;
+    private TipoTS tipo;
+    private int dir;
     private int nivel;
 
-    public InfoTs(Clase c, Tipo t, int n){
+    public InfoTs(String c, TipoTS t, int n){
 	this.clase = c;
 	this.tipo = t;
         this.nivel = n;
 }
 
-    public Tipo getTipo() {
+    public TipoTS getTipo() {
 	return tipo;
     }
-    public void setTipo(Tipo t){
+    public void setTipo(TipoTS t){
         tipo=t;
     }
-    public Clase getClase(){
+    public String getClase(){
         return clase;
     }
-    public void setClase(Clase c){
+    public void setClase(String c){
         clase=c;
     }
     public int getNivel(){
@@ -31,6 +31,9 @@ public class InfoTs {
     }
     public void setNivel(int n){
         nivel=n;
+    }
+    public int getDir(){
+        return dir;
     }
 	
 }
