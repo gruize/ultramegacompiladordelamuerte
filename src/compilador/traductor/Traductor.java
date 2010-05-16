@@ -186,6 +186,7 @@ public abstract class Traductor {
         if (props.getClase().equals("pvar"))
             resp=4;
         else resp=3;
+        return resp;
     }
     protected Codigo inicioPaso() throws DatoExc, LectorExc{
         Codigo res = new Codigo();
@@ -195,6 +196,7 @@ public abstract class Traductor {
         return res;
     }
     protected Codigo finPaso() throws LectorExc{
+        Codigo res = new Codigo();
         res.appendIns(new Desapilar());
         return res;
     }
@@ -926,7 +928,7 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_Record() throws Exception{
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
         if (abreCorchete()){
             Object[] tipoRes=Campos();
@@ -935,7 +937,7 @@ public abstract class Traductor {
             int tam2 = (Integer) tipoRes[2];
 
             if (cierraCorchete()){
-                tipo1 = new TipoTs("record", campos2,tam);
+                tipo1 = new TipoTs("record", campos2,tam2);
                 error1 = error2;
             }
         }
@@ -950,26 +952,26 @@ public abstract class Traductor {
         ArrayList<Campo> camposh3 = null;
         int desh3 = 0;
 
-        //desh2=0;
+        desh2=0;
 
         Object[] campoRes = Campo(desh2);
         boolean error2 = (Boolean) campoRes[0];
         String id2 = (String) campoRes[1];
-        Campo campo2 = (Campo) campoRes[2];
+        ArrayList<Campo> campo2 = (ArrayList<Campo>) campoRes[2];
         int tam2 = (Integer) campoRes[3];
 
-        //camposh3 = [campo2]
-	//errorh3 = error2
-	//desh3 = tam2
+        camposh3 = campo2;
+	errorh3 = error2;
+	desh3 = tam2;
 
         Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
         boolean error3= (Boolean) camposRecRes[0];
         ArrayList<Campo> campos3 = (ArrayList<Campo>) camposRecRes[1];
         int tam3 = (Integer) camposRecRes[2];
 
-        //error1 = error3
-	//campos1 = campos3
-	//tam1 = tam3
+        error1 = error3;
+	campos1 = campos3;
+	tam1 = tam3;
 
         return new Object[]{error1,campos1,tam1};
     }
@@ -983,30 +985,33 @@ public abstract class Traductor {
         int desh3 = 0;
         
         if (puntoYComa()){
-            //desh2 = desh1
+            
+            desh2 = desh1;
+
             Object[] campoRes = Campo(desh2);
             boolean error2= (Boolean) campoRes[0];
             String id2 = (String) campoRes[1];
             Campo campo2 = (Campo) campoRes[2];
             int tam2 = (Integer) campoRes[3];
             
-            //camposh3 = camposh1 ++ campo2
-            //errorh3 = errorh1 v error2 v existeCampo(camposh1, id2)
-            //desh3 = tam2 + desh1
+            camposh1.add(campo2);
+            camposh3 = camposh1;
+            errorh3 = errorh1 || error2 || existeCampo(camposh1, id2);
+            desh3 = tam2 + desh1;
             
             Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
             boolean error3 = (Boolean) camposRecRes[0];
             ArrayList<Campo> campos3 = (ArrayList<Campo>) camposRecRes[1];
             int tam3 = (Integer) camposRecRes[2];
             
-            //error1 = error3
-            //campos1 = campos3
-            //tam1 = tam3
+            error1 = error3;
+            campos1 = campos3;
+            tam1 = tam3;
         }
         else{
-            //error1= errorh1;
-            //campos1 = camposh1
-            //tam1 = desh1
+            error1= errorh1;
+            campos1 = camposh1;
+            tam1 = desh1;
         }
         return new Object[]{error1, campos1, tam1};
     }
@@ -1020,33 +1025,23 @@ public abstract class Traductor {
         if (dosPuntos()){
             Object[] tipoRes= Tipo();
             boolean error2= (Boolean) tipoRes[0];
-            Tipo tipo2 = (Tipo) tipoRes[1];
+            TipoTs tipo2 = (TipoTs) tipoRes[1];
 
-            /*campo1 =
-                <
-                    id:lex,
-                    tipo:tipo2,
-                    desp:desh1
-                >
-            tam1   = tipo2.tam
-            error1 = error2 v ¬existeRef(ts,tipo2)*/
+            campo1 = new Campo(lex,tipo2,desh1);
+            tam1   = tipo2.getTam();
+            error1 = error2 ||  ! existeRef(ts,tipo2);
         }
         return new Object[]{error1, id1, campo1, tam1};
     }
-
-/*/********************************************************************
-*********************************POR AQUI******************************
- * *******************************************************************/
-
     protected boolean Instrucciones(){
         boolean error1 = false;
         boolean errorh3 = false;
 
-        boolean error2 = Instruccion()
+        boolean error2 = Instruccion();
 
         errorh3 = error2;
 
-        boolean error3 = InstrucionesRec(errorh3);
+        boolean error3 = InstruccionesRec(errorh3);
 
         error1 = error3;
 
@@ -1113,51 +1108,51 @@ public abstract class Traductor {
 
         String lex = identificador();
 
-        //params = ts[lex].tipo.parametros
-	//cod + = apilar-ret
-	//etq += longApilaRet
+        parametros = TablaSimbolos.getProps(ts,lex).getTipo().getParametros();
+	cod.appendCod(apilaRet());
+	etq += longApilaRet;
 
         boolean error2 = AParametros();
 
-        //error1 = error2 v ¬existeID(lex) v ts[lex].clase != proc
-	//cod += ir-a(ts[lex].inicio)
-	//etq += 1
+        error1 = error2 || !TablaSimbolos.existe(ts, lex) || !TablaSimbolos.getProps(ts, lex).getClase().equals("proc");
+	cod.appendIns(new IrA(TablaSimbolos.getProps(ts,lex).getDir()));
+	etq += 1;
 
         return error1;
     }
-    protected boolean AParametros(){
+    protected boolean AParametros() throws DatoExc, LectorExc{
         boolean error1 =false;
         
         if (abrePar()){
-            //etq += longInicioPaso
-            //cod += inicio-paso
+            etq += longInicioPaso;
+            cod.appendCod(inicioPaso());
 
             boolean error2 = LAParametros();
             if (cierraPar()){
-                //error1 = error2
-                //cod += fin-paso
-                //etq += longFinPase
+                error1 = error2;
+                cod.appendCod(finPaso());
+                etq += longFinPaso;
             }
         }else{
-            //error1 = |params| >0;
+            error1 = parametros.size()>0;
         }
         return error1;
     }
     protected boolean LAParametros(){
         boolean error1 =false;
-        int parh2 = 0;
+        boolean parh2 = false;
         int nparamh3 = 0;
         boolean errorh3 = false;
 
-        //etq += 1
-	//cod += copia
-	//parh2 = params[0].modo == var
+        etq += 1;
+	cod.appendIns(new Copia());
+	parh2 = parametros.get(0).getModo().equals("var");
 
         Object[] expRes = Expresion(parh2);
         Tipo tipo2 = (Tipo) expRes[0];
         String modo2 = (String) expRes[1];
 
-        /*nparam_h3 = 1
+       /* nparam_h3 = 1;
 	errorh3 = (tipo2 == <t:error>) v (|params|) < 1 v (params[0].modo = var ٨ modo2 = val) v
 			NOT compatibles(params[0].tipo, tipo, ts)
         cod += pasoParametro(modo2,params[0])
