@@ -636,7 +636,7 @@ public abstract class Traductor {
 
                 id1 = lex;
                 props1 = new InfoTs("tipo",tipo2,n);
-                error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+                error1 = error2  || (TablaSimbolos.existe(ts,lex) && (!TablaSimbolos.existeRef(ts,tipo2)));
             }
         }
         return new Object[]{error1, id1, props1};
@@ -654,7 +654,7 @@ public abstract class Traductor {
 
             id1 = lex;
             props1 = new InfoTs("var",tipo2,n);
-            error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+            error1 = error2  || (TablaSimbolos.existe(ts,lex) && (!TablaSimbolos.existeRef(ts,tipo2)));
         }
         return new Object[]{error1, id1, props1};
     }
@@ -909,7 +909,7 @@ public abstract class Traductor {
         TipoTs tipo2 = (TipoTs) tipoRes[1];
                     
         tipo1 = new TipoTs("array",Integer.parseInt(lex), tipo2, Integer.parseInt(lex)*tipo2.getTam());
-        error1 = tipo2.getT().equals("error") && !existeRef (ts ,tipo2);
+        error1 = tipo2.getT().equals("error") && !TablaSimbolos.existeRef (ts ,tipo2);
 
         return new Object[]{error1, tipo1};
     }
@@ -996,7 +996,7 @@ public abstract class Traductor {
             
             camposh1.add(campo2);
             camposh3 = camposh1;
-            errorh3 = errorh1 || error2 || existeCampo(camposh1, id2);
+            errorh3 = errorh1 || error2 || Campo.existeCampo(camposh1, id2);
             desh3 = tam2 + desh1;
             
             Object[] camposRecRes = CamposRec(errorh3, camposh3, desh3);
@@ -1029,7 +1029,7 @@ public abstract class Traductor {
 
             campo1 = new Campo(lex,tipo2,desh1);
             tam1   = tipo2.getTam();
-            error1 = error2 ||  ! existeRef(ts,tipo2);
+            error1 = error2 ||  ! TablaSimbolos.existeRef(ts,tipo2);
         }
         return new Object[]{error1, id1, campo1, tam1};
     }
@@ -1103,7 +1103,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean InsProcedimiento(){
+    protected boolean InsProcedimiento() throws DatoExc, LectorExc{
         boolean error1 = false;
 
         String lex = identificador();
@@ -1138,7 +1138,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean LAParametros(){
+    protected boolean LAParametros() throws LectorExc, DatoExc{
         boolean error1 =false;
         boolean parh2 = false;
         int nparamh3 = 0;
@@ -1149,18 +1149,20 @@ public abstract class Traductor {
 	parh2 = parametros.get(0).getModo().equals("var");
 
         Object[] expRes = Expresion(parh2);
-        Tipo tipo2 = (Tipo) expRes[0];
+        TipoTs tipo2 = (TipoTs) expRes[0];
         String modo2 = (String) expRes[1];
 
-       /* nparam_h3 = 1;
-	errorh3 = (tipo2 == <t:error>) v (|params|) < 1 v (params[0].modo = var ٨ modo2 = val) v
-			NOT compatibles(params[0].tipo, tipo, ts)
-        cod += pasoParametro(modo2,params[0])
-	etq += longPaseoParametro*/
+        nparamh3 = 1;
+	errorh3 = (tipo2.getT().equals("error")) ||
+                    (parametros.size() < 1) ||
+                    (parametros.get(0).getModo().equals("var") && modo2.equals("val")) ||
+                    ! compatibles(parametros.get(0).getTipo(),tipo2,ts);
+        cod.appendCod(pasoParametro(modo2,parametros.get(0)));
+	etq += longPasoParametro;
 
         boolean error3 = LAParametrosRec(nparamh3,errorh3);
 
-        //error1 = error3
+        error1 = error3;
 
         return error1;
     }
@@ -1171,10 +1173,10 @@ public abstract class Traductor {
         boolean errorh3 = false;
 
         if (coma()){
-            //etq += longDireccionParFormal + 1
-            //cod += copia
-            //cod += direccionParFormal(fparamsh1[nparamh1])
-            //parh2 = params[nparamh1].modo == var
+            etq += longDireccionParFormal + 1;
+            cod.appendIns(Copia());
+            cod.appendCod(direccionParFormal(fparamsh1[nparamh1]));
+            parh2 = params[nparamh1].modo == var
 
             Object[] expRes = Expresion(parh2);
             Tipo tipo2 = (Tipo) expRes[0];
