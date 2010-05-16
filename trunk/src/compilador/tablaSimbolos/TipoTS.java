@@ -7,7 +7,7 @@ package compilador.tablaSimbolos;
 
 import java.util.ArrayList;
 
-public class TipoTS {
+public class TipoTs {
     private String t;
     private int tam;
     private ArrayList<Campo> campos;
@@ -15,7 +15,7 @@ public class TipoTS {
     private String id;
     private int inicio;
 
-    public TipoTS(){
+    public TipoTs(){
 
     }
     public String getT(){
@@ -35,5 +35,15 @@ public class TipoTS {
     }
     public int getInicio(){
         return inicio;
+    }
+    public TipoTs clone(TipoTs tipo){
+        TipoTs res=new TipoTs();
+        res.t = tipo.t;
+        res.tam = tipo.tam;
+        res.id = tipo.id;
+        res.inicio = tipo.inicio;
+        res.campos = (ArrayList<Campo>) tipo.campos.clone();
+        res.parametros = (ArrayList<Parametro>) tipo.parametros.clone();
+        return res;
     }
 }

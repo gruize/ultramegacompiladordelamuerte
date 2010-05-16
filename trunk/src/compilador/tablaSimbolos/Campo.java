@@ -11,7 +11,7 @@ package compilador.tablaSimbolos;
  */
 public class Campo {
     private String id;
-    private TipoTS tipo;
+    private TipoTs tipo;
     private int desp;
 
     public Campo(){
@@ -21,7 +21,7 @@ public class Campo {
     public String getId(){
         return id;
     }
-    public TipoTS getTipo(){
+    public TipoTs getTipo(){
         return tipo;
     }
     public int getDesp(){

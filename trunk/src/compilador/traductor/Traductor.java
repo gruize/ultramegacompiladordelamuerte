@@ -486,11 +486,11 @@ public abstract class Traductor {
     protected boolean Programa() throws Exception {
         boolean error1 = false;
 
-        //etq = longInicio + 1;
-        //dir = 0;
-        //n = 0;
-        //ts = new TablaSimbolos();
-        //cod = new Codigo();
+        etq = longInicio + 1;
+        dir = 0;
+        n = 0;
+        ts = new TablaSimbolos();
+        cod = new Codigo();
 
         boolean error2 = Declaraciones();
         //ERROR fatal si no hay ampersand
@@ -498,13 +498,13 @@ public abstract class Traductor {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
 
-        //inicio(n,dir);
-        //cod.appendIns(new IrA(new Nat(etq)));
+        inicio(n,dir);
+        cod.appendIns(new IrA(new Nat(etq)));
 
         boolean error3 = Instrucciones();
 
-        //cod.append(new Stop());
-        //error1 = error2 || error3;
+        cod.append(new Stop());
+        error1 = error2 || error3;
 
         if (error1) {
             errores.add(
@@ -522,11 +522,11 @@ public abstract class Traductor {
         String id2 = (String) decRes[2];
         InfoTs props2 = (InfoTs) decRes[3];
 
-        //dir+=tam2;
-        //errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
-        //TablaSimbolos.inserta(ts,id2,props2);
-        //if (props2.getClase().equals("tipo"))
-        //    pend.remove(id2);
+        dir+=tam2;
+        errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+        TablaSimbolos.inserta(ts,id2,props2);
+        if (props2.getClase().equals("tipo"))
+            pend.remove(id2);
 
         boolean error3 = DeclaracionesRec(errorh3);
 
@@ -543,12 +543,12 @@ public abstract class Traductor {
             String id2 = (String) decRes[2];
             InfoTs props2 = (InfoTs) decRes[3];
 
-            //dir+=tam2;
-            //boolean errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+            dir+=tam2;
+            errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
 
             boolean error3 = DeclaracionesRec(errorh3);
 
-            //error1 = error3;
+            error1 = error3;
         } else {
             error1 = errorh1;
         return error1;
@@ -575,19 +575,19 @@ public abstract class Traductor {
             id2 = (String) decVarRes[1];
             props2 = (InfoTs) decVarRes[2];
 
-            //error1 = true;
-            //id1= id2;
-            //tam1 = props2.getTipo().getTam();
-            //props1= props2 ++ <dir:dir>;
+            error1 = true;
+            id1= id2;
+            tam1 = props2.getTipo().getTam();
+            props2.setDir(dir);
 
         }else if (! error2P){
             id2 = (String) decProcRes[1];
             props2 = (InfoTs) decProcRes[2];
 
-            //error1 = true;
-            //tam1= 0;
-            //id1=id2;
-            //props1=props2;
+            error1 = true;
+            tam1= 0;
+            id1=id2;
+            props1=props2;
 
         }else if (! error2T){
             id2 = (String) decTipoRes[1];
