@@ -14,6 +14,11 @@ public class InfoTs {
         this.nivel = n;
         this.dir = d;
     }
+    public InfoTs(String c, TipoTs t, int n){
+	this.clase = c;
+	this.tipo = t;
+        this.nivel = n;
+    }
     public InfoTs(){
 
     }
@@ -42,7 +47,7 @@ public class InfoTs {
     public void setDir(int d){
         dir=d;
     }
-    public InfoTs clone(InfoTs props){
+    public static InfoTs clone(InfoTs props){
         InfoTs res = new InfoTs();
         if ( props == null){
             return null;

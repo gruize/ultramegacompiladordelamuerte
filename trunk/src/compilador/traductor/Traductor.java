@@ -34,6 +34,7 @@ public abstract class Traductor {
     protected int etq;
     protected int dir;
     protected int n;
+    protected ArrayList<Parametro> parametros;
     protected int i_token;
     protected ArrayList<String> pend;
     protected ArrayList<ErrorTraductor> errores;
@@ -123,77 +124,92 @@ public abstract class Traductor {
     }
 
     //****FUNCIONES TRADUCCION****
-    protected void inicio(int numNiveles, int tamDatos) throws LectorExc, DatoExc{
-        cod.appendIns(new Apilar(new Nat(numNiveles +2)));
-        cod.appendIns(new DesapilarDir(new Nat(1)));
-        cod.appendIns(new Apilar(new Nat(1+tamDatos+numNiveles)));
-        cod.appendIns(new DesapilarDir(new Nat(0)));
+    protected Codigo inicio(int numNiveles, int tamDatos) throws LectorExc, DatoExc{
+        Codigo res = new Codigo();
+        res.appendIns(new Apilar(new Nat(numNiveles +2)));
+        res.appendIns(new DesapilarDir(new Nat(1)));
+        res.appendIns(new Apilar(new Nat(1+tamDatos+numNiveles)));
+        res.appendIns(new DesapilarDir(new Nat(0)));
+        return res;
     }
-    protected void apilaRet(int ret) throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(1)));
-        cod.appendIns(new Suma());
-        cod.appendIns(new Apilar(new Nat(ret)));
-        cod.appendIns(new DesapilaInd());
+    protected Codigo apilaRet(int ret) throws DatoExc, LectorExc{
+        Codigo res = new Codigo();
+        res.appendIns(new ApilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(1)));
+        res.appendIns(new Suma());
+        res.appendIns(new Apilar(new Nat(ret)));
+        res.appendIns(new DesapilaInd());
+        return res;
     }
-    protected void prologo(int nivel, int tamLocales) throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(2)));
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
-        cod.appendIns(new DesapilaInd());
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(0)));
-        cod.appendIns(new Suma());
-        cod.appendIns(new DesapilarDir(new Nat(1+nivel)));
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(tamLocales+2)));
-        cod.appendIns(new Suma());
-        cod.appendIns(new DesapilarDir());
+    protected Codigo prologo(int nivel, int tamLocales) throws DatoExc, LectorExc{
+        Codigo res = new Codigo();
+        res.appendIns(new ApilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(2)));
+        res.appendIns(new ApilarDir(new Nat(1+nivel)));
+        res.appendIns(new DesapilaInd());
+        res.appendIns(new ApilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(0)));
+        res.appendIns(new Suma());
+        res.appendIns(new DesapilarDir(new Nat(1+nivel)));
+        res.appendIns(new ApilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(tamLocales+2)));
+        res.appendIns(new Suma());
+        res.appendIns(new DesapilarDir());
+        return res;
     }
-    protected void epilogo(int nivel) throws LectorExc, DatoExc{
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
-        cod.appendIns(new Apilar(new Nat(2)));
-        cod.appendIns(new Resta());
-        cod.appendIns(new ApilarInd());
-        cod.appendIns(new ApilarDir(new Nat(1+nivel)));
-        cod.appendIns(new Apilar(new Nat(3)));
-        cod.appendIns(new Resta());
-        cod.appendIns(new Copia());
-        cod.appendIns(new DesapilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(2)));
-        cod.appendIns(new ApilarInd());
-
+    protected Codigo epilogo(int nivel) throws LectorExc, DatoExc{
+        Codigo res = new Codigo();
+        res.appendIns(new ApilarDir(new Nat(1+nivel)));
+        res.appendIns(new Apilar(new Nat(2)));
+        res.appendIns(new Resta());
+        res.appendIns(new ApilarInd());
+        res.appendIns(new ApilarDir(new Nat(1+nivel)));
+        res.appendIns(new Apilar(new Nat(3)));
+        res.appendIns(new Resta());
+        res.appendIns(new Copia());
+        res.appendIns(new DesapilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(2)));
+        res.appendIns(new ApilarInd());
+        return res;
     }
-    protected void accesoVar(InfoTs props) throws LectorExc, DatoExc{
-        cod.appendIns(new ApilarDir(new Nat(1+props.getNivel())));
-        cod.appendIns(new Apilar(new Nat(props.getDir())));
-        cod.appendIns(new Suma());
+    protected Codigo accesoVar(InfoTs props) throws LectorExc, DatoExc{
+        Codigo res = new Codigo();
+        res.appendIns(new ApilarDir(new Nat(1+props.getNivel())));
+        res.appendIns(new Apilar(new Nat(props.getDir())));
+        res.appendIns(new Suma());
         if (props.getClase().equals("pvar"))
             cod.appendIns(new ApilarInd());
+        return res;
     }
     protected int longAccesoVar(InfoTs props){
         int resp;
         if (props.getClase().equals("pvar"))
             resp=4;
         else resp=3;
-        return resp;
     }
-    protected void inicioPaso() throws DatoExc, LectorExc{
-        cod.appendIns(new ApilarDir(new Nat(0)));
-        cod.appendIns(new Apilar(new Nat(3)));
-        cod.appendIns(new Suma());
+    protected Codigo inicioPaso() throws DatoExc, LectorExc{
+        Codigo res = new Codigo();
+        res.appendIns(new ApilarDir(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(3)));
+        res.appendIns(new Suma());
+        return res;
     }
-    protected void finPaso() throws LectorExc{
-        cod.appendIns(new Desapilar());
+    protected Codigo finPaso() throws LectorExc{
+        res.appendIns(new Desapilar());
+        return res;
     }
-    protected void direccionPalFormal(InfoTs props) throws LectorExc, DatoExc{
-        cod.appendIns(new Apilar(new Nat(props.getDir())));
-        cod.appendIns(new Suma());
+    protected Codigo direccionPalFormal(InfoTs props) throws LectorExc, DatoExc{
+        Codigo res = new Codigo();
+        res.appendIns(new Apilar(new Nat(props.getDir())));
+        res.appendIns(new Suma());
+        return res;
     }
-    protected void pasoParametro(String modoReal, Parametro pFormal) throws LectorExc, DatoExc{
+    protected Codigo pasoParametro(String modoReal, Parametro pFormal) throws LectorExc, DatoExc{
+        Codigo res = new Codigo();
         if (pFormal.getModo().equals("valor") && modoReal.equals("var"))
-            cod.appendIns(new Mueve(new Nat(pFormal.getTipo().getTam())));
-        else cod.appendIns(new DesapilaInd());
+            res.appendIns(new Mueve(new Nat(pFormal.getTipo().getTam())));
+        else res.appendIns(new DesapilaInd());
+        return res;
     }
 
     //****FUNCIONES AUXILIARES****
@@ -498,7 +514,7 @@ public abstract class Traductor {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
 
-        inicio(n,dir);
+        cod.appendCod(inicio(n,dir));
         cod.appendIns(new IrA(new Nat(etq)));
 
         boolean error3 = Instrucciones();
@@ -587,15 +603,15 @@ public abstract class Traductor {
             error1 = true;
             tam1= 0;
             id1=id2;
-            props1=props2;
+            props1=InfoTs.clone(props2);
 
         }else if (! error2T){
             id2 = (String) decTipoRes[1];
 
-            //tam1 = 0;
-            //error1 = true;
-            //id1=id2;
-            //props1 = <>;
+            tam1 = 0;
+            error1 = true;
+            id1=id2;
+            //props = <>
         }else {
             error1 = true;
             errores.add(new ErrorTraductor("Hay errores en la(s) declaraciones(es) " + textoError()));
@@ -614,11 +630,11 @@ public abstract class Traductor {
             if(igual()){
                 Object[] tipoRes = Tipo();
                 boolean error2 = (Boolean) tipoRes[0];
-                Tipo tipo2 = (Tipo) tipoRes[1];
+                TipoTs tipo2 = (TipoTs) tipoRes[1];
 
-                //id1 = lex;
-                //props1 = <clase: tipo, tipo: tipo2, nivel: n>
-                //error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+                id1 = lex;
+                props1 = new InfoTs("tipo",tipo2,n);
+                error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
             }
         }
         return new Object[]{error1, id1, props1};
@@ -632,11 +648,11 @@ public abstract class Traductor {
         if(dosPuntos()){
             Object[] tipoRes = Tipo();
             boolean error2 = (Boolean) tipoRes[0];
-            Tipo tipo2 = (Tipo) tipoRes[1];
+            TipoTs tipo2 = (TipoTs) tipoRes[1];
 
-            //id1 = lex;
-            //props1 = <clase: var, tipo: tipo2, nivel: n>
-            //error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
+            id1 = lex;
+            props1 = new InfoTs("var",tipo2,n);
+            error1 = error2  || (TablaSimbolos.existe(ts,lex) && (not(existeRef(ts,tipo2))));
         }
         return new Object[]{error1, id1, props1};
     }
@@ -645,27 +661,29 @@ public abstract class Traductor {
         String id1 = "";
         InfoTs props1 = null;
 
-        if (procedure()){
-            String lex= identificador();
-            //ts_aux = ts;
-            //ts = creaTS(ts_aux)
-            //n += 1;
+        if (! procedure()){
+            
         }
+
+        String lex= identificador();
+        TablaSimbolos ts_aux = ts;
+        ts = creaTS(ts_aux);
+        n += 1;
 
         boolean error2 = FParametros();
 
-        //ts = inserta(ts, lex, <clase:proc, tipo: <t:proc, parametros: params>,  nivel: n>)
-	//params = {}
+        parametros=new ArrayList<Parametro>();
+        TablaSimbolos.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
 
         Object[] bloqueRes = Bloque();
         boolean error3= (Boolean) bloqueRes[0];
         int inicio3 = (Integer) bloqueRes[1];
 
-        //error1 = error2 v error3 v (existeID(FParametros.ts, id.lex)  ٨ ts[lex].nivel = n)
-	//id1 = lex
-	//props1 = <clase:proc, tipo: <t:proc, parametros: params>, nivel: n, inicio: inicio3>
-	//n - = 1;
-	//ts = ts_aux
+        error1 = error2 || error3 || (TablaSimbolos.existe(ts, lex) && (TablaSimbolos.getProps(ts,lex).getNivel() == n));
+	id1 = lex;
+	props1 = new InfoTs("proc", new TipoTs("proc", parametros), n, inicio3);
+	n -= 1;
+	ts = ts_aux;
 
         return new Object[]{error1, id1, props1};
 
@@ -677,24 +695,25 @@ public abstract class Traductor {
         boolean error2=Declaraciones();
 
         if (!error2){
-            if (ampersand()){
-                //inicio = etq
-                //etq + = longPrologo
-                //cod += prologo(n, dir)
+            if (! ampersand()){
+                
             }
+            inicio1 = etq;
+            etq += longPrologo;
+            cod.appendCod(prologo(n,dir));
         }
         else{
-            //inicio1 = etq
-            //etq += longPrologo
-            //cod += prologo(n,dir)
+            inicio1 = etq;
+            etq += longPrologo;
+            cod.appendCod(prologo(n,dir));
         }
 
         boolean error3 = Instrucciones();
 
-        //error1 = error2 v error3
-	//etq += longEpilogo + 1
-	//cod += epilogo(n)
-	//cod += ir-ind
+        error1 = error2 || error3;
+	etq += longEpilogo + 1;
+	cod.appendCod(epilogo(n));
+	cod.appendIns(new IrInd());
 
         return new Object[]{error1, inicio1};
     }
@@ -702,13 +721,14 @@ public abstract class Traductor {
         boolean error1 = false;
         if (abrePar()){
             boolean error2 = LFParametros();
-            //error1=error2
-            if (cierraPar()){
+            
+            error1=error2;
+            if (! cierraPar()){
             }
         }
         else{
-            //dir = 0
-            //error1 = false
+            dir = 0;
+            error1 = false;
         }
         return error1;
     }
@@ -722,10 +742,10 @@ public abstract class Traductor {
         InfoTs props2 = (InfoTs) FParamRes[2];
         int tam2 = (Integer) FParamRes[3];
 
-        //errorh3 = error2 v existeID(ts,id2)  ٨ ts[id2].nivel = n)
-	//ts = inserta(ts, id2, FParametro.props ++ <dir:0>)
-	//dir = tam2
-        //return error1;
+        errorh3 = error2 ||(TablaSimbolos.existe(ts,id2) && (TablaSimbolos.getProps(ts, id2).getNivel() == n));
+        props2.setDir(0);
+	TablaSimbolos.inserta(ts, id2, props2);
+	dir = tam2;
 
         boolean error3 = LFParametrosRec(errorh3);
 
@@ -742,16 +762,16 @@ public abstract class Traductor {
             InfoTs props2 = (InfoTs) FParamRes[2];
             int tam2 = (Integer) FParamRes[3];
 
-            //dir += tam2
-            //errorh3 = errorh1 v error2 v (existeID(ts,id2)  ٨ ts[id2].nivel = n)
-            //ts = inserta(ts, id2, props2)
+            dir += tam2;
+            errorh3 = errorh1 || error2 || (TablaSimbolos.existe(ts,id2)  && TablaSimbolos.getProps(ts, id2).getNivel() == n);
+            TablaSimbolos.inserta(ts, id2, props2);
 
             boolean error3 = LFParametrosRec(errorh3);
 
-            //error1 = error3
+            error1 = error3;
         }
         else{
-            //error1 = errorh1
+            error1 = errorh1;
         }
         return error1;
     }
@@ -763,23 +783,23 @@ public abstract class Traductor {
 
         Object[] tipoRes= Tipo();
         boolean error2= (Boolean) tipoRes[0];
-        Tipo tipo2 = (Tipo) tipoRes[1];
+        TipoTs tipo2 = (TipoTs) tipoRes[1];
 
         String lex = identificador();
 
         if (var()){
-            //tam1      = 1
-            //params    += <modo: variable, tipo: tipo2, dir: dir>
-            //id = lex
-            //props1 = <clase: pvar, tipo: tipo2, nivel: n>
-            //error1 = error2
+            tam1 = 1;
+            parametros.add(new Parametro("variable", tipo2));
+            id1 = lex;
+            props1 = new InfoTs("pvar", tipo2, n);
+            error1 = error2;
         }
         else{
-            //tam1 = tipo2.tam
-            //params    += <modo: valor, tipo: tipo2, dir: dir>
-            //id1 = lex
-            //props1 = <clase: var, tipo: tipo2, nivel: n>
-            //error1 = error2
+            tam1 = tipo2.getTam();
+            parametros.add ( new Parametro("valor", tipo2));
+            id1 = lex;
+            props1 = new InfoTs("var", tipo2, n);
+            error1 = error2;
         }
 
         return new Object[]{error1,id1,props1,tam1};
@@ -809,111 +829,99 @@ public abstract class Traductor {
     }
     protected Object[] Tipo_id(Token t){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
         String lex= t.getLex();
 
-        /*tipo1 =
-        <
-            t:ref,
-            id:lex,
-            tam:ts[lex].tipo.tam
-        >
-	error1 =  si existeID(ts,lex)
-			ts[lex].clase != tipo
-		        sino
-                            false
-	pend +=  si (¬existeID(ts,lex))
-			{lex}
-		        sino
-                        ⵁ*/
+        tipo1 = new TipoTs("ref", lex, TablaSimbolos.getProps(ts, lex).getTipo().getTam());
+	if (TablaSimbolos.existe(ts,lex))
+            error1 = ! TablaSimbolos.getProps(ts, lex).getClase().equals("tipo");
+        else
+            error1= false;
+
+	if ( ! TablaSimbolos.existe(ts,lex))
+            pend.add(lex);
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Boolean(){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
-        //tipo1 = <t:boolean,tam:1>
-	//error1 = false
+        tipo1 = new TipoTs("boolean",1);
+	error1 = false;
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Character(){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
-        //tipo1 = <t:character,tam:1>
-	//error1 = false
+        tipo1 = new TipoTs("character",1);
+	error1 = false;
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Float(){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
-        //tipo1 = <t:float,tam:1>
-	//error1 = false
+        tipo1 = new TipoTs("float",1);
+        error1 = false;
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Natural(){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
-        //tipo1 = <t:natural,tam:1>
-	//error1 = false
+        tipo1 = new TipoTs("natural",1);
+	error1 = false;
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Integer(){
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
-        //tipo1 = <t:integer,tam:1>
-	//error1 = false
+        tipo1 = new TipoTs("integer",1);
+	error1 = false;
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Array() throws Exception{
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
         
-        if (abreCorchete()){
-            String lex = numero();
-            if (cierraCorchete())
-                if (of()){
-                    Object[] tipoRes = Tipo();
-                    boolean error2 = (Boolean) tipoRes[0];
-                    Tipo tipo2 = (Tipo) tipoRes[1];
-                    
-                    /*tipo1 =
-        		<
-                            t:array,
-                            nelems:valorDe(lex),
-                            tbase:tipo2,
-                            tam:valorDe(lex)*tipo2.tam
-                        >
-                    error1 = tipo2.error v ¬existeRef (ts ,tipo2*/
-                }
+        if (! abreCorchete()){
         }
+        
+        String lex = numero();
+
+        if (!cierraCorchete()){
+        }
+        if (!of()){
+        }
+
+        Object[] tipoRes = Tipo();
+        boolean error2 = (Boolean) tipoRes[0];
+        TipoTs tipo2 = (TipoTs) tipoRes[1];
+                    
+        tipo1 = new TipoTs("array",Integer.parseInt(lex), tipo2, Integer.parseInt(lex)*tipo2.getTam());
+        error1 = tipo2.getT().equals("error") && !existeRef (ts ,tipo2);
 
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Puntero() throws Exception{
         boolean error1 =false;
-        Tipo tipo1 = null;
+        TipoTs tipo1 = null;
 
         Object[] tipoRes=Tipo();
         boolean error2 = (Boolean) tipoRes[0];
-        Tipo tipo2 = (Tipo) tipoRes[1];
+        TipoTs tipo2 = (TipoTs) tipoRes[1];
 
-        /*tipo1 =
-	        <
-	            t:puntero,
-	            tbase:tipo2,
-	            tam:1
-	        >
-	error1 = error2*/
+        tipo1 = new TipoTs("puntero",tipo2,1);
+	error1 = error2;
+
         return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Record() throws Exception{
@@ -927,13 +935,8 @@ public abstract class Traductor {
             int tam2 = (Integer) tipoRes[2];
 
             if (cierraCorchete()){
-                /*Tipo.tipo =
-                    <
-                        t:array,
-                        campos: campos2,
-                        tam: tam2
-                    >
-                error1 = error2*/
+                tipo1 = new TipoTs("record", campos2,tam);
+                error1 = error2;
             }
         }
         return new Object[]{error1, tipo1};
