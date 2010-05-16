@@ -71,4 +71,8 @@ public class TablaSimbolos {
         return false;
         //sin implementar
     }
+    public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, TablaSimbolos ts){
+        return false;
+        //sin implementar
+    }
 }
