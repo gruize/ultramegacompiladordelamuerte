@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class TipoTs {
     private String t;
-    
     private int tam;
     private ArrayList<Campo> campos;
     private ArrayList<Parametro> parametros;
