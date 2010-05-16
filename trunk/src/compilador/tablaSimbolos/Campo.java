@@ -17,6 +17,11 @@ public class Campo {
     public Campo(){
 
     }
+    public Campo(String id, TipoTs tipo, int desp){
+        this.id=id;
+        this.tipo=tipo;
+        this.desp=desp;
+    }
 
     public String getId(){
         return id;
