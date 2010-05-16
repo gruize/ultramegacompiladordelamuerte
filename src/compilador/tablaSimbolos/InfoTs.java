@@ -4,20 +4,24 @@ package compilador.tablaSimbolos;
 public class InfoTs {
 
     private String clase;
-    private TipoTS tipo;
+    private TipoTs tipo;
     private int dir;
     private int nivel;
 
-    public InfoTs(String c, TipoTS t, int n){
+    public InfoTs(String c, TipoTs t, int n,int d){
 	this.clase = c;
 	this.tipo = t;
         this.nivel = n;
-}
+        this.dir = d;
+    }
+    public InfoTs(){
 
-    public TipoTS getTipo() {
+    }
+
+    public TipoTs getTipo() {
 	return tipo;
     }
-    public void setTipo(TipoTS t){
+    public void setTipo(TipoTs t){
         tipo=t;
     }
     public String getClase(){
@@ -34,6 +38,20 @@ public class InfoTs {
     }
     public int getDir(){
         return dir;
+    }
+    public void setDir(int d){
+        dir=d;
+    }
+    public InfoTs clone(InfoTs props){
+        InfoTs res = new InfoTs();
+        if ( props == null){
+            return null;
+        }
+        res.clase=props.getClase();
+        res.dir = props.getDir();
+        res.nivel = props.getNivel();
+        res.tipo.clone(props.tipo);
+        return res;
     }
 	
 }

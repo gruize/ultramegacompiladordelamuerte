@@ -8,7 +8,7 @@ package compilador.tablaSimbolos;
 
 public class Parametro {
     private String modo;
-    private TipoTS tipo;
+    private TipoTs tipo;
 
     public Parametro(){
 
@@ -17,7 +17,7 @@ public class Parametro {
     public String getModo(){
         return modo;
     }
-    public TipoTS getTipo(){
+    public TipoTs getTipo(){
         return tipo;
     }
 }

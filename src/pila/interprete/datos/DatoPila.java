@@ -1,6 +1,6 @@
 package pila.interprete.datos;
 
-import compilador.tablaSimbolos.TipoTS;
+import compilador.tablaSimbolos.TipoTs;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -109,7 +109,7 @@ public abstract class DatoPila {
         dos.writeByte(tipoDato);
     }
 
-    public static int TraducirDesdeTipos(TipoTS tipo) {
+    public static int TraducirDesdeTipos(TipoTs tipo) {
         if(tipo.getT().equals("bool"))
             return BOOL_T;
         if(tipo.getT().equals("char"))
