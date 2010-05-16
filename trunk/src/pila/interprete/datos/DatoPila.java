@@ -1,6 +1,6 @@
 package pila.interprete.datos;
 
-import compilador.tablaSimbolos.InfoTs.Tipos;
+import compilador.tablaSimbolos.TipoTS;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -109,16 +109,16 @@ public abstract class DatoPila {
         dos.writeByte(tipoDato);
     }
 
-    public static int TraducirDesdeTipos(Tipos tipo) {
-        if(tipo == Tipos.BOOL)
+    public static int TraducirDesdeTipos(TipoTS tipo) {
+        if(tipo.getT().equals("bool"))
             return BOOL_T;
-        if(tipo == Tipos.CHAR)
+        if(tipo.getT().equals("char"))
             return CHAR_T;
-        if(tipo == Tipos.ENTERO)
+        if(tipo.getT().equals("int"))
             return INT_T;
-        if(tipo == Tipos.NATURAL)
+        if(tipo.getT().equals("nat"))
             return NAT_T;
-        if(tipo == Tipos.REAL)
+        if(tipo.getT().equals("float"))
             return FLOAT_T;
         return ERROR_T;
     }
