@@ -75,4 +75,8 @@ public class TablaSimbolos {
         return false;
         //sin implementar
     }
+    public static TipoTs ref(TipoTs tipo, TablaSimbolos ts){
+        return null;
+        //sin implementar
+    }
 }
