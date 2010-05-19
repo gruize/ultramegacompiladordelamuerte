@@ -1802,7 +1802,7 @@ public abstract class Traductor {
         String modo1 = "";
         TipoTs tipoh3 = null;
 
-        Operaciones op= OpNiv1();
+        Operaciones op= OpNiv2();
 
         if (op == null){
             return new Object[]{tipoh1,modoh1};
@@ -1878,43 +1878,179 @@ public abstract class Traductor {
         return new Object[]{tipo1,modo1};
 
     }
+    protected Object[] ExpresionNiv3(boolean parh1){
+        TipoTs tipo1 = null;
+        String modo1 ="";
 
+        Boolean parh2 = parh1;
 
+        Object[] resExpNiv4= ExpresionNiv4(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv4[0];
+        String modo2 = (String) resExpNiv4[1];
 
+        TipoTs tipoh3 = tipo2;
+        String modoh3= modo2;
 
+        Object[] resExpNiv3Fact = ExpresionNiv3Fact(tipoh3,modoh3);
+        TipoTs tipo3 = (TipoTs) resExpNiv3Fact[0];
+        String modo3 = (String) resExpNiv3Fact[1];
 
+        tipo1 = tipo3;
+        modo1 = modo3;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    protected abstract Object[] ExpresionNiv4_conOp(Operaciones op2) throws Exception;
-
-    protected abstract Object[] ExpresionNiv4_valorAbs() throws Exception;
-
-    //ExpresiónNiv4(out: tipo1, cod1)
-    protected Object[] ExpresionNiv4_abrePar() throws Exception {
-        Object[] resExpr = Expresion();
-        Tipo tipo1 = (Tipo) resExpr[0];
-        Codigo cod1 = (Codigo) resExpr[1];
-        if (!cierraPar()) {
-            throw new Exception("FATAL: Se esperaba cerrar paréntesis" + textoError());
-        }
-        return new Object[]{tipo1, cod1};
+        return new Object[]{tipo1,modo1};
     }
+    protected Object[] ExpresionNiv3Fact(TipoTs tipoh1, String modoh1) throws LectorExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
 
-    protected Object[] ExpresionNiv4_Literal() throws Exception {
-        return Literal();
+        Operaciones op=OpNiv3();
+
+        if(op == null){
+            return Object[]{tipoh1,modoh1};
+        }
+
+        boolean parh2 = false;
+
+        Object[] resExpNiv3 = ExpresionNiv3(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv3[0];
+        String modo2 = (String) resExpNiv3[1];
+
+        modo1 = "val";
+        if (tipoh1.getT().equals("error") ||
+                tipo2.getT().equals("error") ||
+                !tipoh1.getT().equals("natural") ||
+                !tipo2.getT().equals("natural"))
+            tipo1 = new TipoTs("error");
+        else  tipo1 = new TipoTs("natural");
+	etq += 1;
+        switch (op){
+            case SHL:
+                cod.appendIns(new Shl());
+                break;
+            case SHR:
+                cod.appendIns(new Shr());
+                break;
+        }
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4(boolean parh1){
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        Object[] resExpNiv4_conOp = ExpresionNiv4_conOp(parh1);
+        Object[] resExpNiv4_valorAbs = ExpresionNiv4_valorAbs(parh1);
+        Object[] resExpNiv4_abrePar = ExpresionNiv4_abrePar(parh1);
+        Object[] resExpNiv4_literal = ExpresionNiv4_literal(parh1);
+        Object[] resExpNiv4_mem = ExpresionNiv4_mem(parh1);
+
+        String error_conOp = ((TipoTs) resExpNiv4_conOp[0]).getT();
+        String error_valorAbs = ((TipoTs) resExpNiv4_valorAbs[0]).getT();
+        String error_abrePar = ((TipoTs) resExpNiv4_abrePar[0]).getT();
+        String error_literal = ((TipoTs) resExpNiv4_literal[0]).getT();
+        String error_mem = ((TipoTs) resExpNiv4_mem[0]).getT();
+
+        if (!error_conOp.equals("error")){
+            tipo1 = (TipoTs) resExpNiv4_conOp[0];
+            modo1 = (String) resExpNiv4_conOp[1];
+        }
+        else if (!error_conOp.equals("error")){
+            tipo1 = (TipoTs)resExpNiv4_valorAbs[0];
+            modo1 = (String)resExpNiv4_valorAbs[1];
+        }
+        else if (!error_conOp.equals("error")){
+            tipo1 = (TipoTs)resExpNiv4_abrePar[0];
+            modo1 = (String)resExpNiv4_abrePar[1];
+        }
+        else if (!error_conOp.equals("error")){
+            tipo1 = (TipoTs)resExpNiv4_literal[0];
+            modo1 = (String)resExpNiv4_literal[1];
+        }
+        else if (!error_conOp.equals("error")){
+            tipo1 = (TipoTs)resExpNiv4_mem[0];
+            modo1 = (String)resExpNiv4_mem[1];
+        }
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4_conOp(boolean parh1){
+        TipoTs tipo1 = null;
+        String modo1 = "";
+        
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4_valorAbs(boolean parh1) throws LectorExc, Exception{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        if(valorAbs()){
+            boolean parh2 = false;
+
+            Object[] resExp = Expresion(parh2);
+            TipoTs tipo2 = (TipoTs) resExp[0];
+            String modo2 = (String) resExp[1];
+
+            if (!valorAbs()){
+                throw new Exception("FATAL: Se esperaba valor Absoluto"
+                    + textoError());
+            }
+
+            if (tipo2.getT().equals("error") || tipo2.getT().equals("boolean") || tipo2.getT().equals("character"))
+                tipo1 = new TipoTs("error");
+            else if (tipo2.getT().equals("float"))
+                tipo1 = new TipoTs("float");
+            else if (tipo2.getT().equals("natural") || tipo2.getT().equals("integer"))
+                tipo1 = new TipoTs("natural");
+            else tipo1 = new TipoTs("error");
+
+            cod.appendIns(new Abs());
+            modo1 = "var";
+        }
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4_abrePar(boolean parh1) throws Exception{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        if(abrePar()){
+            boolean parh2 = false;
+
+            Object[] resExp = Expresion(parh2);
+            TipoTs tipo2 = (TipoTs) resExp[0];
+            String modo2 = (String) resExp[1];
+
+            if (!cierraPar()){
+                throw new Exception("FATAL: Se esperaba valor Absoluto"
+                    + textoError());
+            }
+
+            tipo1 = tipo2;
+            modo1 = modo2;
+        }
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4_literal(boolean parh1){
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        TipoTs tipo2 = Literal();
+
+        modo1 = "var";
+        tipo1 = tipo2;
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv4_mem(boolean parh1) throws LectorExc, DatoExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        TipoTs tipo2 = Mem();
+    
+        if (TablaSimbolos.esCompatibleContipoBasico(tipo2,ts) && !parh1)
+
+        return new Object[]{tipo1,modo1};
     }
 
     //Literal(out: tipo1, cod1)

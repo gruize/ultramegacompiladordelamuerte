@@ -27,6 +27,7 @@ import pila.interprete.instrucciones.InstruccionInterprete;
 
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
+import compilador.traductor.Traductor;
 import java.awt.FlowLayout;
 import java.io.FileReader;
 import java.io.Reader;
@@ -274,7 +275,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
             }
             ArrayList<Token> tokens = al.getArrayTokens();
             imprimirTokens(tokens);
-            TraductorCodP tcoddual = new TraductorCodP(tokens);
+            Traductor tcoddual = new Traductor(tokens);
 
             if(classFile != null) {
                 String nombreClase = classFile.getName();
