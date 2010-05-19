@@ -529,7 +529,7 @@ public abstract class Traductor {
 
         boolean error3 = Instrucciones();
 
-        cod.append(new Stop());
+        cod.appendIns(new Parar());
         error1 = error2 || error3;
 
         if (error1) {
@@ -1139,14 +1139,14 @@ public abstract class Traductor {
         String lex = identificador();
 
         parametros = TablaSimbolos.getProps(ts,lex).getTipo().getParametros();
-	cod.appendCod(apilaRet());
-	etq += longApilaRet;
+        cod.appendCod(apilaRet());
+        etq += longApilaRet;
 
         boolean error2 = AParametros();
 
         error1 = error2 || !TablaSimbolos.existe(ts, lex) || !TablaSimbolos.getProps(ts, lex).getClase().equals("proc");
-	cod.appendIns(new IrA(TablaSimbolos.getProps(ts,lex).getDir()));
-	etq += 1;
+        cod.appendIns(new IrA(TablaSimbolos.getProps(ts,lex).getDir()));
+        etq += 1;
 
         return error1;
     }
@@ -1170,7 +1170,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean LAParametros() throws LectorExc, DatoExc{
+    protected boolean LAParametros() throws LectorExc, DatoExc, Exception{
         boolean error1 =false;
         boolean parh2 = false;
         int nparamh3 = 0;
@@ -1188,7 +1188,7 @@ public abstract class Traductor {
 	errorh3 = (tipo2.getT().equals("error")) ||
                     (parametros.size() < 1) ||
                     (parametros.get(0).getModo().equals("var") && modo2.equals("val")) ||
-                    ! compatibles(parametros.get(0).getTipo(),tipo2,ts);
+                    ! TablaSimbolos.compatibles(parametros.get(0).getTipo(),tipo2,ts);
         cod.appendCod(pasoParametro(modo2,parametros.get(0)));
 	etq += longPasoParametro;
 
@@ -1198,7 +1198,7 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected boolean LAParametrosRec(int nparamh1, boolean errorh1) throws LectorExc, DatoExc{
+    protected boolean LAParametrosRec(int nparamh1, boolean errorh1) throws LectorExc, DatoExc, Exception{
         boolean error1 = false;
         boolean parh2 = false;
         int nparamh3 = 0;
@@ -1311,7 +1311,7 @@ public abstract class Traductor {
 
         etq += 1;
         error1 = ! TablaSimbolos.compatibles(tipo2, tipo3,ts);
-        if (esCompatibleConTipoBasico(tipo2, ts))
+        if (TablaSimbolos.esCompatibleConTipoBasico(tipo2, ts))
             cod.appendIns(new DesapilaInd());
         else
             cod.appendIns(new Mueve(tipo2.getTam()));
@@ -1337,11 +1337,13 @@ public abstract class Traductor {
     protected boolean InsIf() throws Exception{
         boolean error1 = false;
         boolean parh2 = false;
+        int aux;
+        
         if (If()){
             parh2 = false;
 
             Object[] expRes = Expresion(parh2);
-            Tipo tipo2 = (Tipo) expRes[0];
+            TipoTs tipo2 = (TipoTs) expRes[0];
             String modo2 = (String) expRes[1];
 
             if (!then()){
@@ -1350,22 +1352,21 @@ public abstract class Traductor {
             }
 
             etq += 1;
-            /*PARCHE: no puedo hacer el ir-f!!
-            cod += noop
-            aux = etq*/
+            cod.appendIns(null);
+            aux = etq;
 
             boolean error3 = Instruccion();
 
-            /*insertar(cod, ir-f(etq+1), aux) //reemplaza el noop con el ir-f. en la posicion del código aux
-            etq += 1
-            aux=etq
-            cod + = noop*/
+            Codigo.insertaCod(cod, new IrF(etq+1), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
+            etq += 1;
+            aux=etq;
+            cod.appendIns(null);
 
             boolean error4 = PElse();
 
             if (!error4){
-                /*insertar(cod, ir-a(etq),aux) //mismo problema
-                error1 = tipo2 != <t:bool> v error3 v error4
+                Codigo.insertaCod(cod, new IrA(etq),aux);
+                error1 = tipo2.getT().equals("boolean") || error3 || error4;
                 InsIf.error = Expresion.tipo != <t:bool> v Instrucción.error v Pelse.error*/
             }
         }
@@ -1385,26 +1386,29 @@ public abstract class Traductor {
     protected boolean InsWhile() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
         boolean parh2 = false;
+        int aux = 0;
+        int etq_while = 0;
+
         if( While()){
-            //etq_while = etq;
+            etq_while = etq;
             
             Object[] expRes = Expresion(parh2);
-            Tipo tipo2 = (Tipo) expRes[0];
+            TipoTs tipo2 = (TipoTs) expRes[0];
             String modo2 = (String) expRes[1];
             
             if (!Do()){
                 
             }
-            //etq += 1
-            //aux = etq
-            //cod += noop
+            etq += 1;
+            aux = etq;
+            cod.appendIns(null);
 
             boolean error3 = Instruccion();
 
-            //inserta(cod, ir-f(etq + 1), aux) (parche)
-            //etq += 1
-            //cod+= ir-a(etq_while)
-            //error1 = tipo2 != <t:bool> v error3
+            Codigo.insertaCod(cod, new IrF(etq + 1), aux);
+            etq += 1;
+            cod.appendIns(new IrA(etq_while));
+            error1 = tipo2.getT().equals("boolean") || error3;
         }
         return error1;
     }
@@ -1412,11 +1416,14 @@ public abstract class Traductor {
         boolean error1 = false;
         boolean parh2 = false;
         boolean parh3 = false;
+        int etq = 0;
+        int etq_for = 0;
+        int aux = 0;
         
         if(For()){
-            //etq_for = etq
-            //parh2= false (supongo? no estaba)
-            //parh3 = false
+            etq_for = etq;
+            parh2= false;
+            parh3 = false;
             
             String lex = identificador();
             if (! igual()){
@@ -1425,7 +1432,7 @@ public abstract class Traductor {
             }
                 
                 Object[] expRes = Expresion(parh2);
-                Tipo tipo2 = (Tipo) expRes[0];
+                TipoTs tipo2 = (TipoTs) expRes[0];
                 String modo2 = (String) expRes[1];
                 
             if (! to()){
@@ -1433,11 +1440,11 @@ public abstract class Traductor {
                     + textoError());
             }
 
-            //etq += 1
-            //cod += desapila-dir ts[lex].dir
+            etq += 1;
+            cod.appendIns( new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())) );
                     
             Object[] expRes = Expresion(parh3);
-            Tipo tipo3 = (Tipo) expRes[0];
+            TipoTs tipo3 = (TipoTs) expRes[0];
             String modo3 = (String) expRes[1];
                     
             if ( !Do()){
@@ -1445,32 +1452,31 @@ public abstract class Traductor {
                     + textoError());
             }
 
-            /*etq+=4
-            cod+= dup
-            cod+= apilar-dir ts[lex].dir
-            cod+= igual
-            cod+= noop
-            aux = etq*/
+            etq+=4;
+            cod.appendIns(new Copia());
+            cod.appendIns(new ApilarDir(TablaSimbolos.getProps(ts, lex).getDir()));
+            cod.appendIns(new Igual());
+            cod.appendIns(null);
+            aux = etq;
 
             boolean error4 = Instruccion();
 
-            /*error1 = error4 v (tipo2 != <t:natural> AND tipo2 != <t:integer>) v
-                                (tipo3 != <t:natural> AND tipo2 != <t:integer>) v
-                                (ts[lex].tipo != <t:natural> AND ts[lex].tipo != <t:integer>
-                                    inserta(cod, ir-v(etq -1), aux)
+            error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
+                            (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
+                            (!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("natural") &&!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("integer"))
+                                    Codigo.insertaCod(cod, ir-v(etq -1), aux);
 
-            cod += apila-dir ts[lex].dir
-            cod += apilar 1
-            cod += sumar
-            cod += desapila-dir ts[lex].dir
-            cod += ir-a(aux) //creo q está bien asi
-            cod += pop
-            etq += 6
-            InsFor.etq        = Instruccion.etq + 6*/
+            cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
+            cod.appendIns(new Apilar(new Nat(1)));
+            cod.appendIns(new Suma());
+            cod.appendIns(new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
+            cod.appendIns(new IrA(aux)); //creo q está bien asi
+            cod.appendIns(new Desapilar());
+            etq += 6;
         }
         return error1;
     }
-    protected boolean InsNew() throws LectorExc, DatoExc{
+    protected boolean InsNew() throws LectorExc, DatoExc, Exception{
         boolean error1 = false;
         if (New()){
             TipoTs tipo2 = Mem();
@@ -1486,7 +1492,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean InsDis() throws LectorExc, DatoExc{
+    protected boolean InsDis() throws LectorExc, DatoExc, Exception{
         boolean error1 = false;
 
         if (dispose()){
@@ -1502,7 +1508,7 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected TipoTs Mem() throws LectorExc, LectorExc, DatoExc{
+    protected TipoTs Mem() throws LectorExc, LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         TipoTs tipo2h = null;
 
@@ -1548,7 +1554,7 @@ public abstract class Traductor {
         else tipoh2 = new TipoTs("error");
 
 	etq += 1;
-	cod.appendIns(new ApilaInd());
+	cod.appendIns(new ApilarInd());
 
         TipoTs tipo2 = MemRec(tipoh2);
 
@@ -1608,7 +1614,7 @@ public abstract class Traductor {
         }
         return tipo1;
     }
-    protected Object[] Expresion(boolean parh1){
+    protected Object[] Expresion(boolean parh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1630,7 +1636,7 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1){
+    protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1) throws LectorExc{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1678,7 +1684,7 @@ public abstract class Traductor {
         }
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv1(boolean parh1) throws LectorExc{
+    protected Object[] ExpresionNiv1(boolean parh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1700,10 +1706,11 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv1Rec(TipoTs tipoh1, String modoh1) throws LectorExc{
+    protected Object[] ExpresionNiv1Rec(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
         TipoTs tipoh3 = null;
+        int aux;
 
         Operaciones op= OpNiv1();
 
@@ -1713,7 +1720,7 @@ public abstract class Traductor {
 
         boolean parh2 = false;
         if (op == op.OR){
-            int aux = etq +1;
+            aux = etq +1;
             etq += 3;
             cod.appendIns(new Copia());
             cod.appendIns(null);
@@ -1775,7 +1782,7 @@ public abstract class Traductor {
         return new Object[]{tipo1,modo1};
 
     }
-    protected Object[] ExpresionNiv2(boolean parh1) throws LectorExc{
+    protected Object[] ExpresionNiv2(boolean parh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1797,10 +1804,11 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv2Rec(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc{
+    protected Object[] ExpresionNiv2Rec(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
         TipoTs tipoh3 = null;
+        int aux;
 
         Operaciones op= OpNiv2();
 
@@ -1810,7 +1818,7 @@ public abstract class Traductor {
 
         boolean parh2 = false;
         if (op == op.AND){
-            int aux = etq;
+            aux = etq;
             etq += 1;
             cod.appendIns(null);
         }
@@ -1851,7 +1859,7 @@ public abstract class Traductor {
             }
         String modoh3 = "val";
         if (op == op.OR){
-             insertaCod(cod,new IrV(new Nat(etq)), aux);
+             Codigo.insertaCod(cod,new IrV(new Nat(etq)), aux);
              etq += 2;
              cod.appendIns(new IrA(new Nat(etq+2)));
              cod.appendIns(new Apilar(new Nat(2)));
@@ -1878,7 +1886,7 @@ public abstract class Traductor {
         return new Object[]{tipo1,modo1};
 
     }
-    protected Object[] ExpresionNiv3(boolean parh1){
+    protected Object[] ExpresionNiv3(boolean parh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
         String modo1 ="";
 
@@ -1900,14 +1908,14 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv3Fact(TipoTs tipoh1, String modoh1) throws LectorExc{
+    protected Object[] ExpresionNiv3Fact(TipoTs tipoh1, String modoh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
         Operaciones op=OpNiv3();
 
         if(op == null){
-            return Object[]{tipoh1,modoh1};
+            return new Object[]{tipoh1,modoh1};
         }
 
         boolean parh2 = false;
@@ -1934,7 +1942,7 @@ public abstract class Traductor {
         }
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv4(boolean parh1){
+    protected Object[] ExpresionNiv4(boolean parh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1973,9 +1981,57 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv4_conOp(boolean parh1){
+    protected Object[] ExpresionNiv4_conOp(boolean parh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
+
+        Operaciones op = OpNiv4();
+
+        boolean parh2 = false;
+
+        Object[] resExpNiv4 = ExpresionNiv4(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv4[0];
+        String modo2 = (String) resExpNiv4[1];
+
+        modo1 = "val";
+        if (tipo2.getT().equals("error"))
+            tipo1 = new TipoTs("error");
+        else
+            switch (op){
+                case NOT:
+                    if (tipo2.getT().equals ("boolean"))
+                        tipo1 = new TipoTs("boolean");
+                    else tipo1 = new TipoTs("error");
+                    break;
+                case NEG:
+                    if (tipo2.getT().equals ("float"))
+                        tipo1 = new TipoTs("float");
+                    else if (tipo2.getT().equals("integer") && tipo2.getT().equals("natural"))
+                        tipo1 = new TipoTs("integer");
+                    else
+                        tipo1 = new TipoTs("error");
+                    break;
+                case CASTREAL:
+                    if (tipo2.getT().equals("boolean"))
+                        tipo1 = new TipoTs("float");
+                    else tipo1 = new TipoTs("error");
+                    break;
+                case CASTENT:
+                    if (tipo2.getT().equals("boolean"))
+                        tipo1 = new TipoTs("integer");
+                    else tipo1 = new TipoTs("error");
+                    break;
+                case CASTNAT:
+                    if  (tipo2.getT().equals("natural") && tipo2.getT().equals("character"))
+                        tipo1 = new TipoTs("natural");
+                    else tipo1 = new TipoTs("error");
+                    break;
+                case CASTCHAR:
+                    if  (tipo2.getT().equals("natural") && tipo2.getT().equals("character"))
+                        tipo1 = new TipoTs("character");
+                    else tipo1 = new TipoTs("error");
+                    break;
+            }
         
         return new Object[]{tipo1,modo1};
     }
@@ -2031,7 +2087,7 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv4_literal(boolean parh1){
+    protected Object[] ExpresionNiv4_literal(boolean parh1) throws Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -2042,23 +2098,26 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionNiv4_mem(boolean parh1) throws LectorExc, DatoExc{
+    protected Object[] ExpresionNiv4_mem(boolean parh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
         TipoTs tipo2 = Mem();
     
-        if (TablaSimbolos.esCompatibleContipoBasico(tipo2,ts) && !parh1)
+        if (TablaSimbolos.esCompatibleConTipoBasico(tipo2,ts) && !parh1){
+            cod.appendIns(new ApilarInd());
+            etq += 1;
+        }
+        modo1 = "var";
+        tipo1 = tipo2;
 
         return new Object[]{tipo1,modo1};
     }
 
     //Literal(out: tipo1, cod1)
-    protected Object[] Literal() throws Exception {
+    protected TipoTs Literal() throws Exception {
         Token t = sigToken();
-        if (t instanceof Identificador) {
-            return Literal_Id(t);
-        } else if (t instanceof LitNat) {
+        if (t instanceof LitNat) {
             return Literal_LitNat(t);
         } else if (t instanceof LitFlo) {
             return Literal_LitFlo(t);
@@ -2075,45 +2134,51 @@ public abstract class Traductor {
         //por tanto se puede lanzar la excepción porque no hay nada que hacer si esto no es un literal.
 
     }
+    protected TipoTs Literal_LitTrue() throws Exception {
+        TipoTs tipo =null;
 
+        cod.appendIns(new Apilar(new Bool(true)));
+        etq +=1;
+        tipo = new TipoTs("boolean");
 
-     // Literal(out: tipo1, cod1) → LitTrue
-    protected Object[] Literal_LitTrue() throws Exception {
-        boolean valor = true;
-        Apilar i = null;
-        i = new Apilar(new Bool(valor));
-        return new Object[]{Tipos.BOOL, new Codigo(i)};
+        return tipo;
     }
+    protected TipoTs Literal_LitFalse() throws Exception {
+        TipoTs tipo =null;
 
-    // Literal(out: tipo1, cod1) → LitFalse
-    protected Object[] Literal_LitFalse() throws Exception {
-        boolean valor = false;
-        Apilar i = null;
-        i = new Apilar(new Bool(valor));
-        return new Object[]{Tipos.BOOL, new Codigo(i)};
-    }
+        cod.appendIns(new Apilar(new Bool(false)));
+        etq +=1;
+        tipo = new TipoTs("boolean");
 
-    protected Object[] Literal_LitCha(Token t) throws Exception {
-        char c = t.getLex().charAt(0);
-        Apilar i = null;
-        i = new Apilar(new Caracter(c));
-        return new Object[]{Tipos.CHAR, new Codigo(i)};
+        return tipo;
     }
+    protected TipoTs Literal_LitCha(Token t) throws Exception {
+        TipoTs tipo =null;
 
-    // Literal(out: tipo1, cod1) → litNat
-    protected Object[] Literal_LitNat(Token t) throws Exception {
-        int valor = Integer.parseInt(t.getLex());
-        Apilar i = null;
-        i = new Apilar(new Nat(valor));
-        return new Object[]{Tipos.NATURAL, new Codigo(i)};
-    }
-    protected Object[] Literal_LitFlo(Token t) throws Exception {
-        float valor = Float.parseFloat(t.getLex());
-        Apilar i = null;
-        i = new Apilar(new Real(valor));
-        return new Object[]{Tipos.REAL, new Codigo(i)};
-    }
+        cod.appendIns(new Apilar(new Caracter(t.getLex().charAt(0))));
+        etq +=1;
+        tipo = new TipoTs("character");
 
+        return tipo;
+    }
+    protected TipoTs Literal_LitNat(Token t) throws Exception {
+        TipoTs tipo =null;
+
+        cod.appendIns(new Apilar(new Nat(Integer.parseInt(t.getLex()))));
+        etq +=1;
+        tipo = new TipoTs("natural");
+
+        return tipo;
+    }
+    protected TipoTs Literal_LitFlo(Token t) throws Exception {
+        TipoTs tipo =null;
+
+        cod.appendIns(new Apilar(new Real(Float.parseFloat(t.getLex()))));
+        etq +=1;
+        tipo = new TipoTs("float");
+
+        return tipo;
+    }
     protected Operaciones OpNiv0() {
         Token t = sigToken();
         if (t instanceof compilador.lexico.Tokens.Token_Menor) {

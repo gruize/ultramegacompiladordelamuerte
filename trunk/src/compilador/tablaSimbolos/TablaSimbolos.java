@@ -79,4 +79,8 @@ public class TablaSimbolos {
         return null;
         //sin implementar
     }
+    public static boolean esCompatibleConTipoBasico(TipoTs tipo, TablaSimbolos ts){
+        return false;
+        //sin implementar
+    }
 }
