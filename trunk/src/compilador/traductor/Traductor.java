@@ -494,6 +494,15 @@ public abstract class Traductor {
         }
         return !error;
     }
+    protected boolean punto(){
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Punto)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
 
 
 
@@ -1054,7 +1063,7 @@ public abstract class Traductor {
 
         return new Object[]{error1, id1, campo1, tam1};
     }
-    protected boolean Instrucciones(){
+    protected boolean Instrucciones() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
         boolean errorh3 = false;
 
@@ -1068,7 +1077,7 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected boolean InstruccionesRec(boolean errorh1){
+    protected boolean InstruccionesRec(boolean errorh1) throws DatoExc, LectorExc, Exception{
         boolean error1 =false;
         boolean errorh3 = false;
 
@@ -1362,7 +1371,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean PElse(){
+    protected boolean PElse() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
         if (Else()){
             boolean error2 = Instruccion();
@@ -1373,7 +1382,7 @@ public abstract class Traductor {
         }
         return error1;
     }
-    protected boolean InsWhile(){
+    protected boolean InsWhile() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
         boolean parh2 = false;
         if( While()){
@@ -1458,10 +1467,9 @@ public abstract class Traductor {
             cod += pop
             etq += 6
             InsFor.etq        = Instruccion.etq + 6*/
-        return error1;
         }
+        return error1;
     }
-
     protected boolean InsNew() throws LectorExc, DatoExc{
         boolean error1 = false;
         if (New()){
@@ -1494,7 +1502,7 @@ public abstract class Traductor {
 
         return error1;
     }
-    protected TipoTs Mem(){
+    protected TipoTs Mem() throws LectorExc, LectorExc, DatoExc{
         TipoTs tipo1 = null;
         TipoTs tipo2h = null;
 
@@ -1502,7 +1510,7 @@ public abstract class Traductor {
 
         if (TablaSimbolos.existe(ts, lex)){
             if (TablaSimbolos.getProps(ts, lex).getClase().equals("var"))
-                tipo2h = ref(TablaSimbolos.getProps(ts, lex).getTipo(), ts);
+                tipo2h = TablaSimbolos.ref(TablaSimbolos.getProps(ts, lex).getTipo(), ts);
             else 
                 tipo2h.setT("error");
         }
@@ -1513,7 +1521,7 @@ public abstract class Traductor {
 
         return tipo1;
     }
-    protected TipoTs MemRec(TipoTs tipoh1){
+    protected TipoTs MemRec(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         TipoTs tipoPuntero = MemRecPuntero(tipoh1);
         TipoTs tipoArray = MemRecArray(tipoh1);
@@ -1526,101 +1534,369 @@ public abstract class Traductor {
         else if (!tipoCampo.getT().equals("error"))
             tipo1 = tipoCampo;
         else
+            //->lamda
             tipo1 = tipoh1;
 
         return tipo1;
     }
-    protected TipoTs MemRecPuntero(TipoTs tipoh1){
+    protected TipoTs MemRecPuntero(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
+        TipoTs tipoh2 = null;
 
+        if (tipoh1.getT().equals("puntero"))
+            tipoh2= TablaSimbolos.ref(tipoh1.getBase(),ts);
+        else tipoh2 = new TipoTs("error");
+
+	etq += 1;
+	cod.appendIns(new ApilaInd());
+
+        TipoTs tipo2 = MemRec(tipoh2);
+
+	tipo1 = tipo2;
         return tipo1;
     }
-    protected TipoTs MemRecArray(TipoTs tipoh1){
+    protected TipoTs MemRecArray(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
+        boolean parh2 = false;
+        TipoTs tipoh3 = null;
 
-        return tipo1;
-    }
-    protected TipoTs MemRecCampo(TipoTs tipoh1){
-        TipoTs tipo1 = null;
+        if (abreCorchete()){
+            parh2 = false; //(supongo? no estaba)
 
-        return tipo1;
-    }
+            Object[] expRes= Expresion(parh2);
+            TipoTs tipo2 = (TipoTs) expRes[0];
+            String modo2 = (String) expRes[1];
 
-    
-    //Expresión(out: tipo1,cod1) →
-    protected Object[] Expresion() throws Exception {
-        Tipo tipo1 = null;
-        Codigo cod1 = null;
-        Object[] resExprN1 = ExpresionNiv1();
-        Tipo tipo2 = (Tipo) resExprN1[0];
-        Codigo cod2 = (Codigo) resExprN1[1];
-        Object[] resExprFact = ExpresionFact(tipo2, cod2);
-        tipo1 = (Tipo) resExprFact[0];
-        cod1 = (Codigo) resExprFact[1];
-        return new Object[]{tipo1, cod1};
-    }
+            if(!cierraCorchete()){
+                throw new Exception("FATAL: Se esperaba cierra corchete"
+                    + textoError());
+            }
 
-    //ExpresiónFact(in: tipo1h,codh1; out: tipo1,cod1) →
-    protected abstract Object[] ExpresionFact(Tipos tipo1h, Codigo codh1) throws Exception;
+            etq += 3;
+            cod.appendIns(new Apilar(new Nat(tipoh1.getBase().getTam())));
+            cod.appendIns(new Multiplica());
+            cod.appendIns(new Suma());
+            if (tipoh1.getT().equals("array") && tipo2.getT().equals("num"))
+                tipoh3 = TablaSimbolos.ref(tipoh1.getBase(),ts);
+            else tipoh3 = new TipoTs("error");
 
-    //ExpresiónNiv1(out: tipo1, cod1, codJ1) →
-    protected Object[] ExpresionNiv1() throws Exception {
-        Tipo tipo1 = null;
-        Codigo cod1 = null;
-        Object[] resExprN2 = ExpresionNiv2();
-        Tipo tipo2 = (Tipo) resExprN2[0];
-        Codigo cod2 = (Codigo) resExprN2[1];
-        Object[] resExprFact = ExpresionNiv1Rec(tipo2, cod2);
-        tipo1 = (Tipo) resExprFact[0];
-        cod1 = (Codigo) resExprFact[1];
-        return new Object[]{tipo1, cod1};
-    }
+            TipoTs tipo3 = MemRec(tipoh3);
 
-    //ExpresiónNiv1Rec(in: tipoh1, codh1; out: tipo1, cod1)
-    protected abstract Object[] ExpresionNiv1Rec(Tipos tipoh1, Codigo codh1) throws Exception;
-
-    //ExpresiónNiv2(out: tipo1, cod1) →
-    protected Object[] ExpresionNiv2() throws Exception {
-        Tipo tipo1 = null;
-        Codigo cod1 = null;
-        Object[] resExprNiv3 = ExpresionNiv3();
-        Tipo tipoh3 = (Tipo) resExprNiv3[0];
-        Codigo codh3 = (Codigo) resExprNiv3[1];
-        return new Object[]{tipo1, cod1};
-    }
-
-    //ExpresiónNiv2Rec(in: tipoh1, codh1; out: tipo1, cod1)
-    protected abstract Object[] ExpresionNiv2Rec(Tipos tipoh1, Codigo codh1) throws Exception;
-
-    //ExpresiónNiv3(out: tipo1, codJ1) →
-    protected Object[] ExpresionNiv3() throws Exception {
-        Tipo tipo1 = null;
-        Codigo cod1 = null;
-        Object[] resExprN4 = ExpresionNiv4();
-        Tipo tipoh3 = (Tipo) resExprN4[0];
-        Codigo codh3 = (Codigo) resExprN4[1];
-        Object[] resExprN4Fact = ExpresionNiv3Fact(tipoh3, codh3);
-        tipo1 = (Tipo) resExprN4Fact[0];
-        cod1 = (Codigo) resExprN4Fact[1];
-        return new Object[]{tipo1, cod1};
-    }
-
-    //ExpresiónNiv3Fact(in: tipoh1, codh1; out: tipo1, cod1)
-    protected abstract Object[] ExpresionNiv3Fact(Tipos tipoh1, Codigo codh1) throws Exception;
-
-    protected Object[] ExpresionNiv4() throws Exception {
-        Operaciones op2 = OpNiv4();
-        if (op2 != null) {
-            return ExpresionNiv4_conOp(op2);
+            tipo1=tipo3;
         }
-        if (valorAbs()) {
-            return ExpresionNiv4_valorAbs();
-         }
-        if (abrePar()) {
-            return ExpresionNiv4_abrePar();
-        }
-        return ExpresionNiv4_Literal();
+        return tipo1;
     }
+    protected TipoTs MemRecCampo(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
+        TipoTs tipo1 = null;
+        TipoTs tipoh2 = null;
+
+        if (punto()){
+            String lex =identificador();
+            etq += 2;
+            cod.appendIns(new Apilar(new Nat(tipoh1.getCampo(Integer.parseInt(lex)).getDesp())));
+            cod.appendIns(new Suma());
+
+            if (tipoh1.getT().equals("record"))
+                if (Campo.existeCampo(tipoh1.getCampos(),lex))
+                        tipoh2 = TablaSimbolos.ref(tipoh1.getCampo(Integer.parseInt(lex)).getTipo(),ts);
+                else tipoh2 = new TipoTs("error");
+            else tipoh2 = new TipoTs("error");
+
+            TipoTs tipo2 = MemRec(tipoh2);
+
+            tipo1 = tipo2;
+        }
+        return tipo1;
+    }
+    protected Object[] Expresion(boolean parh1){
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        boolean parh2 = parh1;
+
+        Object[] resExpNiv1 = ExpresionNiv1(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv1[0];
+        String modo2 = (String) resExpNiv1[1];
+
+        TipoTs tipoh3 = tipo2;
+        String modoh3 = modo2;
+
+        Object[] resExpFact = ExpresionFact(tipoh3, modoh3);
+        TipoTs tipo3 = (TipoTs) resExpFact[0];
+        String modo3 = (String) resExpFact[1];
+
+        tipo1 = tipo3;
+        modo1 = modo3;
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1){
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        Operaciones op=OpNiv0();
+
+        if (op==null){//->lamda
+            return new Object[]{modoh1,tipoh1};
+        }
+        boolean parh2 = false;
+
+        Object[] resExpNiv1 = ExpresionNiv1(tipoh1, modoh1);
+        TipoTs tipo2 = (TipoTs) resExpNiv1[0];
+        String modo2 = (String) resExpNiv1[1];
+
+        if (tipoh1.getT().equals("error") ||
+                tipo2.getT().equals("error") ||
+                (tipoh1.getT().equals("character") && !tipo2.getT().equals("character")) ||
+                (!tipoh1.getT().equals("character") && tipo2.getT().equals("character")) ||
+                (tipoh1.getT().equals("boolean") && !tipo2.getT().equals("boolean")) ||
+                (!tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean")))
+            tipo1 = new TipoTs("error");
+        else tipo1 = new TipoTs("boolean");
+
+	modo1 = "val";
+	etq += 1;
+        switch(op){
+            case MENOR:
+                cod.appendIns(new Menor());
+                break;
+            case MAYOR:
+                cod.appendIns(new Mayor());
+                break;
+            case MENORIG:
+                cod.appendIns(new MenorIg());
+                break;
+            case MAYORIG:
+                cod.appendIns(new MayorIg());
+                break;
+            case IGUAL:
+                cod.appendIns(new Igual());
+                break;
+            case DISTINTO:
+                cod.appendIns(new NoIgual());
+                break;
+        }
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv1(boolean parh1) throws LectorExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        boolean parh2 = parh1;
+
+        Object[] resExpNiv2 = ExpresionNiv2(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv2[0];
+        String modo2 = (String) resExpNiv2[1];
+
+        TipoTs tipoh3 = tipo2;
+        String modoh3 = modo2;
+
+        Object[] resExpNiv1Rec = ExpresionNiv1Rec(tipoh3, modoh3);
+        TipoTs tipo3 = (TipoTs) resExpNiv1Rec[0];
+        String modo3 = (String) resExpNiv1Rec[1];
+
+        tipo1 = tipo3;
+        modo1 = modo3;
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv1Rec(TipoTs tipoh1, String modoh1) throws LectorExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+        TipoTs tipoh3 = null;
+
+        Operaciones op= OpNiv1();
+
+        if (op == null){
+            return new Object[]{tipoh1,modoh1};
+        }
+
+        boolean parh2 = false;
+        if (op == op.OR){
+            int aux = etq +1;
+            etq += 3;
+            cod.appendIns(new Copia());
+            cod.appendIns(null);
+            cod.appendIns(new Desapila());
+        }
+
+        Object[] resExpNiv2 = ExpresionNiv2(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv2[0];
+        String modo2 = (String) resExpNiv2[1];
+
+        String modoh3 = modo2;
+        if (tipoh1.getT().equals("error") ||
+                tipo2.getT().equals("error") ||
+                (tipoh1.getT().equals("character") && !tipo2.getT().equals("character")) ||
+                (!tipoh1.getT().equals("character") && tipo2.getT().equals("character")) ||
+                (tipoh1.getT().equals("boolean") && !tipo2.getT().equals("boolean")) ||
+                (!tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean")))
+            tipoh3 = new TipoTs("error");
+        else
+            switch (op){
+                case SUMA:
+                case RESTA:
+                    if (tipoh1.getT().equals("float") && tipo2.getT().equals("float"))
+                        tipoh3 = new TipoTs("float");
+                    else if (tipoh1.getT().equals("integer") && tipo2.getT().equals("integer"))
+                        tipoh3 = new TipoTs("integer");
+                    else if (tipoh1.getT().equals("natural") && tipo2.getT().equals("natural"))
+                        tipoh3 = new TipoTs("natural");
+                    else tipoh3 = new TipoTs("error");
+                    break;
+                case OR:
+                     if (tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean"))
+                        tipoh3 = new TipoTs("boolean");
+                     else tipoh3 = new TipoTs ("error");
+                     break;
+            }
+        modoh3 = "val";
+        if (op == op.OR)
+            insertaCod(cod,new IrV(new Nat(etq)), aux);
+        else{
+            etq +=1;
+            switch (op){
+                case SUMA:
+                    cod.appendIns(new Suma());
+                    break;
+                case RESTA:
+                    cod.appendIns(new Resta());
+                    break;
+           }
+        }
+
+        Object[] resExpNiv1 = ExpresionNiv1Rec(tipoh3,modoh3);
+        TipoTs tipo3 = (TipoTs) resExpNiv1[0];
+        String modo3 = (String) resExpNiv1[1];
+
+        tipo1 = tipo3;
+        modo1 = modo3;
+
+        return new Object[]{tipo1,modo1};
+
+    }
+    protected Object[] ExpresionNiv2(boolean parh1) throws LectorExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+
+        boolean parh2 = parh1;
+
+        Object[] resExpNiv2 = ExpresionNiv3(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv2[0];
+        String modo2 = (String) resExpNiv2[1];
+
+        TipoTs tipoh3 = tipo2;
+        String modoh3 = modo2;
+
+        Object[] resExpNiv1Rec = ExpresionNiv2Rec(tipoh3, modoh3);
+        TipoTs tipo3 = (TipoTs) resExpNiv1Rec[0];
+        String modo3 = (String) resExpNiv1Rec[1];
+
+        tipo1 = tipo3;
+        modo1 = modo3;
+
+        return new Object[]{tipo1,modo1};
+    }
+    protected Object[] ExpresionNiv2Rec(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc{
+        TipoTs tipo1 = null;
+        String modo1 = "";
+        TipoTs tipoh3 = null;
+
+        Operaciones op= OpNiv1();
+
+        if (op == null){
+            return new Object[]{tipoh1,modoh1};
+        }
+
+        boolean parh2 = false;
+        if (op == op.AND){
+            int aux = etq;
+            etq += 1;
+            cod.appendIns(null);
+        }
+
+        Object[] resExpNiv2 = ExpresionNiv3(parh2);
+        TipoTs tipo2 = (TipoTs) resExpNiv2[0];
+        String modo2 = (String) resExpNiv2[1];
+
+        if (tipoh1.getT().equals("error") ||
+                tipo2.getT().equals("error") ||
+                (tipoh1.getT().equals("character") && !tipo2.getT().equals("character")) ||
+                (!tipoh1.getT().equals("character") && tipo2.getT().equals("character")) ||
+                (tipoh1.getT().equals("boolean") && !tipo2.getT().equals("boolean")) ||
+                (!tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean")))
+            tipoh3 = new TipoTs("error");
+        else
+            switch (op){
+                case MULT:
+                case DIV:
+                    if (tipoh1.getT().equals("float") && tipo2.getT().equals("float"))
+                        tipoh3 = new TipoTs("float");
+                    else if (tipoh1.getT().equals("integer") && tipo2.getT().equals("integer"))
+                        tipoh3 = new TipoTs("integer");
+                    else if (tipoh1.getT().equals("natural") && tipo2.getT().equals("natural"))
+                        tipoh3 = new TipoTs("natural");
+                    else tipoh3 = new TipoTs("error");
+                    break;
+                case MOD:
+                    if(tipo2.getT().equals("natural") &&
+                            (tipoh1.getT().equals("natural") || tipoh1.getT().equals("integer")))
+                        tipoh3 = tipoh1;
+                    else tipoh3 = new TipoTs("error");
+                case OR:
+                     if (tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean"))
+                        tipoh3 = new TipoTs("boolean");
+                     else tipoh3 = new TipoTs ("error");
+                     break;
+            }
+        String modoh3 = "val";
+        if (op == op.OR){
+             insertaCod(cod,new IrV(new Nat(etq)), aux);
+             etq += 2;
+             cod.appendIns(new IrA(new Nat(etq+2)));
+             cod.appendIns(new Apilar(new Nat(2)));
+        }
+        else{
+            etq +=1;
+            switch (op){
+                case SUMA:
+                    cod.appendIns(new Suma());
+                    break;
+                case RESTA:
+                    cod.appendIns(new Resta());
+                    break;
+           }
+        }
+
+        Object[] resExpNiv1 = ExpresionNiv2Rec(tipoh3,modoh3);
+        TipoTs tipo3 = (TipoTs) resExpNiv1[0];
+        String modo3 = (String) resExpNiv1[1];
+
+        tipo1 = tipo3;
+        modo1 = modo3;
+
+        return new Object[]{tipo1,modo1};
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     protected abstract Object[] ExpresionNiv4_conOp(Operaciones op2) throws Exception;
 
@@ -1664,17 +1940,43 @@ public abstract class Traductor {
 
     }
 
-    protected abstract Object[] Literal_Id(Token t) throws Exception;
 
-    protected abstract Object[] Literal_LitNat(Token t) throws Exception;
+     // Literal(out: tipo1, cod1) → LitTrue
+    protected Object[] Literal_LitTrue() throws Exception {
+        boolean valor = true;
+        Apilar i = null;
+        i = new Apilar(new Bool(valor));
+        return new Object[]{Tipos.BOOL, new Codigo(i)};
+    }
 
-    protected abstract Object[] Literal_LitTrue() throws Exception;
+    // Literal(out: tipo1, cod1) → LitFalse
+    protected Object[] Literal_LitFalse() throws Exception {
+        boolean valor = false;
+        Apilar i = null;
+        i = new Apilar(new Bool(valor));
+        return new Object[]{Tipos.BOOL, new Codigo(i)};
+    }
 
-    protected abstract Object[] Literal_LitFalse() throws Exception;
+    protected Object[] Literal_LitCha(Token t) throws Exception {
+        char c = t.getLex().charAt(0);
+        Apilar i = null;
+        i = new Apilar(new Caracter(c));
+        return new Object[]{Tipos.CHAR, new Codigo(i)};
+    }
 
-    protected abstract Object[] Literal_LitCha(Token t) throws Exception;
-
-    protected abstract Object[] Literal_LitFlo(Token t) throws Exception;
+    // Literal(out: tipo1, cod1) → litNat
+    protected Object[] Literal_LitNat(Token t) throws Exception {
+        int valor = Integer.parseInt(t.getLex());
+        Apilar i = null;
+        i = new Apilar(new Nat(valor));
+        return new Object[]{Tipos.NATURAL, new Codigo(i)};
+    }
+    protected Object[] Literal_LitFlo(Token t) throws Exception {
+        float valor = Float.parseFloat(t.getLex());
+        Apilar i = null;
+        i = new Apilar(new Real(valor));
+        return new Object[]{Tipos.REAL, new Codigo(i)};
+    }
 
     protected Operaciones OpNiv0() {
         Token t = sigToken();

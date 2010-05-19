@@ -20,6 +20,9 @@ public class TipoTs {
     public TipoTs(){
 
     }
+    public TipoTs(String t){
+        this.t=t;
+    }
     public TipoTs(String t, ArrayList<Parametro> param){
         this.t=t;
         parametros=param;
@@ -61,6 +64,9 @@ public class TipoTs {
     }
     public ArrayList<Campo> getCampos(){
         return campos;
+    }
+    public Campo getCampo(int i){
+        return campos.get(i);
     }
     public ArrayList<Parametro> getParametros(){
         return parametros;
