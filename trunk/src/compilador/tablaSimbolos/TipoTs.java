@@ -49,8 +49,12 @@ public class TipoTs {
         this.campos=campos;
         this.tam=tam;
     }
+
     public String getT(){
         return t;
+    }
+    public void setT(String t){
+        this.t=t;
     }
     public int getTam(){
         return tam;
