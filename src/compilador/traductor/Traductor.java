@@ -1478,17 +1478,74 @@ public abstract class Traductor {
         }
         return error1;
     }
-
-    /*/***********************************************************************
-     * ***************************POR AQUI *********************************
-     */
-
-
     protected boolean InsDis() throws LectorExc, DatoExc{
         boolean error1 = false;
 
+        if (dispose()){
+            TipoTs tipo2 = Mem();
+
+            error1 = !tipo2.getT().equals("puntero");
+            etq+=1;
+            if (tipo2.getBase().getT().equals("ref"))
+                cod.appendIns(new Salida( new Nat(TablaSimbolos.getProps(ts, tipo2.getBase().getId()).getDir()))); //tam?? hay tamaño
+            else
+		cod.appendIns(new Salida(new Nat(1)));
+        }
+
         return error1;
     }
+    protected TipoTs Mem(){
+        TipoTs tipo1 = null;
+        TipoTs tipo2h = null;
+
+        String lex = identificador();
+
+        if (TablaSimbolos.existe(ts, lex)){
+            if (TablaSimbolos.getProps(ts, lex).getClase().equals("var"))
+                tipo2h = ref(TablaSimbolos.getProps(ts, lex).getTipo(), ts);
+            else 
+                tipo2h.setT("error");
+        }
+
+        TipoTs tipo2=MemRec(tipo2h);
+
+        tipo1 = tipo2;
+
+        return tipo1;
+    }
+    protected TipoTs MemRec(TipoTs tipoh1){
+        TipoTs tipo1 = null;
+        TipoTs tipoPuntero = MemRecPuntero(tipoh1);
+        TipoTs tipoArray = MemRecArray(tipoh1);
+        TipoTs tipoCampo = MemRecCampo(tipoh1);
+
+        if(!tipoPuntero.getT().equals("error"))
+            tipo1 = tipoPuntero;
+        else if (!tipoArray.getT().equals("error"))
+            tipo1 = tipoArray;
+        else if (!tipoCampo.getT().equals("error"))
+            tipo1 = tipoCampo;
+        else
+            tipo1 = tipoh1;
+
+        return tipo1;
+    }
+    protected TipoTs MemRecPuntero(TipoTs tipoh1){
+        TipoTs tipo1 = null;
+
+        return tipo1;
+    }
+    protected TipoTs MemRecArray(TipoTs tipoh1){
+        TipoTs tipo1 = null;
+
+        return tipo1;
+    }
+    protected TipoTs MemRecCampo(TipoTs tipoh1){
+        TipoTs tipo1 = null;
+
+        return tipo1;
+    }
+
     
     //Expresión(out: tipo1,cod1) →
     protected Object[] Expresion() throws Exception {
@@ -1558,7 +1615,7 @@ public abstract class Traductor {
         }
         if (valorAbs()) {
             return ExpresionNiv4_valorAbs();
-        }
+         }
         if (abrePar()) {
             return ExpresionNiv4_abrePar();
         }
