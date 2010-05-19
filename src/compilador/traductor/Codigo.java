@@ -30,6 +30,9 @@ public class Codigo {
 	public void appendIns(InstruccionInterprete i){
 		cod.add(i);
 	}
+    public static void insertaCod(Codigo cod, InstruccionInterprete i, int aux){
+
+    }
 	
 	
 }
