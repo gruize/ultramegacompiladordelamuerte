@@ -1145,7 +1145,7 @@ public abstract class Traductor {
         boolean error2 = AParametros();
 
         error1 = error2 || !TablaSimbolos.existe(ts, lex) || !TablaSimbolos.getProps(ts, lex).getClase().equals("proc");
-        cod.appendIns(new IrA(TablaSimbolos.getProps(ts,lex).getDir()));
+        cod.appendIns(new IrA(new Nat(TablaSimbolos.getProps(ts,lex).getDir())));
         etq += 1;
 
         return error1;
@@ -1314,7 +1314,7 @@ public abstract class Traductor {
         if (TablaSimbolos.esCompatibleConTipoBasico(tipo2, ts))
             cod.appendIns(new DesapilaInd());
         else
-            cod.appendIns(new Mueve(tipo2.getTam()));
+            cod.appendIns(new Mueve(new Nat(tipo2.getTam())));
         return error1;
     }
     protected boolean InsCompuesta() throws Exception{
@@ -1357,7 +1357,7 @@ public abstract class Traductor {
 
             boolean error3 = Instruccion();
 
-            Codigo.insertaCod(cod, new IrF(etq+1), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
+            Codigo.insertaCod(cod, new IrFalse(new Nat(etq+1)), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
             etq += 1;
             aux=etq;
             cod.appendIns(null);
@@ -1365,9 +1365,8 @@ public abstract class Traductor {
             boolean error4 = PElse();
 
             if (!error4){
-                Codigo.insertaCod(cod, new IrA(etq),aux);
-                error1 = tipo2.getT().equals("boolean") || error3 || error4;
-                InsIf.error = Expresion.tipo != <t:bool> v Instrucción.error v Pelse.error*/
+                Codigo.insertaCod(cod, new IrA(new Nat(etq)),aux);
+                error1 = !tipo2.getT().equals("boolean") || error3 || error4;
             }
         }
         return error1;
@@ -1405,9 +1404,9 @@ public abstract class Traductor {
 
             boolean error3 = Instruccion();
 
-            Codigo.insertaCod(cod, new IrF(etq + 1), aux);
+            Codigo.insertaCod(cod, new IrFalse(new Nat(etq + 1)), aux);
             etq += 1;
-            cod.appendIns(new IrA(etq_while));
+            cod.appendIns(new IrA(new Nat(etq_while)));
             error1 = tipo2.getT().equals("boolean") || error3;
         }
         return error1;
@@ -1443,9 +1442,9 @@ public abstract class Traductor {
             etq += 1;
             cod.appendIns( new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())) );
                     
-            Object[] expRes = Expresion(parh3);
-            TipoTs tipo3 = (TipoTs) expRes[0];
-            String modo3 = (String) expRes[1];
+            Object[] expRes2 = Expresion(parh3);
+            TipoTs tipo3 = (TipoTs) expRes2[0];
+            String modo3 = (String) expRes2[1];
                     
             if ( !Do()){
                 throw new Exception("FATAL: Se esperaba simbolo la palabra do"
@@ -1454,7 +1453,7 @@ public abstract class Traductor {
 
             etq+=4;
             cod.appendIns(new Copia());
-            cod.appendIns(new ApilarDir(TablaSimbolos.getProps(ts, lex).getDir()));
+            cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
             cod.appendIns(new Igual());
             cod.appendIns(null);
             aux = etq;
@@ -1463,14 +1462,14 @@ public abstract class Traductor {
 
             error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
                             (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
-                            (!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("natural") &&!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("integer"))
-                                    Codigo.insertaCod(cod, ir-v(etq -1), aux);
+                            (!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("natural") && !TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("integer"));
+            Codigo.insertaCod(cod, new IrTrue(new Nat(etq -1)), aux);
 
             cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
             cod.appendIns(new Apilar(new Nat(1)));
             cod.appendIns(new Suma());
             cod.appendIns(new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
-            cod.appendIns(new IrA(aux)); //creo q está bien asi
+            cod.appendIns(new IrA(new Nat(aux))); //creo q está bien asi
             cod.appendIns(new Desapilar());
             etq += 6;
         }
@@ -1710,7 +1709,7 @@ public abstract class Traductor {
         TipoTs tipo1 = null;
         String modo1 = "";
         TipoTs tipoh3 = null;
-        int aux;
+        int aux = 0;
 
         Operaciones op= OpNiv1();
 
@@ -1724,7 +1723,7 @@ public abstract class Traductor {
             etq += 3;
             cod.appendIns(new Copia());
             cod.appendIns(null);
-            cod.appendIns(new Desapila());
+            cod.appendIns(new Desapilar());
         }
 
         Object[] resExpNiv2 = ExpresionNiv2(parh2);
@@ -1759,7 +1758,7 @@ public abstract class Traductor {
             }
         modoh3 = "val";
         if (op == op.OR)
-            insertaCod(cod,new IrV(new Nat(etq)), aux);
+            Codigo.insertaCod(cod,new IrTrue(new Nat(etq)), aux);
         else{
             etq +=1;
             switch (op){
@@ -1808,7 +1807,7 @@ public abstract class Traductor {
         TipoTs tipo1 = null;
         String modo1 = "";
         TipoTs tipoh3 = null;
-        int aux;
+        int aux = 0;
 
         Operaciones op= OpNiv2();
 
@@ -1859,7 +1858,7 @@ public abstract class Traductor {
             }
         String modoh3 = "val";
         if (op == op.OR){
-             Codigo.insertaCod(cod,new IrV(new Nat(etq)), aux);
+             Codigo.insertaCod(cod,new IrTrue(new Nat(etq)), aux);
              etq += 2;
              cod.appendIns(new IrA(new Nat(etq+2)));
              cod.appendIns(new Apilar(new Nat(2)));
