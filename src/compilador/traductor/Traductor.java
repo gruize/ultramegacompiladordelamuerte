@@ -680,6 +680,7 @@ public abstract class Traductor {
         if (procedure()){
             String lex= identificador();
             TablaSimbolos ts_aux = ts;
+            //FIXME: arreglar esto
             ts = creaTS(ts_aux);
             n += 1;
 
@@ -1139,6 +1140,7 @@ public abstract class Traductor {
         String lex = identificador();
 
         parametros = TablaSimbolos.getProps(ts,lex).getTipo().getParametros();
+        //FIXME: pasar parametro
         cod.appendCod(apilaRet());
         etq += longApilaRet;
 
@@ -1206,7 +1208,7 @@ public abstract class Traductor {
 
         if (coma()){
             etq += longDireccionParFormal + 1;
-            cod.appendIns(Copia());
+            cod.appendIns(new Copia());
             cod.appendCod(direccionParFormal(parametros.get(nparamh1)));
             parh2 = parametros.get(nparamh1).getModo().equals("var");
             Object[] expRes = Expresion(parh2);
@@ -1357,7 +1359,7 @@ public abstract class Traductor {
 
             boolean error3 = Instruccion();
 
-            Codigo.insertaCod(cod, new IrFalse(new Nat(etq+1)), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
+            cod.insertaCod(new IrFalse(new Nat(etq+1)), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
             etq += 1;
             aux=etq;
             cod.appendIns(null);
@@ -1365,7 +1367,7 @@ public abstract class Traductor {
             boolean error4 = PElse();
 
             if (!error4){
-                Codigo.insertaCod(cod, new IrA(new Nat(etq)),aux);
+                cod.insertaCod(new IrA(new Nat(etq)),aux);
                 error1 = !tipo2.getT().equals("boolean") || error3 || error4;
             }
         }
@@ -1404,7 +1406,7 @@ public abstract class Traductor {
 
             boolean error3 = Instruccion();
 
-            Codigo.insertaCod(cod, new IrFalse(new Nat(etq + 1)), aux);
+            cod.insertaCod(new IrFalse(new Nat(etq + 1)), aux);
             etq += 1;
             cod.appendIns(new IrA(new Nat(etq_while)));
             error1 = tipo2.getT().equals("boolean") || error3;
@@ -1463,7 +1465,7 @@ public abstract class Traductor {
             error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
                             (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
                             (!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("natural") && !TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("integer"));
-            Codigo.insertaCod(cod, new IrTrue(new Nat(etq -1)), aux);
+            cod.insertaCod(new IrTrue(new Nat(etq -1)), aux);
 
             cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
             cod.appendIns(new Apilar(new Nat(1)));
@@ -1646,6 +1648,7 @@ public abstract class Traductor {
         }
         boolean parh2 = false;
 
+        //FIXME: Esto es ExpresionNiv1 o ExpresionNiv1Rec?
         Object[] resExpNiv1 = ExpresionNiv1(tipoh1, modoh1);
         TipoTs tipo2 = (TipoTs) resExpNiv1[0];
         String modo2 = (String) resExpNiv1[1];
@@ -1758,7 +1761,7 @@ public abstract class Traductor {
             }
         modoh3 = "val";
         if (op == op.OR)
-            Codigo.insertaCod(cod,new IrTrue(new Nat(etq)), aux);
+            cod.insertaCod(new IrTrue(new Nat(etq)), aux);
         else{
             etq +=1;
             switch (op){
@@ -1858,7 +1861,7 @@ public abstract class Traductor {
             }
         String modoh3 = "val";
         if (op == op.OR){
-             Codigo.insertaCod(cod,new IrTrue(new Nat(etq)), aux);
+             cod.insertaCod(new IrTrue(new Nat(etq)), aux);
              etq += 2;
              cod.appendIns(new IrA(new Nat(etq+2)));
              cod.appendIns(new Apilar(new Nat(2)));
