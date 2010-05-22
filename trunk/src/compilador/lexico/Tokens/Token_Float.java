@@ -13,4 +13,9 @@ public class Token_Float extends Token{
     public Token_Float(){
         super();
     }
+
+    @Override
+    public String toString(){
+        return "Tipo float";
+    }
 }
