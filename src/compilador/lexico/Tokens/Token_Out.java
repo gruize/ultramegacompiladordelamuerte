@@ -14,7 +14,8 @@ public class Token_Out extends Token{
         super();
     }
 
+    @Override
     public String toString(){
-        return "Salida out";
+        return "Operador de salida out";
     }
 }
