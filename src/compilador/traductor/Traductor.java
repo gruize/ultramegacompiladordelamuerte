@@ -16,7 +16,7 @@ import compilador.tablaSimbolos.*;
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  *
  */
-public abstract class Traductor {
+public class Traductor {
     //*****ATRIBUTOS****
     public static final int longInicio = 4;
     public static final int longApilaRet = 5;
@@ -29,7 +29,7 @@ public abstract class Traductor {
 
     protected ArrayList<Token> arrayTokens;
     protected Codigo cod;
-    protected TablaSimbolos ts;
+    protected GestorTs ts;
     protected int etq;
     protected int dir;
     protected int n;
@@ -56,7 +56,7 @@ public abstract class Traductor {
         i_token = 0;
         pend = new ArrayList<String>();
         errores = new ArrayList<ErrorTraductor>();
-        ts = new TablaSimbolos();
+        ts = new GestorTs();
     }
 
     //****FUNCIONES PRINCIPALES
@@ -515,7 +515,7 @@ public abstract class Traductor {
         etq = longInicio + 1;
         dir = 0;
         n = 0;
-        ts = new TablaSimbolos();
+        ts = new GestorTs();
         cod = new Codigo();
 
         boolean error2 = Declaraciones();
@@ -549,8 +549,8 @@ public abstract class Traductor {
         InfoTs props2 = (InfoTs) decRes[3];
 
         dir+=tam2;
-        errorh3= error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
-        TablaSimbolos.inserta(ts,id2,props2);
+        errorh3= error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
+        GestorTs.inserta(ts,id2,props2);
         if (props2.getClase().equals("tipo"))
             pend.remove(id2);
 
@@ -570,7 +570,7 @@ public abstract class Traductor {
             InfoTs props2 = (InfoTs) decRes[3];
 
             dir+=tam2;
-            errorh3= errorh1 || error2 || (TablaSimbolos.existe(ts, id2) && (TablaSimbolos.getProps(ts,id2).getNivel() == n));
+            errorh3= errorh1 || error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
 
             boolean error3 = DeclaracionesRec(errorh3);
 
@@ -647,7 +647,7 @@ public abstract class Traductor {
 
             id1 = lex;
             props1 = new InfoTs("tipo",tipo2,n);
-            error1 = error2  || (TablaSimbolos.existe(ts,lex) && (!TablaSimbolos.existeRef(ts,tipo2)));
+            error1 = error2  || (GestorTs.existe(ts,lex) && (!GestorTs.existeRef(ts,tipo2)));
 
         }
         return new Object[]{error1, id1, props1};
@@ -668,7 +668,7 @@ public abstract class Traductor {
 
         id1 = lex;
         props1 = new InfoTs("var",tipo2,n);
-        error1 = error2  || (TablaSimbolos.existe(ts,lex) && (!TablaSimbolos.existeRef(ts,tipo2)));
+        error1 = error2  || (GestorTs.existe(ts,lex) && (!GestorTs.existeRef(ts,tipo2)));
 
         return new Object[]{error1, id1, props1};
     }
@@ -679,21 +679,21 @@ public abstract class Traductor {
 
         if (procedure()){
             String lex= identificador();
-            TablaSimbolos ts_aux = ts;
+            GestorTs ts_aux = ts;
             //FIXME: arreglar esto
-            ts = creaTS(ts_aux);
+            ts.crearTS();
             n += 1;
 
             boolean error2 = FParametros();
 
             parametros=new ArrayList<Parametro>();
-            TablaSimbolos.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
+            GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
 
             Object[] bloqueRes = Bloque();
             boolean error3= (Boolean) bloqueRes[0];
             int inicio3 = (Integer) bloqueRes[1];
 
-            error1 = error2 || error3 || (TablaSimbolos.existe(ts, lex) && (TablaSimbolos.getProps(ts,lex).getNivel() == n));
+            error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n));
             id1 = lex;
             props1 = new InfoTs("proc", new TipoTs("proc", parametros), n, inicio3);
             n -= 1;
@@ -760,9 +760,9 @@ public abstract class Traductor {
         InfoTs props2 = (InfoTs) FParamRes[2];
         int tam2 = (Integer) FParamRes[3];
 
-        errorh3 = error2 ||(TablaSimbolos.existe(ts,id2) && (TablaSimbolos.getProps(ts, id2).getNivel() == n));
+        errorh3 = error2 ||(GestorTs.existe(ts,id2) && (GestorTs.getProps(ts, id2).getNivel() == n));
         props2.setDir(0);
-	TablaSimbolos.inserta(ts, id2, props2);
+	GestorTs.inserta(ts, id2, props2);
 	dir = tam2;
 
         boolean error3 = LFParametrosRec(errorh3);
@@ -781,8 +781,8 @@ public abstract class Traductor {
             int tam2 = (Integer) FParamRes[3];
 
             dir += tam2;
-            errorh3 = errorh1 || error2 || (TablaSimbolos.existe(ts,id2)  && TablaSimbolos.getProps(ts, id2).getNivel() == n);
-            TablaSimbolos.inserta(ts, id2, props2);
+            errorh3 = errorh1 || error2 || (GestorTs.existe(ts,id2)  && GestorTs.getProps(ts, id2).getNivel() == n);
+            GestorTs.inserta(ts, id2, props2);
 
             boolean error3 = LFParametrosRec(errorh3);
 
@@ -850,13 +850,13 @@ public abstract class Traductor {
         TipoTs tipo1 = null;
         String lex= t.getLex();
 
-        tipo1 = new TipoTs("ref", lex, TablaSimbolos.getProps(ts, lex).getTipo().getTam());
-	if (TablaSimbolos.existe(ts,lex))
-            error1 = ! TablaSimbolos.getProps(ts, lex).getClase().equals("tipo");
+        tipo1 = new TipoTs("ref", lex, GestorTs.getProps(ts, lex).getTipo().getTam());
+	if (GestorTs.existe(ts,lex))
+            error1 = ! GestorTs.getProps(ts, lex).getClase().equals("tipo");
         else
             error1= false;
 
-	if ( ! TablaSimbolos.existe(ts,lex))
+	if ( ! GestorTs.existe(ts,lex))
             pend.add(lex);
 
         return new Object[]{error1, tipo1};
@@ -931,7 +931,7 @@ public abstract class Traductor {
         TipoTs tipo2 = (TipoTs) tipoRes[1];
                     
         tipo1 = new TipoTs("array",Integer.parseInt(lex), tipo2, Integer.parseInt(lex)*tipo2.getTam());
-        error1 = tipo2.getT().equals("error") && !TablaSimbolos.existeRef (ts ,tipo2);
+        error1 = tipo2.getT().equals("error") && !GestorTs.existeRef (ts ,tipo2);
 
         return new Object[]{error1, tipo1};
     }
@@ -1060,7 +1060,7 @@ public abstract class Traductor {
 
         campo1 = new Campo(lex,tipo2,desh1);
         tam1   = tipo2.getTam();
-        error1 = error2 ||  ! TablaSimbolos.existeRef(ts,tipo2);
+        error1 = error2 ||  ! GestorTs.existeRef(ts,tipo2);
 
         return new Object[]{error1, id1, campo1, tam1};
     }
@@ -1139,15 +1139,15 @@ public abstract class Traductor {
 
         String lex = identificador();
 
-        parametros = TablaSimbolos.getProps(ts,lex).getTipo().getParametros();
+        parametros = GestorTs.getProps(ts,lex).getTipo().getParametros();
         //FIXME: pasar parametro
-        cod.appendCod(apilaRet());
+        cod.appendCod(apilaRet(etq));//mal hay que parchear
         etq += longApilaRet;
 
         boolean error2 = AParametros();
 
-        error1 = error2 || !TablaSimbolos.existe(ts, lex) || !TablaSimbolos.getProps(ts, lex).getClase().equals("proc");
-        cod.appendIns(new IrA(new Nat(TablaSimbolos.getProps(ts,lex).getDir())));
+        error1 = error2 || !GestorTs.existe(ts, lex) || !GestorTs.getProps(ts, lex).getClase().equals("proc");
+        cod.appendIns(new IrA(new Nat(GestorTs.getProps(ts,lex).getDir())));
         etq += 1;
 
         return error1;
@@ -1190,7 +1190,7 @@ public abstract class Traductor {
 	errorh3 = (tipo2.getT().equals("error")) ||
                     (parametros.size() < 1) ||
                     (parametros.get(0).getModo().equals("var") && modo2.equals("val")) ||
-                    ! TablaSimbolos.compatibles(parametros.get(0).getTipo(),tipo2,ts);
+                    ! GestorTs.compatibles(parametros.get(0).getTipo(),tipo2,ts);
         cod.appendCod(pasoParametro(modo2,parametros.get(0)));
 	etq += longPasoParametro;
 
@@ -1220,7 +1220,7 @@ public abstract class Traductor {
                     tipo2.getT().equals("error") ||
                     parametros.size() < nparamh1 +1 ||
                     parametros.get(nparamh1).getModo().equals("var") ||
-                    ! TablaSimbolos.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
+                    ! GestorTs.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
 
             etq += longPasoParametro;
             cod.appendCod(pasoParametro(modo2,parametros.get(nparamh1)));
@@ -1252,11 +1252,11 @@ public abstract class Traductor {
                     + textoError());
             }
 
-            error1 = TablaSimbolos.existe(ts,lex);
+            error1 = GestorTs.existe(ts,lex);
 
-            int d = TablaSimbolos.getProps(ts, lex).getDir();
+            int d = GestorTs.getProps(ts, lex).getDir();
             Nat nd = new Nat(d);
-            String t = TablaSimbolos.getProps(ts, lex).getTipo().getT();
+            String t = GestorTs.getProps(ts, lex).getTipo().getT();
             if (t.equals("boolean"))
                 cod1 = new Codigo(new EntradaBool(nd));
             else if (t.equals("entero"))
@@ -1312,8 +1312,8 @@ public abstract class Traductor {
         String modo3 = (String) expRes[1];
 
         etq += 1;
-        error1 = ! TablaSimbolos.compatibles(tipo2, tipo3,ts);
-        if (TablaSimbolos.esCompatibleConTipoBasico(tipo2, ts))
+        error1 = ! GestorTs.compatibles(tipo2, tipo3,ts);
+        if (GestorTs.esCompatibleConTipoBasico(tipo2, ts))
             cod.appendIns(new DesapilaInd());
         else
             cod.appendIns(new Mueve(new Nat(tipo2.getTam())));
@@ -1442,7 +1442,7 @@ public abstract class Traductor {
             }
 
             etq += 1;
-            cod.appendIns( new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())) );
+            cod.appendIns( new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())) );
                     
             Object[] expRes2 = Expresion(parh3);
             TipoTs tipo3 = (TipoTs) expRes2[0];
@@ -1455,7 +1455,7 @@ public abstract class Traductor {
 
             etq+=4;
             cod.appendIns(new Copia());
-            cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
+            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
             cod.appendIns(new Igual());
             cod.appendIns(null);
             aux = etq;
@@ -1464,13 +1464,13 @@ public abstract class Traductor {
 
             error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
                             (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
-                            (!TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("natural") && !TablaSimbolos.getProps(ts, lex).getTipo().getT().equals("integer"));
+                            (!GestorTs.getProps(ts, lex).getTipo().getT().equals("natural") && !GestorTs.getProps(ts, lex).getTipo().getT().equals("integer"));
             cod.insertaCod(new IrTrue(new Nat(etq -1)), aux);
 
-            cod.appendIns(new ApilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
+            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
             cod.appendIns(new Apilar(new Nat(1)));
             cod.appendIns(new Suma());
-            cod.appendIns(new DesapilarDir(new Nat(TablaSimbolos.getProps(ts, lex).getDir())));
+            cod.appendIns(new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
             cod.appendIns(new IrA(new Nat(aux))); //creo q está bien asi
             cod.appendIns(new Desapilar());
             etq += 6;
@@ -1486,7 +1486,7 @@ public abstract class Traductor {
             etq += 2;
             int num;
             if (tipo2.getBase().getT().equals("ref"))
-                num = TablaSimbolos.getProps(ts,tipo2.getBase().getId()).getTipo().getTam(); //no se si esta bien
+                num = GestorTs.getProps(ts,tipo2.getBase().getId()).getTipo().getTam(); //no se si esta bien
             else num = 1;
             cod.appendIns(new New(new Nat(num)));
             cod.appendIns(new DesapilaInd());
@@ -1502,7 +1502,7 @@ public abstract class Traductor {
             error1 = !tipo2.getT().equals("puntero");
             etq+=1;
             if (tipo2.getBase().getT().equals("ref"))
-                cod.appendIns(new Salida( new Nat(TablaSimbolos.getProps(ts, tipo2.getBase().getId()).getDir()))); //tam?? hay tamaño
+                cod.appendIns(new Salida( new Nat(GestorTs.getProps(ts, tipo2.getBase().getId()).getDir()))); //tam?? hay tamaño
             else
 		cod.appendIns(new Salida(new Nat(1)));
         }
@@ -1515,9 +1515,9 @@ public abstract class Traductor {
 
         String lex = identificador();
 
-        if (TablaSimbolos.existe(ts, lex)){
-            if (TablaSimbolos.getProps(ts, lex).getClase().equals("var"))
-                tipo2h = TablaSimbolos.ref(TablaSimbolos.getProps(ts, lex).getTipo(), ts);
+        if (GestorTs.existe(ts, lex)){
+            if (GestorTs.getProps(ts, lex).getClase().equals("var"))
+                tipo2h = GestorTs.ref(GestorTs.getProps(ts, lex).getTipo(), ts);
             else 
                 tipo2h.setT("error");
         }
@@ -1551,7 +1551,7 @@ public abstract class Traductor {
         TipoTs tipoh2 = null;
 
         if (tipoh1.getT().equals("puntero"))
-            tipoh2= TablaSimbolos.ref(tipoh1.getBase(),ts);
+            tipoh2= GestorTs.ref(tipoh1.getBase(),ts);
         else tipoh2 = new TipoTs("error");
 
 	etq += 1;
@@ -1584,7 +1584,7 @@ public abstract class Traductor {
             cod.appendIns(new Multiplica());
             cod.appendIns(new Suma());
             if (tipoh1.getT().equals("array") && tipo2.getT().equals("num"))
-                tipoh3 = TablaSimbolos.ref(tipoh1.getBase(),ts);
+                tipoh3 = GestorTs.ref(tipoh1.getBase(),ts);
             else tipoh3 = new TipoTs("error");
 
             TipoTs tipo3 = MemRec(tipoh3);
@@ -1605,7 +1605,7 @@ public abstract class Traductor {
 
             if (tipoh1.getT().equals("record"))
                 if (Campo.existeCampo(tipoh1.getCampos(),lex))
-                        tipoh2 = TablaSimbolos.ref(tipoh1.getCampo(Integer.parseInt(lex)).getTipo(),ts);
+                        tipoh2 = GestorTs.ref(tipoh1.getCampo(Integer.parseInt(lex)).getTipo(),ts);
                 else tipoh2 = new TipoTs("error");
             else tipoh2 = new TipoTs("error");
 
@@ -1637,7 +1637,7 @@ public abstract class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-    protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1) throws LectorExc{
+    protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
 
@@ -1649,7 +1649,7 @@ public abstract class Traductor {
         boolean parh2 = false;
 
         //FIXME: Esto es ExpresionNiv1 o ExpresionNiv1Rec?
-        Object[] resExpNiv1 = ExpresionNiv1(tipoh1, modoh1);
+        Object[] resExpNiv1 = ExpresionNiv1(parh2);
         TipoTs tipo2 = (TipoTs) resExpNiv1[0];
         String modo2 = (String) resExpNiv1[1];
 
@@ -2106,7 +2106,7 @@ public abstract class Traductor {
 
         TipoTs tipo2 = Mem();
     
-        if (TablaSimbolos.esCompatibleConTipoBasico(tipo2,ts) && !parh1){
+        if (GestorTs.esCompatibleConTipoBasico(tipo2,ts) && !parh1){
             cod.appendIns(new ApilarInd());
             etq += 1;
         }

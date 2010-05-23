@@ -8,22 +8,22 @@ import java.util.Iterator;
 import java.util.Stack;
 
 /**
- * Clase gestora de la Tabla de Símbolos. Contiene una Tabla de Símbolos por cada ámbito
+ * Clase gestora de la Tabla de Sï¿½mbolos. Contiene una Tabla de Sï¿½mbolos por cada ï¿½mbito
  * @author GRUPO 3: Gonzalo Ortiz Jaureguizar, Alicia Perez Jimenez, Laura Reyero Sainz, Hector Sanjuan Redondo, Ruben Tarancon Garijo
  */
 public class GestorTs {
 
     /**
-     * Indica el ámbito actual
+     * Indica el ï¿½mbito actual
      */
     private int ambitoActual;
     /**
-     * Pila que contiene una Tabla de Símbolos por cada ámbito creado
+     * Pila que contiene una Tabla de Sï¿½mbolos por cada ï¿½mbito creado
      */
     private Stack<TablaSimbolos> ts;
 
     /**
-     * Constructor que genera una Tabla de Símbolos vacía por defecto
+     * Constructor que genera una Tabla de Sï¿½mbolos vacï¿½a por defecto
      */
     public GestorTs() {
         this.ambitoActual = 1;
@@ -31,8 +31,9 @@ public class GestorTs {
         this.ts.push(new TablaSimbolos());
     }
 
+
     /**
-     * Crea una nueva Tabla de Símbolos para un nuevo ámbito
+     * Crea una nueva Tabla de Sï¿½mbolos para un nuevo ï¿½mbito
      */
     public void crearTS() {
         this.ts.push(new TablaSimbolos());
@@ -40,15 +41,19 @@ public class GestorTs {
     }
 
     /**
-     * Cierra un ámbito dentro del gestor
+     * Cierra un ï¿½mbito dentro del gestor
      */
     public void cerrarAmbitoActual() {
         this.ts.pop();
         this.ambitoActual--;
     }
 
+    public Stack<TablaSimbolos> getTs(){
+        return ts;
+    }
+
     /**
-     * Busca una entrada en todos los ámbitos de la Tabla de Símbolos
+     * Busca una entrada en todos los ï¿½mbitos de la Tabla de Sï¿½mbolos
      * @param id Identificador del lexema a buscar
      * @return La entrada buscada
      */
@@ -67,7 +72,7 @@ public class GestorTs {
     }
 
     /**
-     * Busca una entrada en el ámbito actual
+     * Busca una entrada en el ï¿½mbito actual
      * @param id Identificador del lexema a buscar
      * @return La entrada del lexema buscado
      */
@@ -76,10 +81,11 @@ public class GestorTs {
     }
 
     /**
-     * Inserta una nueva entrada en el ámbito actual
+     * Inserta una nueva entrada en el ï¿½mbito actual
      * @param lexema Identificador del lexema que queremos introducir
      * @return La entrada introducida
      */
+    //creo que esta mal
     public void insertaEntrada(String id) {
 
         TablaSimbolos actual = ts.lastElement();
@@ -90,6 +96,41 @@ public class GestorTs {
         } else {
             //excepcion
         }
+    }
+
+
+   //------------------IMPLEMENTACION RUBEN------------------------------
+
+
+
+    public static void inserta(GestorTs gestor, String id, InfoTs props){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        TablaSimbolos.inserta(actual, id, props);
+    }
+    
+    public static boolean existe(GestorTs ts, String id) {
+        return false;
+    }
+
+    public static InfoTs getProps(GestorTs ts,String id){
+        return null;
+    }
+
+    public static boolean existeRef(GestorTs ts, TipoTs tipo){
+        return false;
+        //sin implementar
+    }
+    public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, GestorTs ts){
+        return false;
+        //sin implementar
+    }
+    public static TipoTs ref(TipoTs tipo, GestorTs ts){
+        return null;
+        //sin implementar
+    }
+    public static boolean esCompatibleConTipoBasico(TipoTs tipo, GestorTs ts){
+        return false;
+        //sin implementar
     }
 
     /**
