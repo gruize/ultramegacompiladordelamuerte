@@ -108,29 +108,31 @@ public class GestorTs {
         TablaSimbolos.inserta(actual, id, props);
     }
     
-    public static boolean existe(GestorTs ts, String id) {
-        return false;
+    public static boolean existe(GestorTs gestor, String id) {
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.existe(actual, id);
     }
 
-    public static InfoTs getProps(GestorTs ts,String id){
-        return null;
+    public static InfoTs getProps(GestorTs gestor,String id){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.getProps(actual, id);
     }
 
-    public static boolean existeRef(GestorTs ts, TipoTs tipo){
-        return false;
-        //sin implementar
+    public static boolean existeRef(GestorTs gestor, TipoTs tipo){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.existeRef(actual, tipo);
     }
-    public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, GestorTs ts){
-        return false;
-        //sin implementar
+    public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, GestorTs gestor){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.compatibles(tipo1, tipo2, actual);
     }
-    public static TipoTs ref(TipoTs tipo, GestorTs ts){
-        return null;
-        //sin implementar
+    public static TipoTs ref(TipoTs tipo, GestorTs gestor){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.ref(tipo, actual);
     }
-    public static boolean esCompatibleConTipoBasico(TipoTs tipo, GestorTs ts){
-        return false;
-        //sin implementar
+    public static boolean esCompatibleConTipoBasico(TipoTs tipo, GestorTs gestor){
+        TablaSimbolos actual = gestor.getTs().lastElement();
+        return TablaSimbolos.esCompatibleConTipoBasico(tipo, actual);
     }
 
     /**

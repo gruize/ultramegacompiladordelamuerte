@@ -1,5 +1,6 @@
 package compilador.tablaSimbolos;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 
@@ -11,11 +12,13 @@ public class TablaSimbolos {
 	
 	
 	Hashtable<String,InfoTs> ht;
+        static ArrayList<Object[]> visitados;
 	
 	public TablaSimbolos(){
 		ht=new Hashtable<String,InfoTs>();
+                visitados = new ArrayList<Object[]>();
 	}
-	
+
     /**
      * Devuelve una tabla de símbolos vacía
      */
@@ -72,12 +75,45 @@ public class TablaSimbolos {
         //sin implementar
     }
     public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, TablaSimbolos ts){
+        visitados = null;
+        visitados = new ArrayList<Object[]>();
+        Object[] par = new Object[]{tipo1,tipo2};
+        if (visitados.contains(par))
+            return true;
+        else visitados.add(par);
+
+        if (tipo1.getT().equals("natural") || tipo2.getT().equals("natural") ||
+                tipo1.getT().equals("integer") || tipo2.getT().equals("integer") ||
+                tipo1.getT().equals("float") || tipo2.getT().equals("float") ||
+                tipo1.getT().equals("boolean") || tipo2.getT().equals("boolean") ||
+                tipo1.getT().equals("character") || tipo2.getT().equals("character"))
+            return true;
+        else if (tipo1.getT().equals("puntero"))
+                return compatibles(TablaSimbolos.getProps(ts,tipo1.getId()).getTipo(),tipo2,ts);
+        else if (tipo2.getT().equals("puntero"))
+                return compatibles(tipo1,TablaSimbolos.getProps(ts,tipo2.getId()).getTipo(),ts);
+        else if (tipo1.getT().equals("array") && tipo2.getT().equals("array"))
+                return compatibles(tipo1.getBase(),tipo2.getBase(),ts);
+        else if ((tipo1.getT().equals("record") && tipo2.getT().equals("record")) ||
+                 tipo1.getCampos().size() == tipo2.getCampos().size()){
+                 for (int i=0; i<tipo1.getCampos().size(); i++){
+                     if (!compatibles(tipo1.getCampo(i).getTipo(),tipo2.getCampo(i).getTipo(), ts))
+                         return false;
+                 }
+                 return true;
+        }
+        else if (tipo1.getT().equals("puntero") && tipo2.getT().equals("puntero"))
+                return compatibles(tipo1.getBase(),tipo2.getBase(),ts);
         return false;
-        //sin implementar
     }
     public static TipoTs ref(TipoTs tipo, TablaSimbolos ts){
-        return null;
-        //sin implementar
+        TipoTs res = null;
+        if (tipo.getT().equals("puntero"))
+            if (TablaSimbolos.existe(ts, tipo.getId()))
+                return ref(TablaSimbolos.getProps(ts, tipo.getId()).getTipo(), ts);
+            else res = new TipoTs("error");
+        else return tipo;
+        return res;
     }
     public static boolean esCompatibleConTipoBasico(TipoTs tipo, TablaSimbolos ts){
         return false;
