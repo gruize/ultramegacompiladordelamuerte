@@ -601,25 +601,28 @@ public class Traductor {
             id2 = (String) decVarRes[1];
             props2 = (InfoTs) decVarRes[2];
 
-            error1 = true;
+            error1 = error2V;
             id1= id2;
             tam1 = props2.getTipo().getTam();
             props2.setDir(dir);
+            props1 = props2;
+            //props1 = InfoTs.clone(props2);
 
         }else if (! error2P){
             id2 = (String) decProcRes[1];
             props2 = (InfoTs) decProcRes[2];
 
-            error1 = true;
+            error1 = error2P;
             tam1= 0;
             id1=id2;
-            props1=InfoTs.clone(props2);
+            props1 = props2;
+            //props1=InfoTs.clone(props2);
 
         }else if (! error2T){
             id2 = (String) decTipoRes[1];
 
             tam1 = 0;
-            error1 = true;
+            error1 = error2T;
             id1=id2;
             //props = <>
         }else {
@@ -1100,35 +1103,43 @@ public class Traductor {
     }
     protected boolean Instruccion() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
-        boolean error2Proc = InsProcedimiento();
-        boolean error2Lect = InsLectura();
-        boolean error2Escr = InsEscritura();
-        boolean error2Comp = InsCompuesta();
-        boolean error2If= InsIf();
-        boolean error2While = InsWhile();
-        boolean error2For = InsFor();
-        boolean error2New = InsNew();
-        boolean error2Dis = InsDis();
-
-        if(! error2Proc){
-
-        }else if (!error2Lect){
-            error1 = error2Lect;
-        }else if (!error2Escr){
-            error1 = error2Escr;
-        }else if (!error2Comp){
-            error1 = error2Comp;
-        }else if (!error2If){
-            error1 = error2If;
-        }else if (!error2While){
-            error1 = error2While;
-        }else if (!error2For){
-            error1 = error2For;
-        }else if (!error2New){
-            error1 = error2New;
-        }else if (!error2Dis){
-            error1 = error2Dis;
-        }else {
+        Token t= sigToken();
+        atrasToken();
+        if (t instanceof Identificador){
+            Token t2 = sigToken();
+            atrasToken();
+            if (t2 instanceof Parentesis_a){
+                error1 = InsProcedimiento();
+            }
+            else{
+                error1 = InsAsignacion();
+            }
+        }
+        else if (t instanceof Token_In){
+            error1 = InsLectura();
+        }
+        else if (t instanceof Token_Out){
+            error1 = InsEscritura();
+        }
+        else if (t instanceof Corchete_a){
+            error1 = InsCompuesta();
+        }
+        else if (t instanceof If){
+            error1 = InsIf();
+        }
+        else if (t instanceof While){
+            error1 = InsWhile();
+        }
+        else if (t instanceof For){
+            error1 = InsFor();
+        }
+        else if (t instanceof Token_New){
+            error1 = InsNew();
+        }
+        else if (t instanceof Token_Dispose){
+            error1 = InsDis();
+        }
+        else {
             error1 = true;
             errores.add(new ErrorTraductor("Hay errores en la(s) Instrucciones(es) " + textoError()));
         }
@@ -1530,16 +1541,21 @@ public class Traductor {
     }
     protected TipoTs MemRec(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
-        TipoTs tipoPuntero = MemRecPuntero(tipoh1);
-        TipoTs tipoArray = MemRecArray(tipoh1);
-        TipoTs tipoCampo = MemRecCampo(tipoh1);
 
-        if(!tipoPuntero.getT().equals("error"))
-            tipo1 = tipoPuntero;
-        else if (!tipoArray.getT().equals("error"))
-            tipo1 = tipoArray;
-        else if (!tipoCampo.getT().equals("error"))
-            tipo1 = tipoCampo;
+        Token t = sigToken();
+        atrasToken();
+        if (t instanceof Circunflejo){
+            tipo1 = MemRecPuntero(tipoh1);
+        }
+        else if (t instanceof Corchete_a){
+            tipo1 = MemRecArray(tipoh1);
+        }
+        else if (t instanceof Punto){
+            tipo1 = MemRecCampo(tipoh1);
+        }
+        else if (t instanceof Identificador){
+            tipo1 = MemRecIdentificador();
+        }
         else
             //->lamda
             tipo1 = tipoh1;
@@ -1550,16 +1566,18 @@ public class Traductor {
         TipoTs tipo1 = null;
         TipoTs tipoh2 = null;
 
-        if (tipoh1.getT().equals("puntero"))
-            tipoh2= GestorTs.ref(tipoh1.getBase(),ts);
-        else tipoh2 = new TipoTs("error");
+        if (circunflejo()){
+            if (tipoh1.getT().equals("puntero"))
+                tipoh2= GestorTs.ref(tipoh1.getBase(),ts);
+            else tipoh2 = new TipoTs("error");
 
-	etq += 1;
-	cod.appendIns(new ApilarInd());
+            etq += 1;
+            cod.appendIns(new ApilarInd());
 
-        TipoTs tipo2 = MemRec(tipoh2);
+            TipoTs tipo2 = MemRec(tipoh2);
 
-	tipo1 = tipo2;
+            tipo1 = tipo2;
+        }
         return tipo1;
     }
     protected TipoTs MemRecArray(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
@@ -1615,6 +1633,29 @@ public class Traductor {
         }
         return tipo1;
     }
+    protected TipoTs MemRecIdentificador() throws LectorExc, DatoExc, Exception{
+        TipoTs tipo1 = null;
+        TipoTs tipo2h = null;
+
+        String lex = identificador();
+
+        if (GestorTs.existe(ts, lex)){
+            if (GestorTs.getProps(ts, lex).getClase().equals("var"))
+                tipo2h = GestorTs.ref(GestorTs.getProps(ts, lex).getTipo(),ts);
+            else tipo2h = new TipoTs("error");
+        }
+        else tipo2h = new TipoTs("error");
+
+        etq += longAccesoVar(GestorTs.getProps(ts, lex)); //mirar
+        cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
+
+
+        TipoTs tipo2 = MemRec(tipo2h);
+
+        tipo1 = tipo2;
+
+        return tipo1;
+    }
     protected Object[] Expresion(boolean parh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
@@ -1644,7 +1685,7 @@ public class Traductor {
         Operaciones op=OpNiv0();
 
         if (op==null){//->lamda
-            return new Object[]{modoh1,tipoh1};
+            return new Object[]{tipoh1,modoh1};
         }
         boolean parh2 = false;
 
@@ -1948,39 +1989,24 @@ public class Traductor {
         TipoTs tipo1 = null;
         String modo1 = "";
 
-        Object[] resExpNiv4_conOp = ExpresionNiv4_conOp(parh1);
-        Object[] resExpNiv4_valorAbs = ExpresionNiv4_valorAbs(parh1);
-        Object[] resExpNiv4_abrePar = ExpresionNiv4_abrePar(parh1);
-        Object[] resExpNiv4_literal = ExpresionNiv4_literal(parh1);
-        Object[] resExpNiv4_mem = ExpresionNiv4_mem(parh1);
+        Token t = sigToken();
+        atrasToken();
 
-        String error_conOp = ((TipoTs) resExpNiv4_conOp[0]).getT();
-        String error_valorAbs = ((TipoTs) resExpNiv4_valorAbs[0]).getT();
-        String error_abrePar = ((TipoTs) resExpNiv4_abrePar[0]).getT();
-        String error_literal = ((TipoTs) resExpNiv4_literal[0]).getT();
-        String error_mem = ((TipoTs) resExpNiv4_mem[0]).getT();
-
-        if (!error_conOp.equals("error")){
-            tipo1 = (TipoTs) resExpNiv4_conOp[0];
-            modo1 = (String) resExpNiv4_conOp[1];
+        if (t instanceof Not || t instanceof Signo_menos || t instanceof Cast_float || t instanceof Cast_int || t instanceof Cast_nat || t instanceof Cast_char){
+            return ExpresionNiv4_conOp(parh1);
         }
-        else if (!error_conOp.equals("error")){
-            tipo1 = (TipoTs)resExpNiv4_valorAbs[0];
-            modo1 = (String)resExpNiv4_valorAbs[1];
+        else if ( t instanceof Token_Absoluto){
+            return ExpresionNiv4_valorAbs(parh1);
         }
-        else if (!error_conOp.equals("error")){
-            tipo1 = (TipoTs)resExpNiv4_abrePar[0];
-            modo1 = (String)resExpNiv4_abrePar[1];
+        else if (t instanceof Parentesis_a){
+            return ExpresionNiv4_abrePar(parh1);
         }
-        else if (!error_conOp.equals("error")){
-            tipo1 = (TipoTs)resExpNiv4_literal[0];
-            modo1 = (String)resExpNiv4_literal[1];
+        else if (t instanceof LitNat || t instanceof LitFlo || t instanceof LitTrue || t instanceof LitFalse || t instanceof LitCha) {
+            return ExpresionNiv4_literal(parh1);
         }
-        else if (!error_conOp.equals("error")){
-            tipo1 = (TipoTs)resExpNiv4_mem[0];
-            modo1 = (String)resExpNiv4_mem[1];
+        else if (t instanceof Identificador){
+            return ExpresionNiv4_mem(parh1);
         }
-
         return new Object[]{tipo1,modo1};
     }
     protected Object[] ExpresionNiv4_conOp(boolean parh1) throws LectorExc, Exception{
@@ -2115,8 +2141,6 @@ public class Traductor {
 
         return new Object[]{tipo1,modo1};
     }
-
-    //Literal(out: tipo1, cod1)
     protected TipoTs Literal() throws Exception {
         Token t = sigToken();
         if (t instanceof LitNat) {
@@ -2204,7 +2228,6 @@ public class Traductor {
         atrasToken();
         return null;
     }
-
     protected Operaciones OpNiv1() {
         Token t = sigToken();
         if (t instanceof compilador.lexico.Tokens.Token_Suma) {
@@ -2219,7 +2242,6 @@ public class Traductor {
         atrasToken();
         return null;
     }
-
     protected Operaciones OpNiv2() {
         Token t = sigToken();
         if (t instanceof Token_Multiplicacion) {
@@ -2237,7 +2259,6 @@ public class Traductor {
         atrasToken();
         return null;
     }
-
     protected Operaciones OpNiv3() {
         Token t = sigToken();
         if (t instanceof compilador.lexico.Tokens.Token_Shl) {
@@ -2249,7 +2270,6 @@ public class Traductor {
         atrasToken();
         return null;
     }
-
     protected Operaciones OpNiv4() {
         Token t = sigToken();
         if (t instanceof Not) {

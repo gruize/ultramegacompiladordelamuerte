@@ -18,7 +18,8 @@ public class TipoTs {
 
 
     public TipoTs(){
-
+        campos = new ArrayList<Campo>();
+        parametros = new ArrayList<Parametro>();
     }
     public TipoTs(String t){
         this.t=t;
@@ -77,13 +78,11 @@ public class TipoTs {
     public TipoTs getBase(){
         return tbase;
     }
-    public TipoTs clone(TipoTs tipo){
-        TipoTs res=new TipoTs();
-        res.t = tipo.t;
-        res.tam = tipo.tam;
-        res.id = tipo.id;
-        res.campos = (ArrayList<Campo>) tipo.campos.clone();
-        res.parametros = (ArrayList<Parametro>) tipo.parametros.clone();
-        return res;
+    public void clona(TipoTs tipo){
+        this.t = tipo.t;
+        this.tam = tipo.tam;
+        this.id = tipo.id;
+        this.campos = (ArrayList<Campo>) tipo.campos.clone();
+        this.parametros = (ArrayList<Parametro>) tipo.parametros.clone();
     }
 }

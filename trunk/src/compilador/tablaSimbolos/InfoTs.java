@@ -20,6 +20,7 @@ public class InfoTs {
         this.nivel = n;
     }
     public InfoTs(){
+        tipo = new TipoTs();
 
     }
 
@@ -55,7 +56,7 @@ public class InfoTs {
         res.clase=props.getClase();
         res.dir = props.getDir();
         res.nivel = props.getNivel();
-        res.tipo.clone(props.tipo);
+        res.tipo.clona(props.getTipo());
         return res;
     }
 	
