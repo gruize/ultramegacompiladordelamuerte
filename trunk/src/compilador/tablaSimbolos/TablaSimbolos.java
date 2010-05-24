@@ -71,7 +71,7 @@ public class TablaSimbolos {
     }
 
     public static boolean refErronea(TablaSimbolos ts, TipoTs tipo){
-        return tipo.getT().equals("pointer") && !TablaSimbolos.existe(ts, tipo.getId());
+        return tipo.getT().equals("ref") && !TablaSimbolos.existe(ts, tipo.getId());
     }
     public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, TablaSimbolos ts){
         visitados = null;
@@ -107,7 +107,7 @@ public class TablaSimbolos {
     }
     public static TipoTs ref(TipoTs tipo, TablaSimbolos ts){
         TipoTs res = null;
-        if (tipo.getT().equals("puntero"))
+        if (tipo.getT().equals("ref"))
             if (TablaSimbolos.existe(ts, tipo.getId()))
                 return ref(TablaSimbolos.getProps(ts, tipo.getId()).getTipo(), ts);
             else res = new TipoTs("error");

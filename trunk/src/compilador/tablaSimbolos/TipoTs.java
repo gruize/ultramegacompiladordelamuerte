@@ -66,9 +66,22 @@ public class TipoTs {
     public ArrayList<Campo> getCampos(){
         return campos;
     }
+    public Campo getCampo(String lex){
+        if (Campo.existeCampo(campos,lex)){
+            for (int i=0; i<campos.size();i++){
+                Campo c = campos.get(i);
+                if (c.getId().equals(lex)){
+                    return c;
+                }
+            }
+        }
+        return null;
+    }
+
     public Campo getCampo(int i){
         return campos.get(i);
     }
+
     public ArrayList<Parametro> getParametros(){
         return parametros;
     }

@@ -589,6 +589,9 @@ public class Traductor {
 
             dir+=tam2;
             errorh3= errorh1 || error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
+            GestorTs.inserta(ts,id2,props2);
+            if (props2.getClase().equals("tipo"))
+                pend.remove(id2);
 
             boolean error3 = DeclaracionesRec(errorh3);
 
@@ -680,15 +683,12 @@ public class Traductor {
         String id1 = "";
         InfoTs props1 = null;
 
-        String lex= identificador();
-        if(! dosPuntos()){
-            throw new Exception("FATAL: Se esperaba simbolo :"
-                    + textoError());
-        }
         Object[] tipoRes = Tipo();
         boolean error2 = (Boolean) tipoRes[0];
         TipoTs tipo2 = (TipoTs) tipoRes[1];
 
+        String lex= identificador();
+        
         id1 = lex;
         props1 = new InfoTs("var",tipo2,n);
         error1 = error2  || (GestorTs.existe(ts,lex) && (GestorTs.refErronea(ts,tipo2)));
@@ -1137,9 +1137,9 @@ public class Traductor {
     protected boolean Instruccion() throws DatoExc, LectorExc, Exception{
         boolean error1 = false;
         Token t= sigToken();
-        atrasToken();
         if (t instanceof Identificador){
             Token t2 = sigToken();
+            atrasToken();
             atrasToken();
             if (t2 instanceof Parentesis_a){
                 error1 = InsProcedimiento();
@@ -1149,27 +1149,35 @@ public class Traductor {
             }
         }
         else if (t instanceof Token_In){
+            atrasToken();
             error1 = InsLectura();
         }
         else if (t instanceof Token_Out){
+            atrasToken();
             error1 = InsEscritura();
         }
         else if (t instanceof Corchete_a){
+            atrasToken();
             error1 = InsCompuesta();
         }
         else if (t instanceof If){
+            atrasToken();
             error1 = InsIf();
         }
         else if (t instanceof While){
+            atrasToken();
             error1 = InsWhile();
         }
         else if (t instanceof For){
+            atrasToken();
             error1 = InsFor();
         }
         else if (t instanceof Token_New){
+            atrasToken();
             error1 = InsNew();
         }
         else if (t instanceof Token_Dispose){
+            atrasToken();
             error1 = InsDis();
         }
         else {
@@ -1634,7 +1642,7 @@ public class Traductor {
             cod.appendIns(new Apilar(new Nat(tipoh1.getBase().getTam())));
             cod.appendIns(new Multiplica());
             cod.appendIns(new Suma());
-            if (tipoh1.getT().equals("array") && tipo2.getT().equals("num"))
+            if (tipoh1.getT().equals("array") && tipo2.getT().equals("natural"))
                 tipoh3 = GestorTs.ref(tipoh1.getBase(),ts);
             else tipoh3 = new TipoTs("error");
 
@@ -1651,12 +1659,12 @@ public class Traductor {
         if (punto()){
             String lex =identificador();
             etq += 2;
-            cod.appendIns(new Apilar(new Nat(tipoh1.getCampo(Integer.parseInt(lex)).getDesp())));
+            cod.appendIns(new Apilar(new Nat(tipoh1.getCampo(lex).getDesp())));
             cod.appendIns(new Suma());
 
             if (tipoh1.getT().equals("record"))
                 if (Campo.existeCampo(tipoh1.getCampos(),lex))
-                        tipoh2 = GestorTs.ref(tipoh1.getCampo(Integer.parseInt(lex)).getTipo(),ts);
+                        tipoh2 = GestorTs.ref(tipoh1.getCampo(lex).getTipo(),ts);
                 else tipoh2 = new TipoTs("error");
             else tipoh2 = new TipoTs("error");
 
