@@ -731,6 +731,10 @@ public class Traductor {
         boolean error1=false;
         int inicio1 = 0;
 
+        if (!abreLlave()){
+            throw new Exception("FATAL: Se esperaba abre llave"
+                    + textoError());
+        }
         boolean error2=Declaraciones();
 
         if (!error2){
@@ -749,6 +753,11 @@ public class Traductor {
         }
 
         boolean error3 = Instrucciones();
+
+        if (!cierraLlave()){
+            throw new Exception("FATAL: Se esperaba cierra llave"
+                    + textoError());
+        }
 
         error1 = error2 || error3;
 	etq += longEpilogo + 1;
