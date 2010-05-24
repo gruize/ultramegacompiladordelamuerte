@@ -1,0 +1,9 @@
+tipo tsecuencia = record{
+    integer tope;
+    array[100] of float valores
+    };
+tsecuencia secuencia
+
+&
+
+secuencia.valores[2] := 2.0
