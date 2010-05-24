@@ -89,63 +89,67 @@ public class AnalizadorLexico {
 	private static final int CASTING_INT1 =4;
 	private static final int CASTING_INT2 = 5;
 	private static final int CASTING_INT3 =6;
-	private static final int CAST_INT = 7;
-	private static final int CASTING_NAT1 = 8;
-	private static final int CASTING_NAT2 = 9;
-	private static final int CASTING_NAT3 = 10;
-	private static final int CAST_NAT = 11;
-	private static final int CASTING_FLOAT1 = 12;
-	private static final int CASTING_FLOAT2 = 13;
-	private static final int CASTING_FLOAT3 = 14;
-	private static final int CASTING_FLOAT4 = 15;
-	private static final int CASTING_FLOAT5 = 16;
-	private static final int CAST_FLOAT = 17;
-	private static final int CASTING_CHAR1 = 18;
-	private static final int CASTING_CHAR2 = 19;
-	private static final int CASTING_CHAR3 = 20;
-	private static final int CASTING_CHAR4 = 21;
-	private static final int CAST_CHAR = 22;
-	private static final int MAYOR = 23;
-	private static final int SHL = 24;
-	private static final int MAYOR_IG = 25;
-	private static final int MENOR = 26;
-	private static final int SHR = 27;
-	private static final int MENOR_IG = 28;
-	private static final int DOS_PUNTOS = 29;
-	private static final int DOS_PUNTOS_IG = 30;
-	private static final int IGUAL = 31;
-	private static final int DISTINTO1 = 32;
-	private static final int DISTINTO = 33;
-	private static final int LIT_NAT1 = 34;
-	private static final int LIT_NAT2 = 35;
-	private static final int FLOAT1 = 36;
-	private static final int LIT_FLO1 = 37;
-	private static final int LIT_FLO2 = 38;
-	private static final int FLOAT2 = 39;
-	private static final int FLOAT3 = 40;
-	private static final int LIT_FLO3 = 41;
-	private static final int FLOAT4 = 42;
-	private static final int LIT_FLO4 = 43;
-	private static final int SEPARADOR = 44;
-	private static final int PUNTO_COMA = 45;
-	private static final int SUMA = 46;
-	private static final int MULTIPLICACION = 47;
-	private static final int DIVISION = 48;
-	private static final int MODULO = 49;
-	private static final int ABSOLUTO = 50;
-	private static final int CADENA = 51;
-	private static final int CHAR1 = 52;
-	private static final int CHAR2 = 53;
-	private static final int LIT_CHA = 54;
-	private static final int SIGNO_MENOS = 55;
-        private static final int LLAVE_A = 56;
-	private static final int LLAVE_C = 57;
-	private static final int CIRCUNFLEJO = 58;
-	private static final int PUNTO = 59;
-	private static final int CORCHETE_A = 60;
-	private static final int CORCHETE_C = 61;
-        private static final int FLECHA = 62;
-        private static final int COMA = 63;
+        private static final int CASTING_INT4 =7;
+	private static final int CAST_INT = 8;
+	private static final int CASTING_NAT1 = 9;
+	private static final int CASTING_NAT2 = 10;
+	private static final int CASTING_NAT3 = 11;
+        private static final int CASTING_NAT4 = 12;
+	private static final int CAST_NAT = 13;
+	private static final int CASTING_FLOAT1 = 14;
+	private static final int CASTING_FLOAT2 = 15;
+	private static final int CASTING_FLOAT3 = 16;
+	private static final int CASTING_FLOAT4 = 17;
+	private static final int CASTING_FLOAT5 = 18;
+        private static final int CASTING_FLOAT6 = 19;
+	private static final int CAST_FLOAT = 20;
+	private static final int CASTING_CHAR1 = 21;
+	private static final int CASTING_CHAR2 = 22;
+	private static final int CASTING_CHAR3 = 23;
+	private static final int CASTING_CHAR4 = 24;
+        private static final int CASTING_CHAR5 = 25;
+	private static final int CAST_CHAR = 26;
+	private static final int MAYOR = 27;
+	private static final int SHL = 28;
+	private static final int MAYOR_IG = 29;
+	private static final int MENOR = 30;
+	private static final int SHR = 31;
+	private static final int MENOR_IG = 32;
+	private static final int DOS_PUNTOS = 33;
+	private static final int DOS_PUNTOS_IG = 34;
+	private static final int IGUAL = 35;
+	private static final int DISTINTO1 = 36;
+	private static final int DISTINTO = 37;
+	private static final int LIT_NAT1 = 38;
+	private static final int LIT_NAT2 = 39;
+	private static final int FLOAT1 = 40;
+	private static final int LIT_FLO1 = 41;
+	private static final int LIT_FLO2 = 42;
+	private static final int FLOAT2 = 43;
+	private static final int FLOAT3 = 44;
+	private static final int LIT_FLO3 = 45;
+	private static final int FLOAT4 = 46;
+	private static final int LIT_FLO4 = 47;
+	private static final int SEPARADOR = 48;
+	private static final int PUNTO_COMA = 49;
+	private static final int SUMA = 50;
+	private static final int MULTIPLICACION = 51;
+	private static final int DIVISION = 52;
+	private static final int MODULO = 53;
+	private static final int ABSOLUTO = 54;
+	private static final int CADENA = 55;
+	private static final int CHAR1 = 56;
+	private static final int CHAR2 = 57;
+	private static final int LIT_CHA = 58;
+	private static final int SIGNO_MENOS = 59;
+        private static final int LLAVE_A = 60;
+	private static final int LLAVE_C = 61;
+	private static final int CIRCUNFLEJO = 62;
+	private static final int PUNTO = 63;
+	private static final int CORCHETE_A = 64;
+	private static final int CORCHETE_C = 65;
+        private static final int FLECHA = 66;
+        private static final int COMA = 67;
 	
 	private static final HashMap<String,Token> palabrasReservadas = new HashMap<String,Token>();
 	static{
@@ -366,7 +370,7 @@ public class AnalizadorLexico {
 				case 'n': transita(CASTING_NAT1); break;
 				case 'f': transita(CASTING_FLOAT1); break;
 				case 'c': transita(CASTING_CHAR1); break;
-                case ' ': transita(PARENTESIS_A); break;
+                                case ' ': transita(PARENTESIS_A); break;
 				default: arrayTokens.add(new Parentesis_a(numLinea)); terminaEstado();
 				}
 				break;
@@ -374,45 +378,61 @@ public class AnalizadorLexico {
 				switch (buff){
 				case 'n': transita(CASTING_INT2); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_INT2 :
 				switch (buff){
 				case 't': transita(CASTING_INT3); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_INT3 :
 				switch (buff){
 				case ')': transita(CAST_INT); break;
-                case ' ': transita(CASTING_INT3); break;
+                                case ' ': transita(CASTING_INT4); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
+                        case CASTING_INT4:
+                                switch (buff){
+                                    case ')': transita(CAST_INT); break;
+                                    case ' ': transita(CASTING_INT4); break;
+                                    default:
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        arrayTokens.add(new Token_Integer());
+                                        lex="";
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                break;
 			case CAST_INT :
 				arrayTokens.add(new Cast_int(numLinea));
 				terminaEstado();
@@ -421,45 +441,61 @@ public class AnalizadorLexico {
 				switch (buff){
 				case 'a': transita(CASTING_NAT2); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
+                                }
 				break;
 			case CASTING_NAT2 :
 				switch (buff){
 				case 't': transita(CASTING_NAT3); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_NAT3 :
 				switch (buff){
 				case ')': transita(CAST_NAT); break;
-                case ' ': transita(CASTING_NAT3); break;
+                                case ' ': transita(CASTING_NAT4); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
+                        case CASTING_NAT4:
+                                switch (buff){
+                                    case ')': transita(CAST_NAT); break;
+                                    case ' ': transita(CASTING_NAT4); break;
+                                    default:
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        arrayTokens.add(new Token_Natural());
+                                        lex="";
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                break;
 			case CAST_NAT :
 				arrayTokens.add(new Cast_nat(numLinea));
 				terminaEstado();
@@ -468,73 +504,89 @@ public class AnalizadorLexico {
 				switch (buff){
 				case 'l': transita(CASTING_FLOAT2); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_FLOAT2 :
 				switch (buff){
 				case 'o': transita(CASTING_FLOAT3); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_FLOAT3 :
 				switch (buff){
 				case 'a': transita(CASTING_FLOAT4); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff)|| buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff)|| buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_FLOAT4 :
 				switch (buff){
 				case 't': transita(CASTING_FLOAT5); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
+                                if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    arrayTokens.add(new Parentesis_a(numLinea));
+                                    lex=lex.substring(1);
+                                    estado=CADENA;
+                                    break;
+                                }
+                                else
+                                    error();
 				}
 				break;
 			case CASTING_FLOAT5 :
 				switch (buff){
 				case ')': transita(CAST_FLOAT); break;
-                case ' ': transita(CASTING_FLOAT5); break;
+                                case ' ': transita(CASTING_FLOAT6); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
-				break;
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        lex=lex.substring(1);
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                    break;
+                        case CASTING_FLOAT6:
+                                switch (buff){
+                                    case ')': transita(CAST_FLOAT); break;
+                                    case ' ': transita(CASTING_FLOAT6); break;
+                                    default:
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        arrayTokens.add(new Token_Float());
+                                        lex="";
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                break;
 			case CAST_FLOAT :
 				arrayTokens.add(new Cast_float(numLinea));
 				terminaEstado();
@@ -543,59 +595,75 @@ public class AnalizadorLexico {
 				switch (buff){
 				case 'h': transita(CASTING_CHAR2); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')' ){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
-				break;
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')' ){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        lex=lex.substring(1);
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                    break;
 			case CASTING_CHAR2 :
 				switch (buff){
 				case 'a': transita(CASTING_CHAR3); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
-				break;
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        lex=lex.substring(1);
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                    break;
 			case CASTING_CHAR3 :
 				switch (buff){
 				case 'r': transita(CASTING_CHAR4); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
-				break;
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        lex=lex.substring(1);
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                    break;
 			case CASTING_CHAR4 :
 				switch (buff){
 				case ')': transita(CAST_CHAR); break;
-                case ' ': transita(CASTING_CHAR4); break;
+                                case ' ': transita(CASTING_CHAR5); break;
 				default:
-                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
-                        arrayTokens.add(new Parentesis_a(numLinea));
-                        lex=lex.substring(1);
-                        estado=CADENA;
-                        break;
-                    }
-                    else
-                        error();
-				}
-				break;
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        lex=lex.substring(1);
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                    break;
+                        case CASTING_CHAR5:
+                                switch (buff){
+                                    case ')': transita(CAST_CHAR); break;
+                                    case ' ': transita(CASTING_CHAR5); break;
+                                    default:
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                        arrayTokens.add(new Parentesis_a(numLinea));
+                                        arrayTokens.add(new Token_Character());
+                                        lex="";
+                                        estado=CADENA;
+                                        break;
+                                    }
+                                    else
+                                        error();
+                                    }
+                                break;
 			case CAST_CHAR :
 				arrayTokens.add(new Cast_char(numLinea));
 				terminaEstado();
@@ -667,14 +735,14 @@ public class AnalizadorLexico {
 				switch(buff){
 				case '.': transita(FLOAT1); break;
 				default:
-                    if (Character.isLetter(buff)){
-                        error();
-                        break;
-                    }
-                    else {
-                        arrayTokens.add(new LitNat(lex,numLinea));
-                        terminaEstado();
-                    }
+                                if (Character.isLetter(buff)){
+                                    error();
+                                    break;
+                                }
+                                else {
+                                    arrayTokens.add(new LitNat(lex,numLinea));
+                                    terminaEstado();
+                                }
 				}
 				break;
 			case LIT_NAT2 :
@@ -683,13 +751,13 @@ public class AnalizadorLexico {
 				default:
 					if (Character.isDigit(buff)){
 						transita(LIT_NAT2);
-                        break;
-                    }
+                                                break;
+                                         }
 					else
 						if (Character.isLetter(buff)){
-                            error();
-                            break;
-                        }
+                                                error();
+                                                break;
+                                        }
                         else {
                             arrayTokens.add(new LitNat(lex,numLinea));
                             terminaEstado();

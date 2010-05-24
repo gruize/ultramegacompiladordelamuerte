@@ -124,11 +124,13 @@ public class GestorTs {
         Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
         TablaSimbolos actual = null;
         InfoTs resultado = null;
+        boolean sigue = true;
 
-        while (iterator.hasNext() && resultado == null) {
+        while (iterator.hasNext() && sigue == true) {
             actual = iterator.next();
             if (TablaSimbolos.existe(actual, id)){
                 resultado = TablaSimbolos.getProps(actual, id);
+                sigue=false;
             }
         }
         return resultado;
@@ -138,11 +140,13 @@ public class GestorTs {
         Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
         TablaSimbolos actual = null;
         boolean resultado = false;
+        boolean sigue = true;
 
-        while (iterator.hasNext() && resultado == false) {
+        while (iterator.hasNext() && sigue == false) {
             actual = iterator.next();
             if (TablaSimbolos.existe(actual, tipo.getId())){
                 resultado = TablaSimbolos.refErronea(actual, tipo);
+                sigue = false;
             }
         }
         return resultado;
@@ -155,11 +159,13 @@ public class GestorTs {
         Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
         TablaSimbolos actual = null;
         TipoTs resultado = null;
+        boolean sigue = true;
 
-        while (iterator.hasNext() && resultado == null) {
+        while (iterator.hasNext() && sigue == true) {
             actual = iterator.next();
             if (TablaSimbolos.existe(actual, tipo.getId())){
                 resultado = TablaSimbolos.ref(tipo, actual);
+                sigue = false;
             }
         }
         return resultado;

@@ -56,6 +56,7 @@ public class Traductor {
         i_token = 0;
         pend = new ArrayList<String>();
         errores = new ArrayList<ErrorTraductor>();
+        parametros = new ArrayList<Parametro>();
         ts = new GestorTs();
     }
 
@@ -636,7 +637,8 @@ public class Traductor {
             id1=id2;
             props1 = props2T;
         }
-        else if (t instanceof Identificador){
+        else if (t instanceof Identificador || t instanceof Token_Integer || t instanceof Token_Float
+                || t instanceof Token_Boolean || t instanceof Token_Character){
             Object[] decVarRes = DeclaracionVariable();
             boolean error2V = (Boolean) decVarRes[0];
             id2 = (String) decVarRes[1];
