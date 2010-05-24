@@ -1,113 +1,150 @@
 digraph G{
   rankdir=LR;
   node [shape = doublecircle]; 
-  "1 )"; "3 ("; "23 >"; "25 >="; "24 >>"; "26 <"; "28 <="; "27 <<"; "29 :"; "30 :="; "31 =";
-  "33 =/="; "35 litNat1"; "34 litNat2"; "37 litFlo1"; "38 litFlo2"; "41 litFlo3"; "43 litFlo4";
-  "2 comentario"; "44 &"; "45 ;"; "46 +"; "47 *"; "48 /"; "49 %"; "50 |"; "51 cadena"; "54 litCha";
-  "55 signo menos"; "7 cast int"; "11 cast nat"; "17 cast float"; "22 cast char";
-  "56 {"; "57 }"; "58 ^"; "62 ->"; "59 ."; "60 ["; "61 ]"; "62 ,";
+  "1 )"; "3 ("; "27 >"; "29 >="; "28 >>"; "30 <"; "32 <="; "31 <<"; "33 :"; "34 :="; "35 =";
+  "37 =/="; "38 litNat1"; "39 litNat2"; "41 litFlo1"; "42 litFlo2"; "45 litFlo3"; "47 litFlo4";
+  "2 comentario"; "48 &"; "49 ;"; "50 +"; "51 *"; "52 /"; "53 %"; "54 |"; "55 cadena"; "58 litCha";
+  "59 signo menos"; "8 cast int"; "13 cast nat"; "20 cast float"; "26 cast char";
+  "60 {"; "61 }"; "62 ^"; "66 ->"; "63 ."; "64 ["; "65 ]"; "67 ,";
 
   node [shape = circle];
   "" -> "" [label = "\\n, \\t, \" \" " ];
-  "" -> "51 cadena" [label = "[A-Za-z]"]
-  "51 cadena" -> "51 cadena" [label = "[a-zA-Z0-9]"]
+  "" -> "55 cadena" [label = "[A-Za-z]"]
+  "55 cadena" -> "55 cadena" [label = "[a-zA-Z0-9]"]
   "" -> "2 comentario" [label = " # "];
   "2 comentario" -> "2 comentario" [label = "\\t, \" \",[0-9], [a-zA-Z0-9], &, ;, +, *, /, %, |, \', -"];
   "2 comentario" -> "" [label = "\\n"];
+
   "" -> "1 )" [label = ")"];
   "" -> "3 (" [label = "("];
-  "3 (" -> "4 (i" [label = "i"];
-  "4 (i" -> "5 (in" [label = "n"];
-  "5 (in" -> "6 (int" [label = "t"];
-  "6 (int" -> "7 cast int" [label = ")"];
-  "4 (i" -> "51 cadena" [label = "[A-Za-z0-9]-n"];
-  "5 (in" -> "51 cadena" [label = "[A-Za-z0-9]-t"];
-  "6 (int" -> "51 cadena" [label = "[A-Za-z0-9]"];
-  "3 (" -> "8 (n" [label = "n"];
-  "8 (n" -> "9 (na" [label = "a"];
-  "9 (na" -> "10 (nat" [label = "t"];
-  "10 (nat" -> "11 cast nat" [label = ")"];
-  "8 (n" -> "51 cadena" [label = "[A-Za-z0-9]-a"];
-  "9 (na" -> "51 cadena" [label = "[A-Za-z0-9]-t"];
-  "10 (nat" -> "51 cadena" [label = "[A-Za-z0-9]"];
-  "3 (" -> "12 (f" [label = "f"];
-  "12 (f" -> "13 (fl" [label = "l"];
-  "13 (fl" -> "14 (flo" [label = "o"];
-  "14 (flo" -> "15 (floa" [label = "a"];
-  "15 (floa" -> "16 (float" [label = "t"];
-  "16 (float" -> "17 cast float" [label = ")"];
-  "12 (f" -> "51 cadena" [label = "[A-Za-z0-9]-l"];
-  "13 (fl" -> "51 cadena" [label = "[A-Za-z0-9]-o"];
-  "14 (flo" -> "51 cadena" [label = "[A-Za-z0-9]-a"];
-  "15 (floa" -> "51 cadena" [label = "[A-Za-z0-9]-t"];
-  "16 (float" -> "51 cadena" [label = "[A-Za-z0-9]"];
-  "3 (" -> "18 (c" [label = "c"];
-  "18 (c" -> "19 (ch" [label = "h"];
-  "19 (ch" -> "20 (cha" [label = "a"];
-  "20 (cha" -> "21 (char" [label = "r"];
-  "21 (char" -> "22 cast char" [label = ")"];
-  "18 (c" -> "51 cadena" [label = "[A-Za-z0-9]-h"];
-  "19 (ch" -> "51 cadena" [label = "[A-Za-z0-9]-a"];
-  "20 (cha" -> "51 cadena" [label = "[A-Za-z0-9]-r"];
-  "21 (char" -> "51 cadena" [label = "[A-Za-z0-9]"];
-  "3 (" -> "51 cadena" [label = "[A-Za-z0-9]-incf"];
-  "" -> "23 >" [label = ">"];
-  "23 >" -> "24 >>" [label = ">"];
-  "23 >" -> "25 >=" [label = "="];
-  "" -> "26 <" [label = "<"];
-  "26 <" -> "27 <<" [label = "<"];
-  "26 <" -> "28 <=" [label = "="];
-  "" -> "29 :" [label = ":"];
-  "29 :" -> "30 :=" [label = "="];
-  "" -> "31 =" [label = "="];
-  "31 =" -> "32 =/" [label = "/"];
-  "32 =/" -> "33 =/=" [label = "="];
-  "" -> "35 litNat1" [label = "0"];
-  "" -> "34 litNat2" [label = "[1-9]"];
-  "35 litNat1" -> "36 float1" [label = "."];
-  "34 litNat2" -> "36 float1" [label = "."];
-  "36 float1" -> "37 litFlo1" [label = "0"];
-  "36 float1" -> "38 litFlo2" [label = "[1-9]"];
-  "37 litFlo1" -> "38 litFlo2" [label = "[1-9]"];
-  "37 litFlo1" -> "39 float2" [label = "0"];
-  "37 litFlo1" -> "40 float3" [label = "e.E"];
-  "38 litFlo2" -> "39 float2" [label = "0"];
-  "38 litFlo2" -> "40 float3" [label = "e.E"];
-  "39 float2" -> "38 litFlo2" [label = "[1-9]"];
-  "40 float3" -> "41 litFlo3" [label = "0"];
-  "40 float3" -> "42 float4" [label = "."];
-  "40 float3" -> "43 litFlo4" [label = "[1-9]"];
-  "42 float4" -> "43 liFlo4" [label = "[1-9]"];
 
   "3 (" -> "3 (" [label = """"]
-  "21 (Char" -> "21 (char" [label = """"]
-  "10 (nat" -> "10 (nat" [label = """"]
-  "16 (float" -> "16 (float" [label = """"]
-  "6 (int" -> "6 (int" [label = """"]
-  "34 litNat2" -> "34 litNat2" [label = "[0-9]"]
-  "38 litFlo2" -> "38 litFlo2" [label = "[1-9]"]
-  "39 float2" -> "39 float2" [label = "0"]
-  "43 litFlo4" -> "43 litFlo4" [label = "[0-9]"]
+  "3 (" -> "55 cadena" [label = "[A-Za-z0-9]-incf"];
 
-  "" -> "44 &" [label = "&"];
-  "" -> "45 ;" [label = ";"];
-  "" -> "46 +" [label = "+"];
-  "" -> "47 *" [label = "*"];
-  "" -> "48 /" [label = "/"];
-  "" -> "49 %" [label = "%"];
-  "" -> "50 |" [label = "|"];
-  "" -> "52 '" [label = "'"];
-  "52 '" -> "53 char2" [label = "[A-Za-z0-9]"];
-  "53 char2" -> "54 litCha" [label = "'"];
-  "" -> "55 signo menos" [label = "-"];
-  "55 signo menos" -> "62 ->" [label = ">"]
-  "" -> "56 {" [label = "{"]
-  "" -> "57 }" [label = "}"]
-  "" -> "58 ^" [label = "^"]
-  "" -> "59 ." [label = "."]
-  "" -> "60 [" [label = "["]
-  "" -> "61 ]" [label = "]"]
-  "" -> "62 ," [label = ","]
+  "3 (" -> "4 (i" [label = "i"];
+  "4 (i" -> "5 (in" [label = "n"];
+  "4 (i" -> "55 cadena" [label = "[A-Za-z0-9]-n"];
+  "5 (in" -> "6 (int" [label = "t"];
+  "5 (in" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "6 (int" -> "8 cast int" [label = ")"];
+  "6 (int" -> "7 c_int4" [label = """"];
+  "6 (int" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "7 c_int4" -> "7 c_int4" [label = """"];
+  "7 c_int4" -> "8 cast int" [label = ")"];
+  "7 c_int4" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+
+  "3 (" -> "9 (n" [label = "n"];
+  "9 (n" -> "10 (na" [label = "a"];
+  "9 (n" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "9 (na" -> "11 (nat" [label = "t"];
+  "9 (na" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "11 (nat" -> "13 cast nat" [label = ")"];
+  "11 (nat" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "11 (nat" -> "12 c_nat4" [label = """"];
+  "12 c_nat4" -> "12 c_nat4" [label = """"];
+  "12 c_nat4" -> "13 cast nat" [label = ")"];
+  "12 c_nat4" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+
+  "3 (" -> "14 (f" [label = "f"];
+  "14 (f" -> "15 (fl" [label = "l"];
+  "14 (f" -> "55 cadena" [label = "[A-Za-z0-9]-l"];
+  "15 (fl" -> "16 (flo" [label = "o"];
+  "15 (fl" -> "55 cadena" [label = "[A-Za-z0-9]-o"];
+  "16 (flo" -> "17 (floa" [label = "a"];
+  "16 (flo" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "17 (floa" -> "18 (float" [label = "t"];
+  "17 (floa" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "18 (float" -> "20 cast float" [label = ")"];
+  "18 (float" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "18 (float" -> "19 c_float6" [label = """"];
+  "19 c_float6" -> "19 c_float6" [label = """"];
+  "19 c_float6" -> "20 cast float" [label = ")"];
+  "19 c_float6" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+
+
+  "3 (" -> "21 (c" [label = "c"];
+  "21 (c" -> "22 (ch" [label = "h"];
+  "21 (c" -> "55 cadena" [label = "[A-Za-z0-9]-h"];
+  "22 (ch" -> "23 (cha" [label = "a"];
+  "22 (ch" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "23 (cha" -> "24 (char" [label = "r"];
+  "23 (cha" -> "55 cadena" [label = "[A-Za-z0-9]-r"];
+  "24 (char" -> "26 cast char" [label = ")"];
+  "24 (char" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "24 (char" -> "25 c_char5" [label = """"];
+  "25 c_char5" -> "25 c_char5" [label = """"];
+  "25 c_char5" -> "26 cast char" [label = ")"];
+  "25 c_char5" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+
+
+  "" -> "27 >" [label = ">"];
+  "27 >" -> "28 >>" [label = ">"];
+  "27 >" -> "29 >=" [label = "="];
+
+  "" -> "30 <" [label = "<"];
+  "30 <" -> "31 <<" [label = "<"];
+  "30 <" -> "32 <=" [label = "="];
+
+  "" -> "33 :" [label = ":"];
+  "33 :" -> "34 :=" [label = "="];
+
+  "" -> "35 =" [label = "="];
+  "35 =" -> "36 =/" [label = "/"];
+  "36 =/" -> "37 =/=" [label = "="];
+
+  "" -> "38 litNat1" [label = "0"];
+  "" -> "39 litNat2" [label = "[1-9]"];
+
+  "38 litNat1" -> "40 float1" [label = "."];
+
+  "39 litNat2" -> "40 float1" [label = "."];
+  "39 litNat2" -> "39 litNat2" [label = "[0-9]"]
+
+  "40 float1" -> "41 litFlo1" [label = "0"];
+  "40 float1" -> "42 litFlo2" [label = "[1-9]"];
+
+  "41 litFlo1" -> "42 litFlo2" [label = "[1-9]"];
+  "41 litFlo1" -> "43 float2" [label = "0"];
+  "41 litFlo1" -> "44 float3" [label = "e.E"];
+
+  "42 litFlo2" -> "43 float2" [label = "0"];
+  "42 litFlo2" -> "44 float3" [label = "e.E"];
+  "42 litFlo2" -> "42 litFlo2" [label = "[1-9]"]
+
+  "43 float2" -> "42 litFlo2" [label = "[1-9]"];
+  "43 float2" -> "43 float2" [label = "0"]
+
+  "44 float3" -> "45 litFlo3" [label = "0"];
+  "44 float3" -> "46 float4" [label = "."];
+  "44 float3" -> "47 litFlo4" [label = "[1-9]"];
+
+  "46 float4" -> "47 liFlo4" [label = "[1-9]"];
+
+  "47 litFlo4" -> "47 litFlo4" [label = "[0-9]"]
+
+  "" -> "48 &" [label = "&"];
+  "" -> "49 ;" [label = ";"];
+  "" -> "50 +" [label = "+"];
+  "" -> "51 *" [label = "*"];
+  "" -> "52 /" [label = "/"];
+  "" -> "53 %" [label = "%"];
+  "" -> "54 |" [label = "|"];
+  "" -> "56 '" [label = "'"];
+  "56 '" -> "57 char2" [label = "[A-Za-z0-9]"];
+  "57 char2" -> "58 litCha" [label = "'"];
+  "" -> "59 signo menos" [label = "-"];
+  "59 signo menos" -> "66 ->" [label = ">"]
+  "" -> "60 {" [label = "{"]
+  "" -> "61 }" [label = "}"]
+  "" -> "62 ^" [label = "^"]
+  "" -> "63 ." [label = "."]
+  "" -> "64 [" [label = "["]
+  "" -> "65 ]" [label = "]"]
+  "" -> "67 ," [label = ","]
 
 }
 
