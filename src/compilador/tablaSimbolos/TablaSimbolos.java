@@ -70,9 +70,8 @@ public class TablaSimbolos {
     	this.ht=ht;
     }
 
-    public static boolean existeRef(TablaSimbolos ts, TipoTs tipo){
-        return false;
-        //sin implementar
+    public static boolean refErronea(TablaSimbolos ts, TipoTs tipo){
+        return tipo.getT().equals("pointer") && !TablaSimbolos.existe(ts, tipo.getId());
     }
     public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, TablaSimbolos ts){
         visitados = null;

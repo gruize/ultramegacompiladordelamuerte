@@ -118,9 +118,9 @@ public class GestorTs {
         return TablaSimbolos.getProps(actual, id);
     }
 
-    public static boolean existeRef(GestorTs gestor, TipoTs tipo){
+    public static boolean refErronea(GestorTs gestor, TipoTs tipo){
         TablaSimbolos actual = gestor.getTs().lastElement();
-        return TablaSimbolos.existeRef(actual, tipo);
+        return TablaSimbolos.refErronea(actual, tipo);
     }
     public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, GestorTs gestor){
         TablaSimbolos actual = gestor.getTs().lastElement();

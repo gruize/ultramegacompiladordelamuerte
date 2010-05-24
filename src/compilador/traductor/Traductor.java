@@ -404,6 +404,24 @@ public class Traductor {
         }
         return !error;
     }
+    protected boolean abreLlave(){
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Llave_a)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+    protected boolean cierraLlave(){
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Llave_c)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
     protected boolean of() {
         Token t = sigToken();
         boolean error = false;
@@ -587,45 +605,47 @@ public class Traductor {
         int tam1 = 0;
         String id1 = "";
         InfoTs props1 = null;
-
-        Object[] decVarRes = DeclaracionVariable();
-        Object[] decProcRes = DeclaracionProcedimiento();
-        Object[] decTipoRes = DeclaracionTipo();
-        boolean error2V = (Boolean) decVarRes[0];
-        boolean error2P = (Boolean) decProcRes[0];
-        boolean error2T = (Boolean) decTipoRes[0];
         String id2;
         InfoTs props2;
 
-        if (!error2V){
-            id2 = (String) decVarRes[1];
-            props2 = (InfoTs) decVarRes[2];
+        Token t = sigToken();
+        atrasToken();
 
-            error1 = error2V;
-            id1= id2;
-            tam1 = props2.getTipo().getTam();
-            props2.setDir(dir);
-            props1 = props2;
-            //props1 = InfoTs.clone(props2);
-
-        }else if (! error2P){
+        if (t instanceof Procedure){
+            Object[] decProcRes = DeclaracionProcedimiento();
+            boolean error2P = (Boolean) decProcRes[0];
             id2 = (String) decProcRes[1];
-            props2 = (InfoTs) decProcRes[2];
+            InfoTs props2P = (InfoTs) decProcRes[2];
 
             error1 = error2P;
             tam1= 0;
             id1=id2;
-            props1 = props2;
-            //props1=InfoTs.clone(props2);
-
-        }else if (! error2T){
+            props1 = props2P;
+        }
+        else if (t instanceof Tipo){
+            Object[] decTipoRes = DeclaracionTipo();
+            boolean error2T = (Boolean) decTipoRes[0];
             id2 = (String) decTipoRes[1];
+            InfoTs props2T = (InfoTs) decTipoRes[2];
 
             tam1 = 0;
             error1 = error2T;
             id1=id2;
-            //props = <>
-        }else {
+            props1 = props2T;
+        }
+        else if (t instanceof Identificador){
+            Object[] decVarRes = DeclaracionVariable();
+            boolean error2V = (Boolean) decVarRes[0];
+            id2 = (String) decVarRes[1];
+            InfoTs props2V = (InfoTs) decVarRes[2];
+
+            error1 = error2V;
+            id1= id2;
+            tam1 = props2V.getTipo().getTam();
+            props2V.setDir(dir);
+            props1 = props2V;
+        }
+        else {
             error1 = true;
             errores.add(new ErrorTraductor("Hay errores en la(s) declaraciones(es) " + textoError()));
         }
@@ -650,7 +670,7 @@ public class Traductor {
 
             id1 = lex;
             props1 = new InfoTs("tipo",tipo2,n);
-            error1 = error2  || (GestorTs.existe(ts,lex) && (!GestorTs.existeRef(ts,tipo2)));
+            error1 = error2  || (GestorTs.existe(ts,lex) && (GestorTs.refErronea(ts,tipo2)));
 
         }
         return new Object[]{error1, id1, props1};
@@ -671,7 +691,7 @@ public class Traductor {
 
         id1 = lex;
         props1 = new InfoTs("var",tipo2,n);
-        error1 = error2  || (GestorTs.existe(ts,lex) && (!GestorTs.existeRef(ts,tipo2)));
+        error1 = error2  || (GestorTs.existe(ts,lex) && (GestorTs.refErronea(ts,tipo2)));
 
         return new Object[]{error1, id1, props1};
     }
@@ -827,25 +847,41 @@ public class Traductor {
     }
     protected Object[] Tipo() throws Exception{
         Token t= sigToken();
+        atrasToken();
         if (t instanceof Identificador){
+            sigToken();
             return Tipo_id(t);
-        }else if (t instanceof compilador.lexico.Tokens.Token_Boolean){
+        }
+        else if (t instanceof Token_Boolean){
+            sigToken();
             return Tipo_Boolean();
-        }else if (t instanceof compilador.lexico.Tokens.Token_Character){
+        }
+        else if (t instanceof Token_Character){
+            sigToken();
             return Tipo_Character();
-        }else if (t instanceof compilador.lexico.Tokens.Token_Float){
+        }
+        else if (t instanceof Token_Float){
+            sigToken();
             return Tipo_Float();
-        }else if (t instanceof compilador.lexico.Tokens.Token_Natural){
+        }
+        else if (t instanceof Token_Natural){
+            sigToken();
             return Tipo_Natural();
-        }else if (t instanceof compilador.lexico.Tokens.Token_Integer){
+        }
+        else if (t instanceof Token_Integer){
+            sigToken();
             return Tipo_Integer();
-        }else if (array()){
+        }
+        else if (array()){
             return Tipo_Array();
-        }else if (circunflejo()){
+        }
+        else if (circunflejo()){
             return Tipo_Puntero();
-        }else if (record()){
+        }
+        else if (record()){
             return Tipo_Record();
-        }else
+        }
+        else
             throw new Exception("Error: se esperaba un literal" + textoError());
     }
     protected Object[] Tipo_id(Token t){
@@ -912,29 +948,29 @@ public class Traductor {
     protected Object[] Tipo_Array() throws Exception{
         boolean error1 =false;
         TipoTs tipo1 = null;
-        
-        if (! abreCorchete()){
-            throw new Exception("FATAL: Se esperaba abrir abrir corchete"
-                    + textoError());
-        }
-        
-        String lex = numero();
 
-        if (!cierraCorchete()){
-            throw new Exception("FATAL: Se esperaba cerrar corchete"
-                    + textoError());
-        }
-        if (!of()){
-            throw new Exception("FATAL: Se esperaba palabra reservada of"
-                    + textoError());
-        }
+            if (! abreCorchete()){
+                throw new Exception("FATAL: Se esperaba abrir abrir corchete"
+                        + textoError());
+            }
 
-        Object[] tipoRes = Tipo();
-        boolean error2 = (Boolean) tipoRes[0];
-        TipoTs tipo2 = (TipoTs) tipoRes[1];
-                    
-        tipo1 = new TipoTs("array",Integer.parseInt(lex), tipo2, Integer.parseInt(lex)*tipo2.getTam());
-        error1 = tipo2.getT().equals("error") && !GestorTs.existeRef (ts ,tipo2);
+            String lex = numero();
+
+            if (!cierraCorchete()){
+                throw new Exception("FATAL: Se esperaba cerrar corchete"
+                        + textoError());
+            }
+            if (!of()){
+                throw new Exception("FATAL: Se esperaba palabra reservada of"
+                        + textoError());
+            }
+
+            Object[] tipoRes = Tipo();
+            boolean error2 = (Boolean) tipoRes[0];
+            TipoTs tipo2 = (TipoTs) tipoRes[1];
+
+            tipo1 = new TipoTs("array",Integer.parseInt(lex), tipo2, Integer.parseInt(lex)*tipo2.getTam());
+            error1 = tipo2.getT().equals("error") && GestorTs.refErronea(ts ,tipo2);
 
         return new Object[]{error1, tipo1};
     }
@@ -942,12 +978,12 @@ public class Traductor {
         boolean error1 =false;
         TipoTs tipo1 = null;
 
-        Object[] tipoRes=Tipo();
-        boolean error2 = (Boolean) tipoRes[0];
-        TipoTs tipo2 = (TipoTs) tipoRes[1];
+            Object[] tipoRes=Tipo();
+            boolean error2 = (Boolean) tipoRes[0];
+            TipoTs tipo2 = (TipoTs) tipoRes[1];
 
-        tipo1 = new TipoTs("puntero",tipo2,1);
-	error1 = error2;
+            tipo1 = new TipoTs("puntero",tipo2,1);
+            error1 = error2;
 
         return new Object[]{error1, tipo1};
     }
@@ -955,22 +991,22 @@ public class Traductor {
         boolean error1 =false;
         TipoTs tipo1 = null;
 
-        if (! abreCorchete()){
-            throw new Exception("FATAL: Se esperaba abrir corchete"
-                    + textoError());
-        }
-        Object[] tipoRes=Campos();
-        boolean error2 = (Boolean) tipoRes[0];
-        ArrayList<Campo> campos2 = (ArrayList<Campo>) tipoRes[1];
-        int tam2 = (Integer) tipoRes[2];
+            if (! abreLlave()){
+                throw new Exception("FATAL: Se esperaba abrir corchete"
+                        + textoError());
+            }
+            Object[] tipoRes=Campos();
+            boolean error2 = (Boolean) tipoRes[0];
+            ArrayList<Campo> campos2 = (ArrayList<Campo>) tipoRes[1];
+            int tam2 = (Integer) tipoRes[2];
 
-        if (!cierraCorchete()){
-            throw new Exception("FATAL: Se esperaba cerrar corchete"
-                    + textoError());
-        }
+            if (!cierraLlave()){
+                throw new Exception("FATAL: Se esperaba cerrar corchete"
+                        + textoError());
+            }
 
-        tipo1 = new TipoTs("record", campos2,tam2);
-        error1 = error2;
+            tipo1 = new TipoTs("record", campos2,tam2);
+            error1 = error2;
 
         return new Object[]{error1, tipo1};
     }
@@ -988,10 +1024,11 @@ public class Traductor {
         Object[] campoRes = Campo(desh2);
         boolean error2 = (Boolean) campoRes[0];
         String id2 = (String) campoRes[1];
-        ArrayList<Campo> campo2 = (ArrayList<Campo>) campoRes[2];
+        Campo campo2 = (Campo) campoRes[2];
         int tam2 = (Integer) campoRes[3];
 
-        camposh3 = campo2;
+        camposh3 = new ArrayList<Campo>();
+        camposh3.add(campo2);
 	errorh3 = error2;
 	desh3 = tam2;
 
@@ -1052,18 +1089,15 @@ public class Traductor {
         Campo campo1 = null;
         int tam1 = 0;
 
-        String lex = identificador();
-        if (!dosPuntos()){
-            throw new Exception("FATAL: Se esperaba simbolo :"
-                    + textoError());
-        }
         Object[] tipoRes= Tipo();
         boolean error2= (Boolean) tipoRes[0];
         TipoTs tipo2 = (TipoTs) tipoRes[1];
 
+        String lex = identificador();
+
         campo1 = new Campo(lex,tipo2,desh1);
         tam1   = tipo2.getTam();
-        error1 = error2 ||  ! GestorTs.existeRef(ts,tipo2);
+        error1 = error2 || GestorTs.refErronea(ts,tipo2);
 
         return new Object[]{error1, id1, campo1, tam1};
     }
@@ -1333,13 +1367,13 @@ public class Traductor {
     protected boolean InsCompuesta() throws Exception{
         boolean error1 = false;
 
-        if (!abreCorchete()){
+        if (!abreLlave()){
             throw new Exception("FATAL: Se esperaba abre parentesis"
                     + textoError());
         }
         boolean error2 = Instrucciones();
 
-        if (!cierraCorchete()){
+        if (!cierraLlave()){
             throw new Exception("FATAL: Se esperaba simbolo cierra parentesis"
                     + textoError());
         }

@@ -48,16 +48,5 @@ public class InfoTs {
     public void setDir(int d){
         dir=d;
     }
-    public static InfoTs clone(InfoTs props){
-        InfoTs res = new InfoTs();
-        if ( props == null){
-            return null;
-        }
-        res.clase=props.getClase();
-        res.dir = props.getDir();
-        res.nivel = props.getNivel();
-        res.tipo.clona(props.getTipo());
-        return res;
-    }
 	
 }
