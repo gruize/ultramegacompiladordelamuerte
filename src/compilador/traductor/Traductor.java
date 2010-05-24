@@ -154,7 +154,7 @@ public class Traductor {
         res.appendIns(new ApilarDir(new Nat(0)));
         res.appendIns(new Apilar(new Nat(tamLocales+2)));
         res.appendIns(new Suma());
-        res.appendIns(new DesapilarDir());
+        res.appendIns(new DesapilarDir(new Nat(1+nivel)));
         return res;
     }
     protected Codigo epilogo(int nivel) throws LectorExc, DatoExc{
@@ -581,6 +581,12 @@ public class Traductor {
         boolean error1 = false;
         boolean errorh3 = false;
         if (puntoYComa()) {//no lambda
+        	//parche para poder acabar las declaraciones con ;
+        	//no está en la gramática pero es útil
+        	if (ampersand()){
+        		atrasToken();
+        		return errorh1;
+        	}
 
             Object[] decRes = Declaracion();
             boolean error2 = (Boolean) decRes[0];
@@ -590,16 +596,17 @@ public class Traductor {
 
             dir+=tam2;
             errorh3= errorh1 || error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
-            GestorTs.inserta(ts,id2,props2);
+            if (!error2) GestorTs.inserta(ts,id2,props2);
             if (props2.getClase().equals("tipo"))
                 pend.remove(id2);
 
             boolean error3 = DeclaracionesRec(errorh3);
 
             error1 = error3;
-        } else {
+        }
+        else {
             error1 = errorh1;
-        return error1;
+            return error1;
         }
 
         return error1;
@@ -610,7 +617,6 @@ public class Traductor {
         String id1 = "";
         InfoTs props1 = null;
         String id2;
-        InfoTs props2;
 
         Token t = sigToken();
         atrasToken();
@@ -638,7 +644,7 @@ public class Traductor {
             props1 = props2T;
         }
         else if (t instanceof Identificador || t instanceof Token_Integer || t instanceof Token_Float
-                || t instanceof Token_Boolean || t instanceof Token_Character){
+                || t instanceof Token_Boolean || t instanceof Token_Character || t instanceof Token_Natural){
             Object[] decVarRes = DeclaracionVariable();
             boolean error2V = (Boolean) decVarRes[0];
             id2 = (String) decVarRes[1];
@@ -1581,8 +1587,10 @@ public class Traductor {
         if (GestorTs.existe(ts, lex)){
             if (GestorTs.getProps(ts, lex).getClase().equals("var"))
                 tipo2h = GestorTs.ref(GestorTs.getProps(ts, lex).getTipo(), ts);
-            else 
+            else {
+            	tipo2h = new TipoTs();
                 tipo2h.setT("error");
+            }
         }
 
         TipoTs tipo2=MemRec(tipo2h);
