@@ -160,7 +160,7 @@ public class GestorTs {
         TablaSimbolos actual = null;
         TipoTs resultado = null;
         boolean sigue = true;
-
+        if (!tipo.getT().equals("ref")) return tipo;
         while (iterator.hasNext() && sigue == true) {
             actual = iterator.next();
             if (TablaSimbolos.existe(actual, tipo.getId())){
