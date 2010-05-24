@@ -1,0 +1,18 @@
+tipo tsecuencia = record {
+	integer tope;
+	array[100] of float valores
+	};
+float res;
+procedure inserta(float valor){
+	integer i
+	&
+	i:=0;
+	secuencia.valores[i]:=valor+5;
+	res := secuencia.valores[0]
+};
+
+tsecuencia = secuencia
+
+&
+
+out(secuencia.valores
