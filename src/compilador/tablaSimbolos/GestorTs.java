@@ -109,26 +109,60 @@ public class GestorTs {
     }
     
     public static boolean existe(GestorTs gestor, String id) {
-        TablaSimbolos actual = gestor.getTs().lastElement();
-        return TablaSimbolos.existe(actual, id);
+        Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
+        TablaSimbolos actual = null;
+        boolean resultado = false;
+
+        while (iterator.hasNext() && resultado == false) {
+            actual = iterator.next();
+            resultado = TablaSimbolos.existe(actual, id);
+        }
+        return resultado;
     }
 
     public static InfoTs getProps(GestorTs gestor,String id){
-        TablaSimbolos actual = gestor.getTs().lastElement();
-        return TablaSimbolos.getProps(actual, id);
+        Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
+        TablaSimbolos actual = null;
+        InfoTs resultado = null;
+
+        while (iterator.hasNext() && resultado == null) {
+            actual = iterator.next();
+            if (TablaSimbolos.existe(actual, id)){
+                resultado = TablaSimbolos.getProps(actual, id);
+            }
+        }
+        return resultado;
     }
 
     public static boolean refErronea(GestorTs gestor, TipoTs tipo){
-        TablaSimbolos actual = gestor.getTs().lastElement();
-        return TablaSimbolos.refErronea(actual, tipo);
+        Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
+        TablaSimbolos actual = null;
+        boolean resultado = false;
+
+        while (iterator.hasNext() && resultado == false) {
+            actual = iterator.next();
+            if (TablaSimbolos.existe(actual, tipo.getId())){
+                resultado = TablaSimbolos.refErronea(actual, tipo);
+            }
+        }
+        return resultado;
     }
     public static boolean compatibles(TipoTs tipo1, TipoTs tipo2, GestorTs gestor){
         TablaSimbolos actual = gestor.getTs().lastElement();
         return TablaSimbolos.compatibles(tipo1, tipo2, actual);
     }
     public static TipoTs ref(TipoTs tipo, GestorTs gestor){
-        TablaSimbolos actual = gestor.getTs().lastElement();
-        return TablaSimbolos.ref(tipo, actual);
+        Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
+        TablaSimbolos actual = null;
+        TipoTs resultado = null;
+
+        while (iterator.hasNext() && resultado == null) {
+            actual = iterator.next();
+            if (TablaSimbolos.existe(actual, tipo.getId())){
+                resultado = TablaSimbolos.ref(tipo, actual);
+            }
+        }
+        return resultado;
     }
     public static boolean esCompatibleConTipoBasico(TipoTs tipo, GestorTs gestor){
         TablaSimbolos actual = gestor.getTs().lastElement();
