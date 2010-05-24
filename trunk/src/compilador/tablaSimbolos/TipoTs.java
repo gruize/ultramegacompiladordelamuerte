@@ -78,11 +78,4 @@ public class TipoTs {
     public TipoTs getBase(){
         return tbase;
     }
-    public void clona(TipoTs tipo){
-        this.t = tipo.t;
-        this.tam = tipo.tam;
-        this.id = tipo.id;
-        this.campos = (ArrayList<Campo>) tipo.campos.clone();
-        this.parametros = (ArrayList<Parametro>) tipo.parametros.clone();
-    }
 }
