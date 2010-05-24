@@ -15,4 +15,4 @@ tsecuencia = secuencia
 
 &
 
-out(secuencia.valores
+out(secuencia.valores[2])
