@@ -703,7 +703,6 @@ public class Traductor {
         if (procedure()){
             String lex= identificador();
             GestorTs ts_aux = ts;
-            //FIXME: arreglar esto
             ts.crearTS();
             n += 1;
 
@@ -1185,7 +1184,7 @@ public class Traductor {
         String lex = identificador();
 
         parametros = GestorTs.getProps(ts,lex).getTipo().getParametros();
-        //FIXME: pasar parametro
+        //FIXME: Con que hay que parchear?
         cod.appendCod(apilaRet(etq));//mal hay que parchear
         etq += longApilaRet;
 
@@ -1723,7 +1722,6 @@ public class Traductor {
         }
         boolean parh2 = false;
 
-        //FIXME: Esto es ExpresionNiv1 o ExpresionNiv1Rec?
         Object[] resExpNiv1 = ExpresionNiv1(parh2);
         TipoTs tipo2 = (TipoTs) resExpNiv1[0];
         String modo2 = (String) resExpNiv1[1];
