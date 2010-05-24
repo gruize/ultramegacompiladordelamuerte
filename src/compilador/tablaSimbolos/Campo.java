@@ -34,6 +34,7 @@ public class Campo {
     public int getDesp(){
         return desp;
     }
+
     public static boolean existeCampo(ArrayList<Campo> campos, String id){
         for (int i=0; i< campos.size(); i++){
             Campo aux = campos.get(i);
