@@ -8,6 +8,12 @@ package compilador.tablaSimbolos;
 import java.util.ArrayList;
 
 public class TipoTs {
+    private final static TipoTs tipoNatural;
+    private final static TipoTs tipoInteger;
+    private final static TipoTs tipoFloat;
+    private final static TipoTs tipoBoolean;
+    private final static TipoTs tipoCharacter;
+
     private String t;
     private int tam;
     private ArrayList<Campo> campos;
@@ -15,7 +21,6 @@ public class TipoTs {
     private String id;
     private int nelems;
     private TipoTs tbase;
-
 
     public TipoTs(){
         campos = new ArrayList<Campo>();
@@ -90,5 +95,33 @@ public class TipoTs {
     }
     public TipoTs getBase(){
         return tbase;
+    }
+
+    public static TipoTs getTipoTsNatural() {
+        return tipoNatural;
+    }
+
+    public static TipoTs getTipoTsInteger() {
+        return tipoInteger;
+    }
+
+    public static TipoTs getTipoTsFloat() {
+        return tipoFloat;
+    }
+
+    public static TipoTs getTipoTsBoolean() {
+        return tipoBoolean;
+    }
+
+    public static TipoTs getTipoTsCharacter() {
+        return tipoCharacter;
+    }
+
+    static {
+        tipoInteger = new TipoTs("integer");
+        tipoFloat = new TipoTs("float");
+        tipoBoolean = new TipoTs("boolean");
+        tipoCharacter = new TipoTs("character");
+        tipoNatural = new TipoTs("natural");
     }
 }

@@ -115,8 +115,10 @@ public class TablaSimbolos {
         return res;
     }
     public static boolean esCompatibleConTipoBasico(TipoTs tipo, TablaSimbolos ts){
-        return false;
-        //TODO sin implementar
-        //FIXME
+        return compatibles(tipo, TipoTs.getTipoTsBoolean(), ts) ||
+                compatibles(tipo, TipoTs.getTipoTsCharacter(), ts) ||
+                compatibles(tipo, TipoTs.getTipoTsFloat(), ts) ||
+                compatibles(tipo, TipoTs.getTipoTsInteger(), ts) ||
+                compatibles(tipo, TipoTs.getTipoTsNatural(), ts);
     }
 }
