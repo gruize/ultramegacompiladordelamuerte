@@ -67,7 +67,7 @@ public class Traductor {
             Programa();
         } catch (Exception e) {
             System.out.println("Traducción no terminada: Error Fatal:");
-            //System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
             e.printStackTrace();
             throw new Exception("Traducción acabada con errores fatales");
         }
@@ -1305,7 +1305,6 @@ public class Traductor {
     }
     protected boolean InsLectura() throws LectorExc, DatoExc, Exception{
         boolean error1 = false;
-        Codigo cod1 = null;
         
         if (in())
             if (!abrePar()){
@@ -1320,21 +1319,26 @@ public class Traductor {
                     + textoError());
             }
 
-            error1 = GestorTs.existe(ts,lex);
+            error1 = !GestorTs.existe(ts,lex);
+            if (error1) return error1;
 
-            int d = GestorTs.getProps(ts, lex).getDir();
-            Nat nd = new Nat(d);
+            //int d = GestorTs.getProps(ts, lex).getDir();
+            //Nat nd = new Nat(d);
             String t = GestorTs.getProps(ts, lex).getTipo().getT();
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
+            etq+=longAccesoVar(GestorTs.getProps(ts, lex));
             if (t.equals("boolean"))
-                cod1 = new Codigo(new EntradaBool(nd));
+                cod.appendIns(new EntradaBool());
             else if (t.equals("entero"))
-                cod1 = new Codigo(new EntradaInt(nd));
+                cod.appendIns(new EntradaInt());
             else if (t.equals("char"))
-                cod1 = new Codigo(new EntradaChar(nd));
+                cod.appendIns(new EntradaChar());
             else if (t.equals("natural"))
-                cod1 = new Codigo(new EntradaNat(nd));
+                cod.appendIns(new EntradaNat());
             else if (t.equals("float"))
-                cod1 = new Codigo(new EntradaFloat(nd));
+                cod.appendIns(new EntradaFloat());
+            cod.appendIns(new DesapilaInd());
+            etq+=2;
         return error1;
     }
     protected boolean InsEscritura() throws Exception{
@@ -1591,7 +1595,16 @@ public class Traductor {
                 tipo2h.setT("error");
             }
         }
-
+        else {
+        	tipo2h = new TipoTs();
+        	tipo2h.setT("error");
+        }
+        if (!tipo2h.getT().equals("error")){
+        	etq+=longAccesoVar(GestorTs.getProps(ts, lex));
+        	cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
+        }
+        
+        
         TipoTs tipo2=MemRec(tipo2h);
 
         tipo1 = tipo2;
@@ -2121,6 +2134,27 @@ public class Traductor {
                     else tipo1 = new TipoTs("error");
                     break;
             }
+        etq += 1;
+        switch (op){
+        case NOT:
+        	cod.appendIns(new No());
+        	break;
+        case NEG:
+        	cod.appendIns(new Menos());
+        	break;
+        case CASTREAL:
+        	cod.appendIns(new CastFloat());
+        	break;
+        case CASTENT:
+        	cod.appendIns(new CastInt());
+        	break;
+        case CASTNAT:
+        	cod.appendIns(new CastNat());
+        	break;
+        case CASTCHAR:
+        	cod.appendIns(new CastChar());
+        	break;
+        }
         
         return new Object[]{tipo1,modo1};
     }
@@ -2166,7 +2200,7 @@ public class Traductor {
             String modo2 = (String) resExp[1];
 
             if (!cierraPar()){
-                throw new Exception("FATAL: Se esperaba valor Absoluto"
+                throw new Exception("FATAL: Se esperaba cerrar paréntesis"
                     + textoError());
             }
 

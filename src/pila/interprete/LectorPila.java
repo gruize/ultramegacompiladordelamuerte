@@ -156,20 +156,53 @@ public class LectorPila {
                 inst = new Salida();
                 break;
             case InstruccionInterprete.CODIGO_ENTRADA_BOOL:
-                inst = new EntradaBool(leerDato(dis));
+                inst = new EntradaBool();
                 break;
             case InstruccionInterprete.CODIGO_ENTRADA_CHAR:
-                inst = new EntradaChar(leerDato(dis));
+                inst = new EntradaChar();
                 break;
             case InstruccionInterprete.CODIGO_ENTRADA_INT:
-                inst = new EntradaInt(leerDato(dis));
+                inst = new EntradaInt();
                 break;
             case InstruccionInterprete.CODIGO_ENTRADA_FLOAT:
-                inst = new EntradaFloat(leerDato(dis));
+                inst = new EntradaFloat();
                 break;
             case InstruccionInterprete.CODIGO_ENTRADA_NAT:
-                inst = new EntradaNat(leerDato(dis));
+                inst = new EntradaNat();
                 break;
+            case InstruccionInterprete.CODIGO_APILAR_IND:
+                inst = new ApilarInd();
+                break;
+            case InstruccionInterprete.CODIGO_DESAPILAR_IND:
+                inst = new DesapilaInd();
+                break;
+            case InstruccionInterprete.CODIGO_MUEVE:
+                inst = new Mueve(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_NEW:
+                inst = new New(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_DELETE:
+                inst = new Delete(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_SEG:
+                inst = new Seg(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_IR_A:
+                inst = new IrA(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_IR_IND:
+                inst = new IrInd(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_IR_F:
+                inst = new IrFalse(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_IR_T:
+                inst = new IrTrue(leerDato(dis));
+                break;
+            case InstruccionInterprete.CODIGO_COPIA:
+                inst = new Copia(leerDato(dis));
+                break;               
         }
         return inst;
     }

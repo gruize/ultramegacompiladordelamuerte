@@ -25,7 +25,7 @@ public class DesapilaInd extends InstruccionInterprete {
     }
     @Override
     public String toString() {
-        return "Despilar_Ind "+getDato();
+        return "Despilar_Ind ";//+getDato();
     }
 
 
@@ -40,8 +40,8 @@ public class DesapilaInd extends InstruccionInterprete {
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
-            DatoPila d = pila.removeFirst();
             DatoPila v = pila.removeFirst();
+            DatoPila d = pila.removeFirst();
             interprete.getMemoria().getMemoria()[d.toNatural()] = v;
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getMessage());

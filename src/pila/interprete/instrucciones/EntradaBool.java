@@ -18,16 +18,18 @@ public class EntradaBool extends InstruccionInterprete {
 
     public EntradaBool() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_BOOL);
-        throw new LectorExc("La instrucción de entrada necesita " +
-                "un parámetro");
+//        throw new LectorExc("La instrucción de entrada necesita " +
+//                "un parámetro");
     }
 
     public EntradaBool(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_BOOL, d);
-        if (d.getTipoDato() != DatoPila.NAT_T) {
-            throw new LectorExc("La instrucción requiere un " +
-                    "argumento natural");
-        }
+        throw new LectorExc("La instruccion no "
+                +"acepta argumentos");
+//        if (d.getTipoDato() != DatoPila.NAT_T) {
+//            throw new LectorExc("La instrucción requiere un " +
+//                    "argumento natural");
+//        }
     }
 
     @Override
@@ -47,8 +49,8 @@ public class EntradaBool extends InstruccionInterprete {
                         "es un un booleano");
             }
             datoLeido = new Bool(b);
-            
-            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
+            interprete.getPila().addFirst(datoLeido);
+            //interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;
         } catch (InstruccionExc ex) {
             throw ex;
 
