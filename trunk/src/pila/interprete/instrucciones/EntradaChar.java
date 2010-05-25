@@ -18,15 +18,17 @@ import pila.interprete.excepiones.LectorExc;
 public class EntradaChar extends InstruccionInterprete{
     public EntradaChar() throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_CHAR);
-        throw new LectorExc("La instrucción de entrada necesita " +
-                "un parámetro");
+//        throw new LectorExc("La instrucción de entrada necesita " +
+//                "un parámetro");
     }
 
     public EntradaChar(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_ENTRADA_CHAR, d);
-        if(d.getTipoDato() != DatoPila.NAT_T)
-            throw new LectorExc("La instrucción requiere un " +
-                    "argumento natural");
+        throw new LectorExc("La instruccion no "
+                +"acepta argumentos");
+//        if(d.getTipoDato() != DatoPila.NAT_T)
+//            throw new LectorExc("La instrucción requiere un " +
+//                    "argumento natural");
     }
 
     @Override
@@ -37,7 +39,8 @@ public class EntradaChar extends InstruccionInterprete{
             interprete.getWriter().flush();
             String leido = interprete.getReader().readLine();
             datoLeido = new Caracter(leido.charAt(0));
-            interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;           
+            interprete.getPila().addFirst(datoLeido);
+            //interprete.getMemoria().getMemoria()[getDato().toNatural()] = datoLeido;           
         } catch (Exception ex) {
             throw new InstruccionExc(this, ex.getMessage());
         }

@@ -123,7 +123,7 @@ public class Interprete {
             sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
         }
 
-        sb.append("\n\nContenido de la pila:\n");
+        sb.append("Contenido de la pila:\n");
         Iterator<DatoPila> it = pila.iterator();
         i = 0;
         if(it.hasNext())
@@ -134,8 +134,8 @@ public class Interprete {
         else
             sb.append("Vacía\n");
 
-        sb.append("\n\nPróxima instrucción: "+programa.get(getCp()).toString());
-        sb.append("\n**Pulse enviar para continuar**\n\n");
+        sb.append("\nPróxima instrucción: "+programa.get(getCp()).toString()+"\n");
+        sb.append("**Pulse enviar para continuar**\n");
         
         return new String(sb);
     }
@@ -152,8 +152,7 @@ public class Interprete {
         setParar(false);
         while(!isParar()) {
             if(modoDepuracion) {
-                writer.print(mostrarEstado()+"\n\nDEBUG: Se ejecutara:");
-                writer.print(programa.get(getCp()).toString()+">");
+                writer.print(mostrarEstado());
                 writer.flush();
                 reader.readLine();
                 writer.println();

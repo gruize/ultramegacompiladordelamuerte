@@ -337,6 +337,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
     }
 
     private String abrirFich() {
+    	selectFich.setCurrentDirectory(new File("."));
         if(selectFich.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
             return selectFich.getSelectedFile().getAbsolutePath();
         else

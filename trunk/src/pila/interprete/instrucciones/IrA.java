@@ -33,8 +33,8 @@ public class IrA extends InstruccionInterprete {
 	{
 		try
 		{
-			if (getDato().getTipoDato() == DatoPila.INT_T)
-				interprete.setCp(getDato().toInt());
+			if (getDato().getTipoDato() == DatoPila.NAT_T)
+				interprete.setCp(getDato().toInt() -1 ); //porque se va a avanzar
 			else 
 				throw new InstruccionExc(this, "Tipo inválido ("
 						+ getDato().toString() + ")");

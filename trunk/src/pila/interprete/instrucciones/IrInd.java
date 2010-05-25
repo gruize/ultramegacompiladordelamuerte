@@ -36,7 +36,7 @@ public class IrInd  extends InstruccionInterprete {
 		try
 		{
 			if (direccion.getTipoDato() == DatoPila.INT_T)
-				interprete.setCp(direccion.toInt());
+				interprete.setCp(direccion.toInt() -1 );
 			else 
 				throw new InstruccionExc(this, "Tipo inválido ("
 						+ getDato().toString() + ")");
