@@ -1953,27 +1953,30 @@ public class Traductor {
                             (tipoh1.getT().equals("natural") || tipoh1.getT().equals("integer")))
                         tipoh3 = tipoh1;
                     else tipoh3 = new TipoTs("error");
-                case OR:
+                case AND:
                      if (tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean"))
                         tipoh3 = new TipoTs("boolean");
                      else tipoh3 = new TipoTs ("error");
                      break;
             }
         String modoh3 = "val";
-        if (op == op.OR){
+        if (op == op.AND){
              cod.insertaCod(new IrTrue(new Nat(etq)), aux);
              etq += 2;
              cod.appendIns(new IrA(new Nat(etq+2)));
-             cod.appendIns(new Apilar(new Nat(2)));
+             cod.appendIns(new Apilar(new Nat(0)));
         }
         else{
             etq +=1;
             switch (op){
-                case SUMA:
-                    cod.appendIns(new Suma());
+                case MULT:
+                    cod.appendIns(new Multiplica());
                     break;
-                case RESTA:
-                    cod.appendIns(new Resta());
+                case DIV:
+                    cod.appendIns(new Divide());
+                    break;
+                case MOD:
+                    cod.appendIns(new Modulo());
                     break;
            }
         }
