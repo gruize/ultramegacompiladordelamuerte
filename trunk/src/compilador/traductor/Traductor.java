@@ -716,7 +716,6 @@ public class Traductor {
 
             boolean error2 = FParametros();
 
-            parametros=new ArrayList<Parametro>();
             GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
 
             Object[] bloqueRes = Bloque();
