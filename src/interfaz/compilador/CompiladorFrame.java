@@ -27,7 +27,6 @@ import pila.interprete.instrucciones.InstruccionInterprete;
 import compilador.lexico.AnalizadorLexico;
 import compilador.lexico.Tokens.Token;
 import compilador.traductor.Traductor;
-import java.awt.FlowLayout;
 import java.io.FileReader;
 import java.io.Reader;
 import javax.swing.BoxLayout;

@@ -3,7 +3,7 @@ tipo tsecuencia = record {
 	array[100] of float valores
 	};
 float res;
-tsecuencia = secuencia;
+tsecuencia secuencia;
 procedure inserta(float valor){
 	integer i
 	&
@@ -15,4 +15,5 @@ procedure inserta(float valor){
 
 &
 
-out(secuencia.valores[2])
+res := 2;
+inserta(res)
