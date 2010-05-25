@@ -2,7 +2,7 @@ a : boolean;
 b : natural;
 c : float;
 d : character;
-h : float;
+h : float
 &
 in(h);
 out(h);
@@ -11,4 +11,4 @@ out(c);
 a:=c<=h;
 out(a);
 b:=9-7;
-out(b);
+out(b)

@@ -3,7 +3,7 @@ natural b;
 float c;
 character d;
 natural e;
-natural f;
+natural f
 &
 b:=5+5;
 in(c);
@@ -21,4 +21,4 @@ out(b);
 b:=f<<e;
 out(b);
 in(d);
-out(d);
+out(d)

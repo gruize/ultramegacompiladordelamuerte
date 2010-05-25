@@ -2,7 +2,7 @@ a : boolean;
 b : natural;
 c : float;
 d : character;
-e : integer;
+e : integer
 &
 b:=5+5;
 out(b);
@@ -13,4 +13,4 @@ a:=c<b;
 out(a);
 in(e);
 b:=|e|;
-out(b);
+out(b)
