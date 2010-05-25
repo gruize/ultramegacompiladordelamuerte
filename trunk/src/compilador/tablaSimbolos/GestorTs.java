@@ -142,12 +142,9 @@ public class GestorTs {
         boolean resultado = false;
         boolean sigue = true;
 
-        while (iterator.hasNext() && sigue == false) {
+        while (iterator.hasNext() && resultado == false) {
             actual = iterator.next();
-            if (TablaSimbolos.existe(actual, tipo.getId())){
-                resultado = TablaSimbolos.refErronea(actual, tipo);
-                sigue = false;
-            }
+            resultado = TablaSimbolos.refErronea(actual, tipo);
         }
         return resultado;
     }
@@ -161,12 +158,9 @@ public class GestorTs {
         TipoTs resultado = null;
         boolean sigue = true;
         if (!tipo.getT().equals("ref")) return tipo;
-        while (iterator.hasNext() && sigue == true) {
+        while (iterator.hasNext() && resultado.getT().equals("error")) {
             actual = iterator.next();
-            if (TablaSimbolos.existe(actual, tipo.getId())){
-                resultado = TablaSimbolos.ref(tipo, actual);
-                sigue = false;
-            }
+            resultado = TablaSimbolos.ref(tipo, actual);
         }
         return resultado;
     }
