@@ -158,7 +158,7 @@ public class GestorTs {
         TipoTs resultado = null;
         boolean sigue = true;
         if (!tipo.getT().equals("ref")) return tipo;
-        while (iterator.hasNext() && resultado.getT().equals("error")) {
+        while (iterator.hasNext() && (resultado == null || resultado.getT().equals("error"))) {
             actual = iterator.next();
             resultado = TablaSimbolos.ref(tipo, actual);
         }
