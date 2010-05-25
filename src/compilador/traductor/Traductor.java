@@ -723,7 +723,7 @@ public class Traductor {
             boolean error3= (Boolean) bloqueRes[0];
             int inicio3 = (Integer) bloqueRes[1];
 
-            error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n));
+            error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
             id1 = lex;
             props1 = new InfoTs("proc", new TipoTs("proc", parametros), n, inicio3);
             n -= 1;
@@ -1661,7 +1661,7 @@ public class Traductor {
             cod.appendIns(new Apilar(new Nat(tipoh1.getBase().getTam())));
             cod.appendIns(new Multiplica());
             cod.appendIns(new Suma());
-            if (tipoh1.getT().equals("array") && tipo2.getT().equals("natural"))
+            if (tipoh1.getT().equals("array") && (tipo2.getT().equals ("natural") || tipo2.getT().equals("integer")))
                 tipoh3 = GestorTs.ref(tipoh1.getBase(),ts);
             else tipoh3 = new TipoTs("error");
 
