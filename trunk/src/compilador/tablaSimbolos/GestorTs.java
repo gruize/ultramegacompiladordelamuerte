@@ -140,7 +140,6 @@ public class GestorTs {
         Iterator<TablaSimbolos> iterator = gestor.getTs().iterator();
         TablaSimbolos actual = null;
         boolean resultado = false;
-        boolean sigue = true;
 
         while (iterator.hasNext() && resultado == false) {
             actual = iterator.next();

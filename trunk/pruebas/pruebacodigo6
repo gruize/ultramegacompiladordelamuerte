@@ -3,15 +3,15 @@ tipo tsecuencia = record {
 	array[100] of float valores
 	};
 float res;
+tsecuencia = secuencia;
 procedure inserta(float valor){
 	integer i
 	&
 	i:=0;
 	secuencia.valores[i]:=valor+5;
 	res := secuencia.valores[0]
-};
+}
 
-tsecuencia = secuencia
 
 &
 
