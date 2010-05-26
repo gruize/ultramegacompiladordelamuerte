@@ -1489,7 +1489,6 @@ public class Traductor {
         boolean error1 = false;
         boolean parh2 = false;
         boolean parh3 = false;
-        int etq = 0;
         int etq_for = 0;
         int aux = 0;
         
@@ -1513,8 +1512,9 @@ public class Traductor {
                     + textoError());
             }
 
-            etq += 1;
-            cod.appendIns( new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())) );
+            etq += 1 + longAccesoVar(GestorTs.getProps(ts,lex));
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
+            cod.appendIns( new DesapilaInd() );
                     
             Object[] expRes2 = Expresion(parh3);
             TipoTs tipo3 = (TipoTs) expRes2[0];
@@ -1525,9 +1525,10 @@ public class Traductor {
                     + textoError());
             }
 
-            etq+=4;
+            etq+=4 + longAccesoVar(GestorTs.getProps(ts,lex));
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
             cod.appendIns(new Copia());
-            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
+            cod.appendIns(new ApilarInd());
             cod.appendIns(new Igual());
             cod.appendIns(null);
             aux = etq;
@@ -1537,7 +1538,7 @@ public class Traductor {
             error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
                             (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
                             (!GestorTs.getProps(ts, lex).getTipo().getT().equals("natural") && !GestorTs.getProps(ts, lex).getTipo().getT().equals("integer"));
-            cod.insertaCod(new IrTrue(new Nat(etq -1)), aux);
+            cod.insertaCod(new IrTrue(new Nat(etq -1)), aux-1);
 
             cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
             cod.appendIns(new Apilar(new Nat(1)));
