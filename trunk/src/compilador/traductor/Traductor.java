@@ -1172,7 +1172,7 @@ public class Traductor {
             atrasToken();
             error1 = InsEscritura();
         }
-        else if (t instanceof Corchete_a){
+        else if (t instanceof Llave_a){
             atrasToken();
             error1 = InsCompuesta();
         }
@@ -1411,7 +1411,8 @@ public class Traductor {
     protected boolean InsIf() throws Exception{
         boolean error1 = false;
         boolean parh2 = false;
-        int aux;
+        int aux1;
+        int aux2;
         
         if (If()){
             parh2 = false;
@@ -1427,19 +1428,19 @@ public class Traductor {
 
             etq += 1;
             cod.appendIns(null);
-            aux = etq;
+            aux1 = etq;
 
             boolean error3 = Instruccion();
 
-            cod.insertaCod(new IrFalse(new Nat(etq+1)), aux); //reemplaza el noop con el ir-f. en la posicion del código aux
+            cod.insertaCod(new IrFalse(new Nat(etq+1)), aux1 -1); //reemplaza el noop con el ir-f. en la posicion del código aux
             etq += 1;
-            aux=etq;
+            aux2=etq;
             cod.appendIns(null);
 
             boolean error4 = PElse();
 
             if (!error4){
-                cod.insertaCod(new IrA(new Nat(etq)),aux);
+                cod.insertaCod(new IrA(new Nat(etq)),aux2 -1);
                 error1 = !tipo2.getT().equals("boolean") || error3 || error4;
             }
         }
@@ -1478,10 +1479,12 @@ public class Traductor {
 
             boolean error3 = Instruccion();
 
-            cod.insertaCod(new IrFalse(new Nat(etq + 1)), aux);
+            error1 = tipo2.getT().equals("boolean") || error3;
+            
             etq += 1;
             cod.appendIns(new IrA(new Nat(etq_while)));
-            error1 = tipo2.getT().equals("boolean") || error3;
+            cod.insertaCod(new IrFalse(new Nat(etq)), aux-1);
+            
         }
         return error1;
     }
@@ -1493,7 +1496,6 @@ public class Traductor {
         int aux = 0;
         
         if(For()){
-            etq_for = etq;
             parh2= false;
             parh3 = false;
             
@@ -1525,9 +1527,10 @@ public class Traductor {
                     + textoError());
             }
 
+            etq_for = etq;
             etq+=4 + longAccesoVar(GestorTs.getProps(ts,lex));
-            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
             cod.appendIns(new Copia());
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
             cod.appendIns(new ApilarInd());
             cod.appendIns(new Igual());
             cod.appendIns(null);
@@ -1538,15 +1541,17 @@ public class Traductor {
             error1 = error4 || (!tipo2.getT().equals("natural") && !tipo2.getT().equals("integer")) ||
                             (!tipo3.getT().equals("natural") && !tipo3.getT().equals("integer")) ||
                             (!GestorTs.getProps(ts, lex).getTipo().getT().equals("natural") && !GestorTs.getProps(ts, lex).getTipo().getT().equals("integer"));
-            cod.insertaCod(new IrTrue(new Nat(etq -1)), aux-1);
 
+            
+            etq += 6;
             cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
             cod.appendIns(new Apilar(new Nat(1)));
             cod.appendIns(new Suma());
             cod.appendIns(new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
-            cod.appendIns(new IrA(new Nat(aux))); //creo q está bien asi
+            cod.appendIns(new IrA(new Nat(etq_for))); //creo q está bien asi
             cod.appendIns(new Desapilar());
-            etq += 6;
+            cod.insertaCod(new IrTrue(new Nat(etq)), aux -1);
+            
         }
         return error1;
     }

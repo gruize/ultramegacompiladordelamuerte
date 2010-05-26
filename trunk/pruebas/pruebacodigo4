@@ -1,9 +1,12 @@
-tipo tsecuencia = record{
-    integer tope;
-    array[100] of float valores
-    };
-tsecuencia secuencia
+integer a;
+integer b;
+integer c
 
 &
 
-secuencia.valores[2] := 2.0
+a:=1;
+b:=2;
+if a < b then
+	b:=-1
+else 
+	a:=-1
