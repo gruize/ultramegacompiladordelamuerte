@@ -19,7 +19,7 @@ public class Copia extends InstruccionInterprete {
 
 	@Override
 	public String toString() {
-		return "Copia " + getDato();
+		return "Copia ";// + getDato();
 	}
 
 	/**
