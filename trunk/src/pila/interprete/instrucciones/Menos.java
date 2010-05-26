@@ -43,6 +43,7 @@ public class Menos extends InstruccionInterprete {
         DatoPila res;
         try {
             switch (d1.getTipoDato()) {
+            	case DatoPila.NAT_T:
                 case DatoPila.INT_T:
                     res = new Entero(- d1.toInt());
                     break;

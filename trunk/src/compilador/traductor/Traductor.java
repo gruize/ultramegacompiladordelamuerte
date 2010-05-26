@@ -1145,7 +1145,7 @@ public class Traductor {
 
             return error1;
         }
-        else {
+        else { //lamda
             error1 = errorh1;
         }
         return error1;
@@ -1395,13 +1395,13 @@ public class Traductor {
         boolean error1 = false;
 
         if (!abreLlave()){
-            throw new Exception("FATAL: Se esperaba abre parentesis"
+            throw new Exception("FATAL: Se esperaba símbolo abre llave"
                     + textoError());
         }
         boolean error2 = Instrucciones();
 
         if (!cierraLlave()){
-            throw new Exception("FATAL: Se esperaba simbolo cierra parentesis"
+            throw new Exception("FATAL: Se esperaba simbolo cierra llave"
                     + textoError());
         }
 
