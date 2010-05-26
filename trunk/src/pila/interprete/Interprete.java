@@ -81,15 +81,15 @@ public class Interprete {
      * @param depuracion
      */
     public Interprete(boolean depuracion) {
-        this(100,depuracion);
+        this(1000,depuracion);
     }
 
     public Interprete(boolean depuracion, InputStream entrada, PrintWriter salida) {
-        this(100,depuracion,entrada,salida);
+        this(1000,depuracion,entrada,salida);
     }
 
     public Interprete(boolean depuracion, Reader reader, PrintWriter salida) {
-        this(100,depuracion,reader,salida);
+        this(1000,depuracion,reader,salida);
     }
 
     /**
@@ -120,7 +120,8 @@ public class Interprete {
         if(i < 0)
             sb.append("Vacía\n");
         for(int j = 0; j <= i; j++) {
-            sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
+        	if (memoria.getMemoria()[j]!=null)
+        		sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
         }
 
         sb.append("Contenido de la pila:\n");
@@ -134,7 +135,7 @@ public class Interprete {
         else
             sb.append("Vacía\n");
 
-        sb.append("\nPróxima instrucción: "+programa.get(getCp()).toString()+"\n");
+        sb.append("\nPróxima instrucción: ("+getCp()+") "+programa.get(getCp()).toString()+"\n");
         sb.append("**Pulse enviar para continuar**\n");
         
         return new String(sb);

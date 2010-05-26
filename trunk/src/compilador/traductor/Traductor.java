@@ -707,17 +707,20 @@ public class Traductor {
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
+        int dir_aux;
 
         if (procedure()){
             String lex= identificador();
             GestorTs ts_aux = ts;
             ts.crearTS();
             n += 1;
-
+            dir_aux=dir;
+            dir=0;
             boolean error2 = FParametros();
-
+            dir=dir_aux+dir;
+            parametros.clear();
             GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
-
+            
             Object[] bloqueRes = Bloque();
             boolean error3= (Boolean) bloqueRes[0];
             int inicio3 = (Integer) bloqueRes[1];
@@ -783,7 +786,6 @@ public class Traductor {
             }
         }
         else{
-            dir = 0;
             error1 = false;
         }
         return error1;
@@ -800,8 +802,8 @@ public class Traductor {
 
         errorh3 = error2 ||(GestorTs.existe(ts,id2) && (GestorTs.getProps(ts, id2).getNivel() == n));
         props2.setDir(0);
-	GestorTs.inserta(ts, id2, props2);
-	dir = tam2;
+        GestorTs.inserta(ts, id2, props2);
+        dir += tam2;
 
         boolean error3 = LFParametrosRec(errorh3);
 
@@ -1589,13 +1591,14 @@ public class Traductor {
         if (New()){
             TipoTs tipo2 = Mem();
 
-            error1 = tipo2.getT().equals("puntero");
+            error1 = !tipo2.getT().equals("puntero");
+            if (error1) throw new Exception("FATAL: Se esperaba un puntero "+ textoError());
             etq += 2;
             int num;
             if (tipo2.getBase().getT().equals("ref"))
                 num = GestorTs.getProps(ts,tipo2.getBase().getId()).getTipo().getTam(); //no se si esta bien
-            else num = 1;
-            cod.appendIns(new New(new Nat(num)));
+            else num = tipo2.getBase().getTam();
+            cod.appendIns(new New(new Entero(num)));
             cod.appendIns(new DesapilaInd());
         }
         return error1;
@@ -1609,9 +1612,9 @@ public class Traductor {
             error1 = !tipo2.getT().equals("puntero");
             etq+=1;
             if (tipo2.getBase().getT().equals("ref"))
-                cod.appendIns(new Salida( new Nat(GestorTs.getProps(ts, tipo2.getBase().getId()).getDir()))); //tam?? hay tamaño
+                cod.appendIns(new Salida(new Nat(GestorTs.getProps(ts, tipo2.getBase().getId()).getTipo().getTam()))); //tam?? hay tamaño
             else
-		cod.appendIns(new Salida(new Nat(1)));
+            	cod.appendIns(new Salida(new Nat(tipo2.getBase().getTam())));
         }
 
         return error1;

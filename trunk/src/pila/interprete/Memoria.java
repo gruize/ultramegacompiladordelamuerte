@@ -9,22 +9,22 @@ import pila.interprete.datos.DatoPila;
 public class Memoria {
     
 	private DatoPila[] memoria;
-    private int heapIndex; //tamaño de la memoria estática
+    private int heapIndex; //tamaï¿½o de la memoria estï¿½tica
     /**
-     * Esta variable será un árbol ordenado de clave-valor donde la 
-     * clave será el índice del hueco en el heap y el valor el número
-     * de celdas vacías del hueco
+     * Esta variable serï¿½ un ï¿½rbol ordenado de clave-valor donde la 
+     * clave serï¿½ el ï¿½ndice del hueco en el heap y el valor el nï¿½mero
+     * de celdas vacï¿½as del hueco
      */
     private TreeSet<Hueco> huecos;
     
     public Memoria() 
     {
-    	this(100, 25);
+    	this(400, 100);
     }
     
     public Memoria(int longMem) 
     {
-    	this(longMem, 25);
+    	this(longMem, 300);
     }
     
     public Memoria(int longMem, int longStaticMem) 
@@ -46,8 +46,8 @@ public class Memoria {
     }
     
     /**
-     * Desplaza el índice que separa la memoria estática del heap
-     * @param newHeapIndex Nuevo valor del índice
+     * Desplaza el ï¿½ndice que separa la memoria estï¿½tica del heap
+     * @param newHeapIndex Nuevo valor del ï¿½ndice
      * @return true si se puede desplazar y false en caso contrario
      */
     public boolean setHeapIndex(int newHeapIndex) 
@@ -55,16 +55,16 @@ public class Memoria {
     	int i;
     	Hueco lastHueco = huecos.last();
     	
-    	//Si disminuyo la memoria dinámica...
+    	//Si disminuyo la memoria dinï¿½mica...
     	if (newHeapIndex > heapIndex)
     	{
-    		//Si el último hueco está fuera del área a disminuir y ocupa todo lo que queda de memoria dinámica
-    		// significa que puedo hacer la reducción
+    		//Si el ï¿½ltimo hueco estï¿½ fuera del ï¿½rea a disminuir y ocupa todo lo que queda de memoria dinï¿½mica
+    		// significa que puedo hacer la reducciï¿½n
     		if ((lastHueco.getDireccion() >= newHeapIndex) && (lastHueco.getDireccion() - lastHueco.getTamanno() == heapIndex)) 
         	{
         		huecos.remove(lastHueco);
         		
-        		//Si el último hueco no ocupaba exactamente el área reducida, tengo que actualizar su tamaño
+        		//Si el ï¿½ltimo hueco no ocupaba exactamente el ï¿½rea reducida, tengo que actualizar su tamaï¿½o
         		if (lastHueco.getDireccion() > newHeapIndex)
         		{
         			huecos.add(new Hueco(lastHueco.getDireccion(), lastHueco.getDireccion() - newHeapIndex));
@@ -72,10 +72,10 @@ public class Memoria {
         		heapIndex = newHeapIndex;
         	}
     	}
-    	//Si disminuyo la memoria estática...
+    	//Si disminuyo la memoria estï¿½tica...
     	else if (newHeapIndex < heapIndex)
     	{
-    		//Compruebo que el espacio a reducir no esté ocupado
+    		//Compruebo que el espacio a reducir no estï¿½ ocupado
     		i = newHeapIndex;
         	while (i <= heapIndex && memoria[i] == null) 
         	{
@@ -83,14 +83,14 @@ public class Memoria {
         	}
         	if (i == heapIndex) 
         	{
-        		//Actualizo el último hueco de la memoria dinámica
-        		//Si el último hueco correspondía a la parte final de la memoria dinámica, actualizo ese hueco (lo hago mas grande)
+        		//Actualizo el ï¿½ltimo hueco de la memoria dinï¿½mica
+        		//Si el ï¿½ltimo hueco correspondï¿½a a la parte final de la memoria dinï¿½mica, actualizo ese hueco (lo hago mas grande)
         		if (lastHueco.getDireccion() - lastHueco.getTamanno() == newHeapIndex) 
         		{
         			huecos.remove(lastHueco);
         			huecos.add(new Hueco(lastHueco.getDireccion(), lastHueco.getTamanno() + heapIndex - newHeapIndex));
         		}
-        		//Si no (si la última parte estaba ocupada) añado un nuevo hueco con la parte que le he añadido
+        		//Si no (si la ï¿½ltima parte estaba ocupada) aï¿½ado un nuevo hueco con la parte que le he aï¿½adido
         		else
         		{
         			huecos.add(new Hueco(heapIndex, heapIndex - newHeapIndex));
@@ -103,9 +103,9 @@ public class Memoria {
     }
     
     /**
-     * Reserva en memoria el tamaño del hueco indicado y devuelve la dirección
-     * @param hueco Tamaño del hueco buscado
-     * @return Dirección del primer hueco con ese tamaño
+     * Reserva en memoria el tamaï¿½o del hueco indicado y devuelve la direcciï¿½n
+     * @param hueco Tamaï¿½o del hueco buscado
+     * @return Direcciï¿½n del primer hueco con ese tamaï¿½o
      */
     public int reservar(int hueco) 
     {
@@ -124,12 +124,14 @@ public class Memoria {
         		{
         			direccion = huecoAux.getDireccion();
         			huecos.remove(huecoAux);
-        			huecos.add(new Hueco(direccion - hueco, huecoAux.getTamanno() - hueco));
+        			huecos.add(new Hueco(direccion - hueco -1, huecoAux.getTamanno() - hueco));
+        			direccion=direccion-hueco;
+        			//FIXME +1???
         			encontrado = true;
         		}
-        		else if (huecoAux.getTamanno() >= hueco) 
+        		else if (huecoAux.getTamanno() == hueco) 
         		{
-        			direccion = huecoAux.getDireccion();
+        			direccion = huecoAux.getDireccion() - hueco;
         			huecos.remove(huecoAux);
         			encontrado = true;
         		}
@@ -139,9 +141,9 @@ public class Memoria {
     }   
     
     /**
-     * Añade un hueco a la lista
-     * @param direccion Dirección donde comienza el hueco
-     * @param tamanno Tamaño del hueco liberado
+     * Aï¿½ade un hueco a la lista
+     * @param direccion Direcciï¿½n donde comienza el hueco
+     * @param tamanno Tamaï¿½o del hueco liberado
      */
     public void liberar(int direccion, int tamanno) 
     {
@@ -149,7 +151,7 @@ public class Memoria {
     	Hueco huecoAux = null;
     	boolean encontrado = false;
     	
-    	//Si existe un hueco a continuación del que quiero insertar, lo elimino e inserto uno que englobe a los dos.
+    	//Si existe un hueco a continuaciï¿½n del que quiero insertar, lo elimino e inserto uno que englobe a los dos.
     	if (huecos.contains(direccion - tamanno))
     	{
     		iterator = huecos.iterator();
@@ -173,10 +175,10 @@ public class Memoria {
     
     /**
      * Mueve el contenido de tamanno celdas del origen al destino
-     * @param origen Dirección de origen
-     * @param destino Dirección de destino
-     * @param tamanno Número de celdas a mover
-     * @return true si la operación se realiza con éxito y false en caso contrario
+     * @param origen Direcciï¿½n de origen
+     * @param destino Direcciï¿½n de destino
+     * @param tamanno Nï¿½mero de celdas a mover
+     * @return true si la operaciï¿½n se realiza con ï¿½xito y false en caso contrario
      */
     public boolean mover(int origen, int destino, int tamanno) 
     {
