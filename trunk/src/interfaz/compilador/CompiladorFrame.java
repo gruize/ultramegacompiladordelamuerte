@@ -263,6 +263,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
     public boolean compilar(File classFile, boolean compilarP) {
         try {
             this.textAreaEjecucion.setText("");
+            textAreaEjecucion.setAutoscrolls(true);
+            
             String codigo = textAreaEntrada.getText();
             if (codigo.equals("")) {
                 return false;
@@ -310,7 +312,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
     }
 
     private void ejecutar(boolean debug) {
-
+    	textAreaEjecucion.setAutoscrolls(true);
         if (!compilar(null,true)) {
             return;
         }
@@ -330,8 +332,10 @@ public class CompiladorFrame extends javax.swing.JFrame {
     private void imprimir(ArrayList<InstruccionInterprete> ai) {
         textAreaDebug.append("\n --INSTRUCCIONES INTERPRETE--\n\n");
         Iterator<InstruccionInterprete> it = ai.iterator();
+        int i=0;
         while (it.hasNext()) {
-            textAreaDebug.append(it.next().toString() + "\n");
+            textAreaDebug.append(i+": "+it.next().toString() + "\n");
+            i++;
         }
 
     }

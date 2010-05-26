@@ -64,6 +64,7 @@ import compilador.lexico.Tokens.Record;
 import compilador.lexico.Tokens.Separador;
 import compilador.lexico.Tokens.Token_Shl;
 import compilador.lexico.Tokens.Signo_menos;
+import compilador.lexico.Tokens.Token_Shr;
 import compilador.lexico.Tokens.Token_Suma;
 import compilador.lexico.Tokens.Then;
 import compilador.lexico.Tokens.Tipo;
@@ -670,7 +671,7 @@ public class AnalizadorLexico {
 				break;
 			case MAYOR :
 				switch(buff){
-				case '>': transita(SHL); break;
+				case '>': transita(SHR); break;
 				case '=': transita(MAYOR_IG); break;
 				default: arrayTokens.add(new Token_Mayor(numLinea)); terminaEstado();
 				}
@@ -685,7 +686,7 @@ public class AnalizadorLexico {
 				break;
 			case MENOR :
 				switch(buff){
-				case '<': transita(SHR); break;
+				case '<': transita(SHL); break;
 				case '=': transita(MENOR_IG); break;
 				default: arrayTokens.add(new Token_Menor(numLinea)); terminaEstado();
 				}
@@ -695,7 +696,7 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 			case SHR:
-				arrayTokens.add(new Token_Shl(numLinea));
+				arrayTokens.add(new Token_Shr(numLinea));
 				terminaEstado();
 				break;
 			case DOS_PUNTOS :
