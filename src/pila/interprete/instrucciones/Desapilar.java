@@ -23,7 +23,7 @@ public class Desapilar extends InstruccionInterprete{
     }
     @Override
     public String toString() {
-        return "Despilar "+getDato();
+        return "Despilar ";//+getDato();
     }
 
     /**
