@@ -1536,8 +1536,8 @@ public class Traductor {
             etq_for = etq;
             
             //copia el resultado de Expresion2
-//            etq++;
-//            cod.appendIns(new Copia());
+            etq++;
+            cod.appendIns(new Copia());
             
             //accedemos a id
             etq+= 1+ longAccesoVar(GestorTs.getProps(ts,lex));
@@ -1575,21 +1575,11 @@ public class Traductor {
             //vamos a la cabeza del bucle
             etq++;
             cod.appendIns(new IrA(new Nat(etq_for)));
-            
             //si se sale habrá que saltar justo a partir de aquí
             cod.insertaCod(new IrTrue(new Nat(etq)), aux);
-            
-            
-            
-//            etq += 6;
-//            
-//            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
-//            cod.appendIns(new Apilar(new Nat(1)));
-//            cod.appendIns(new Suma());
-//            cod.appendIns(new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
-//            cod.appendIns(new IrA(new Nat(etq_for))); //creo q está bien asi
-//            cod.appendIns(new Desapilar());
-//            cod.insertaCod(new IrTrue(new Nat(etq)), aux);
+            //ir
+            etq++;
+            cod.appendIns(new Desapilar());
             
         }
         return error1;
