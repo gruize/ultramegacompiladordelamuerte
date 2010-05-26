@@ -1329,9 +1329,9 @@ public class Traductor {
             etq+=longAccesoVar(GestorTs.getProps(ts, lex));
             if (t.equals("boolean"))
                 cod.appendIns(new EntradaBool());
-            else if (t.equals("entero"))
+            else if (t.equals("integer"))
                 cod.appendIns(new EntradaInt());
-            else if (t.equals("char"))
+            else if (t.equals("character"))
                 cod.appendIns(new EntradaChar());
             else if (t.equals("natural"))
                 cod.appendIns(new EntradaNat());
@@ -1973,10 +1973,10 @@ public class Traductor {
             }
         String modoh3 = "val";
         if (op == op.AND){
-             cod.insertaCod(new IrTrue(new Nat(etq)), aux);
-             etq += 2;
+             cod.insertaCod(new IrFalse(new Nat(etq+1)), aux);
              cod.appendIns(new IrA(new Nat(etq+2)));
-             cod.appendIns(new Apilar(new Nat(0)));
+             cod.appendIns(new Apilar(new Bool(false)));
+             etq += 2;
         }
         else{
             etq +=1;
@@ -2276,7 +2276,7 @@ public class Traductor {
     protected TipoTs Literal_LitCha(Token t) throws Exception {
         TipoTs tipo =null;
 
-        cod.appendIns(new Apilar(new Caracter(t.getLex().charAt(0))));
+        cod.appendIns(new Apilar(new Caracter(t.getLex().charAt(1))));
         etq +=1;
         tipo = new TipoTs("character");
 

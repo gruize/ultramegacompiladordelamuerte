@@ -23,7 +23,7 @@ public class Copia extends InstruccionInterprete {
 	}
 
 	/**
-	 * Semantica: desapilar()
+	 * Semantica: copia()
 	 * 
 	 * @return siempre true (nunca modifica el cp del interprete)
 	 */

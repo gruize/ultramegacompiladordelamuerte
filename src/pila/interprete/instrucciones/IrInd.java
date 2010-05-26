@@ -36,7 +36,7 @@ public class IrInd  extends InstruccionInterprete {
 		try
 		{
 			if (direccion.getTipoDato() == DatoPila.INT_T)
-				interprete.setCp(direccion.toInt() -1 );
+				interprete.setCp(direccion.toInt());
 			else 
 				throw new InstruccionExc(this, "Tipo inválido ("
 						+ getDato().toString() + ")");
@@ -45,7 +45,7 @@ public class IrInd  extends InstruccionInterprete {
 		{
 			throw new InstruccionExc(this, ex.getMessage());
 		}
-		return true;
+		return false; //no actualizar CP
 	}
 
 }

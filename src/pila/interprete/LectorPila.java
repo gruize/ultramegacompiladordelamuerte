@@ -46,8 +46,8 @@ public class LectorPila {
                 case DatoPila.FLOAT_T:
                     return new Real(dis.readFloat());
                 default:
-                    throw new LectorExc("Tipo de dato "+
-                            Byte.toString(tipo)+"inválido");
+                    throw new LectorExc("Tipo de dato inválido: "+
+                            Byte.toString(tipo));
             }
         }
         catch (IOException e) {
@@ -201,7 +201,7 @@ public class LectorPila {
                 inst = new IrTrue(leerDato(dis));
                 break;
             case InstruccionInterprete.CODIGO_COPIA:
-                inst = new Copia(leerDato(dis));
+                inst = new Copia();
                 break;               
         }
         return inst;

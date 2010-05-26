@@ -32,7 +32,7 @@ public class IrTrue  extends InstruccionInterprete {
 		{
 			if ((salto.getTipoDato() == DatoPila.BOOL_T) && (getDato().getTipoDato() == DatoPila.NAT_T))
 				if (salto.toBoolean()) {
-					interprete.setCp(getDato().toInt() -1);
+					interprete.setCp(getDato().toInt());
 					he_saltado = true;
 				}
 				else {
