@@ -1500,23 +1500,29 @@ public class Traductor {
             parh3 = false;
             
             String lex = identificador();
-            if (! igual()){
-                throw new Exception("FATAL: Se esperaba simbolo simbolo ="
+            if (!GestorTs.existe(ts, lex)) {
+            	throw new Exception("FATAL: Variable contador no declarada"
+            			+textoError());
+            }
+            if (! igual() && !dosPuntosIgual()){
+                throw new Exception("FATAL: Se esperaba simbolo = o := "
                     + textoError());
             }
-                
-                Object[] expRes = Expresion(parh2);
-                TipoTs tipo2 = (TipoTs) expRes[0];
-                String modo2 = (String) expRes[1];
-                
+            etq+= longAccesoVar(GestorTs.getProps(ts, lex));
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));    
+            
+            Object[] expRes = Expresion(parh2);
+            TipoTs tipo2 = (TipoTs) expRes[0];
+            String modo2 = (String) expRes[1];
+            
+            etq++;
+            cod.appendIns(new DesapilaInd());
+            //asigna a id el valor inicial
+            
             if (! to()){
                 throw new Exception("FATAL: Se esperaba simbolo la palabra to"
                     + textoError());
             }
-
-            etq += 1 + longAccesoVar(GestorTs.getProps(ts,lex));
-            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
-            cod.appendIns( new DesapilaInd() );
                     
             Object[] expRes2 = Expresion(parh3);
             TipoTs tipo3 = (TipoTs) expRes2[0];
@@ -1528,13 +1534,21 @@ public class Traductor {
             }
 
             etq_for = etq;
-            etq+=4 + longAccesoVar(GestorTs.getProps(ts,lex));
-            cod.appendIns(new Copia());
+            
+            //copia el resultado de Expresion2
+//            etq++;
+//            cod.appendIns(new Copia());
+            
+            //accedemos a id
+            etq+= 1+ longAccesoVar(GestorTs.getProps(ts,lex));
             cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
             cod.appendIns(new ApilarInd());
+            
+            //comparamos si son iguales y saltamos si no
+            etq+=2;
             cod.appendIns(new Igual());
             cod.appendIns(null);
-            aux = etq;
+            aux = etq - 1;
 
             boolean error4 = Instruccion();
 
@@ -1543,14 +1557,39 @@ public class Traductor {
                             (!GestorTs.getProps(ts, lex).getTipo().getT().equals("natural") && !GestorTs.getProps(ts, lex).getTipo().getT().equals("integer"));
 
             
-            etq += 6;
-            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
+            //actualizar id
+            //accedemos a id
+            etq += 1 + longAccesoVar(GestorTs.getProps(ts, lex));
+            cod.appendCod(accesoVar(GestorTs.getProps(ts, lex)));
+            cod.appendIns(new Copia()); //lo copiamos desapilar sobre él.
+            //apilamos su valor
+            etq++;
+            cod.appendIns(new ApilarInd());
+            //sumamos 1
+            etq+=2;
             cod.appendIns(new Apilar(new Nat(1)));
             cod.appendIns(new Suma());
-            cod.appendIns(new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
-            cod.appendIns(new IrA(new Nat(etq_for))); //creo q está bien asi
-            cod.appendIns(new Desapilar());
-            cod.insertaCod(new IrTrue(new Nat(etq)), aux -1);
+            //lo guardamos
+            etq++;
+            cod.appendIns(new DesapilaInd());
+            //vamos a la cabeza del bucle
+            etq++;
+            cod.appendIns(new IrA(new Nat(etq_for)));
+            
+            //si se sale habrá que saltar justo a partir de aquí
+            cod.insertaCod(new IrTrue(new Nat(etq)), aux);
+            
+            
+            
+//            etq += 6;
+//            
+//            cod.appendIns(new ApilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
+//            cod.appendIns(new Apilar(new Nat(1)));
+//            cod.appendIns(new Suma());
+//            cod.appendIns(new DesapilarDir(new Nat(GestorTs.getProps(ts, lex).getDir())));
+//            cod.appendIns(new IrA(new Nat(etq_for))); //creo q está bien asi
+//            cod.appendIns(new Desapilar());
+//            cod.insertaCod(new IrTrue(new Nat(etq)), aux);
             
         }
         return error1;

@@ -3,7 +3,9 @@ integer j;
 integer v
 
 &
-j:=0;
-v:=0;
-for i=0 to j do
-	v := v + 1
+j:=5;
+for i=0 to j do{
+	v := v + 1;
+	out(v)
+};
+out(i)
