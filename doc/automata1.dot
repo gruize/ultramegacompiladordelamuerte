@@ -1,0 +1,70 @@
+digraph G{
+  rankdir=LR;
+  node [shape = doublecircle]; 
+  "3 ("; "55 cadena"; "8 cast int"; "13 cast nat"; "20 cast float"; "26 cast char";
+
+  node [shape = circle];
+  "" -> "" [label = "\\n, \\t, \" \" " ];
+  "" -> "55 cadena" [label = "[A-Za-z]"]
+  "55 cadena" -> "55 cadena" [label = "[a-zA-Z0-9]"]
+ 
+  "" -> "3 (" [label = "("];
+
+  "3 (" -> "3 (" [label = """"]
+  "3 (" -> "55 cadena" [label = "[A-Za-z0-9]-incf"];
+
+  "3 (" -> "4 (i" [label = "i"];
+  "4 (i" -> "5 (in" [label = "n"];
+  "4 (i" -> "55 cadena" [label = "[A-Za-z0-9]-n"];
+  "5 (in" -> "6 (int" [label = "t"];
+  "5 (in" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "6 (int" -> "8 cast int" [label = ")"];
+  "6 (int" -> "7 c_int4" [label = """"];
+  "6 (int" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "7 c_int4" -> "7 c_int4" [label = """"];
+  "7 c_int4" -> "8 cast int" [label = ")"];
+  "7 c_int4" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+  "3 (" -> "9 (n" [label = "n"];
+  "9 (n" -> "10 (na" [label = "a"];
+  "9 (n" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "9 (na" -> "11 (nat" [label = "t"];
+  "9 (na" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "11 (nat" -> "13 cast nat" [label = ")"];
+  "11 (nat" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "11 (nat" -> "12 c_nat4" [label = """"];
+  "12 c_nat4" -> "12 c_nat4" [label = """"];
+  "12 c_nat4" -> "13 cast nat" [label = ")"];
+  "12 c_nat4" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+  "3 (" -> "14 (f" [label = "f"];
+  "14 (f" -> "15 (fl" [label = "l"];
+  "14 (f" -> "55 cadena" [label = "[A-Za-z0-9]-l"];
+  "15 (fl" -> "16 (flo" [label = "o"];
+  "15 (fl" -> "55 cadena" [label = "[A-Za-z0-9]-o"];
+  "16 (flo" -> "17 (floa" [label = "a"];
+  "16 (flo" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "17 (floa" -> "18 (float" [label = "t"];
+  "17 (floa" -> "55 cadena" [label = "[A-Za-z0-9]-t"];
+  "18 (float" -> "20 cast float" [label = ")"];
+  "18 (float" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "18 (float" -> "19 c_float6" [label = """"];
+  "19 c_float6" -> "19 c_float6" [label = """"];
+  "19 c_float6" -> "20 cast float" [label = ")"];
+  "19 c_float6" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+  "3 (" -> "21 (c" [label = "c"];
+  "21 (c" -> "22 (ch" [label = "h"];
+  "21 (c" -> "55 cadena" [label = "[A-Za-z0-9]-h"];
+  "22 (ch" -> "23 (cha" [label = "a"];
+  "22 (ch" -> "55 cadena" [label = "[A-Za-z0-9]-a"];
+  "23 (cha" -> "24 (char" [label = "r"];
+  "23 (cha" -> "55 cadena" [label = "[A-Za-z0-9]-r"];
+  "24 (char" -> "26 cast char" [label = ")"];
+  "24 (char" -> "55 cadena" [label = "[A-Za-z0-9]"];
+  "24 (char" -> "25 c_char5" [label = """"];
+  "25 c_char5" -> "25 c_char5" [label = """"];
+  "25 c_char5" -> "26 cast char" [label = ")"];
+  "25 c_char5" -> "55 cadena" [label = "[A-Za-z0-9]"];
+
+}
