@@ -1,0 +1,107 @@
+digraph G{
+  rankdir=LR;
+  node [shape = doublecircle]; 
+  "1 )"; "27 >"; "29 >="; "28 >>"; "30 <"; "32 <="; "31 <<"; "33 :"; "34 :="; "35 =";
+  "37 =/="; "38 litNat1"; "39 litNat2"; "41 litFlo1"; "42 litFlo2"; "45 litFlo3"; "47 litFlo4";
+  "2 comentario"; "48 &"; "49 ;"; "50 +"; "51 *"; "52 /"; "53 %"; "54 |"; "58 litCha";
+  "59 signo menos"; "60 {"; "61 }"; "62 ^"; "66 ->"; "63 ."; "64 ["; "65 ]"; "67 ,";
+
+  node [shape = circle];
+  "" -> "2 comentario" [label = " # "];
+  "2 comentario" -> "2 comentario" [label = "\\t, \" \",[0-9], [a-zA-Z0-9], &, ;, +, *, /, %, |, \', -"];
+  "2 comentario" -> "" [label = "\\n"];
+
+  "" -> "1 )" [label = ")"];
+  
+  "" -> "27 >" [label = ">"];
+  "27 >" -> "28 >>" [label = ">"];
+  "27 >" -> "29 >=" [label = "="];
+
+  "" -> "30 <" [label = "<"];
+  "30 <" -> "31 <<" [label = "<"];
+  "30 <" -> "32 <=" [label = "="];
+
+  "" -> "33 :" [label = ":"];
+  "33 :" -> "34 :=" [label = "="];
+
+  "" -> "35 =" [label = "="];
+  "35 =" -> "36 =/" [label = "/"];
+  "36 =/" -> "37 =/=" [label = "="];
+
+  "" -> "38 litNat1" [label = "0"];
+  "" -> "39 litNat2" [label = "[1-9]"];
+
+  "38 litNat1" -> "40 float1" [label = "."];
+
+  "39 litNat2" -> "40 float1" [label = "."];
+  "39 litNat2" -> "39 litNat2" [label = "[0-9]"]
+
+  "40 float1" -> "41 litFlo1" [label = "0"];
+  "40 float1" -> "42 litFlo2" [label = "[1-9]"];
+
+  "41 litFlo1" -> "42 litFlo2" [label = "[1-9]"];
+  "41 litFlo1" -> "43 float2" [label = "0"];
+  "41 litFlo1" -> "44 float3" [label = "e.E"];
+
+  "42 litFlo2" -> "43 float2" [label = "0"];
+  "42 litFlo2" -> "44 float3" [label = "e.E"];
+  "42 litFlo2" -> "42 litFlo2" [label = "[1-9]"]
+
+  "43 float2" -> "42 litFlo2" [label = "[1-9]"];
+  "43 float2" -> "43 float2" [label = "0"]
+
+  "44 float3" -> "45 litFlo3" [label = "0"];
+  "44 float3" -> "46 float4" [label = "."];
+  "44 float3" -> "47 litFlo4" [label = "[1-9]"];
+
+  "46 float4" -> "47 liFlo4" [label = "[1-9]"];
+
+  "47 litFlo4" -> "47 litFlo4" [label = "[0-9]"]
+
+  "" -> "48 &" [label = "&"];
+  "" -> "49 ;" [label = ";"];
+  "" -> "50 +" [label = "+"];
+  "" -> "51 *" [label = "*"];
+  "" -> "52 /" [label = "/"];
+  "" -> "53 %" [label = "%"];
+  "" -> "54 |" [label = "|"];
+  "" -> "56 '" [label = "'"];
+  "56 '" -> "57 char2" [label = "[A-Za-z0-9]"];
+  "57 char2" -> "58 litCha" [label = "'"];
+  "" -> "59 signo menos" [label = "-"];
+  "59 signo menos" -> "66 ->" [label = ">"]
+  "" -> "60 {" [label = "{"]
+  "" -> "61 }" [label = "}"]
+  "" -> "62 ^" [label = "^"]
+  "" -> "63 ." [label = "."]
+  "" -> "64 [" [label = "["]
+  "" -> "65 ]" [label = "]"]
+  "" -> "67 ," [label = ","]
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
