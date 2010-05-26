@@ -3,6 +3,7 @@ package pila.interprete.instrucciones;
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
 import pila.interprete.datos.Entero;
+import pila.interprete.datos.Nat;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -25,7 +26,7 @@ public class New extends InstruccionInterprete
     public New(DatoPila d) throws LectorExc 
     {
         super(InstruccionInterprete.CODIGO_NEW, d);
-        if (d.getTipoDato() != DatoPila.NAT_T) 
+        if (d.getTipoDato() != DatoPila.INT_T) 
         {
             throw new LectorExc("La instrucción requiere un argumento entero");
         }
@@ -51,7 +52,7 @@ public class New extends InstruccionInterprete
             switch (getDato().getTipoDato()) 
             {
                 case DatoPila.INT_T:
-                	Entero e = new Entero(interprete.getMemoria().reservar(getDato().toInt()));
+                	Nat e = new Nat(interprete.getMemoria().reservar(getDato().toInt()));
                     interprete.getPila().addFirst(e);
                     break;
                 default:
