@@ -1235,7 +1235,8 @@ public class Traductor {
         parametros = GestorTs.getProps(ts,lex).getTipo().getParametros();
         etq += longApilaRet;
         cod.appendCod(apilaRet(0)); //se parchea más adelante
-        int aux = etq-2;
+        //int aux = etq-2;
+        int aux = cod.size()-2;
 
         boolean error2 = AParametros();
         error1 = error2 || !GestorTs.existe(ts, lex) || !GestorTs.getProps(ts, lex).getClase().equals("proc");
@@ -1462,19 +1463,20 @@ public class Traductor {
 
             etq += 1;
             cod.appendIns(null);
-            aux1 = etq;
+            //aux1 = etq;
+            aux1=cod.size()-1;
 
             boolean error3 = Instruccion();
 
-            cod.insertaCod(new IrFalse(new Nat(etq+1)), aux1 -1); //reemplaza el noop con el ir-f. en la posicion del código aux
-            etq += 1;
-            aux2=etq;
+            cod.insertaCod(new IrFalse(new Nat(etq+1)), aux1); //reemplaza el noop con el ir-f. en la posicion del código aux
+            etq+=1;
             cod.appendIns(null);
+            aux2=cod.size()-1;
 
             boolean error4 = PElse();
 
             if (!error4){
-                cod.insertaCod(new IrA(new Nat(etq)),aux2 -1);
+                cod.insertaCod(new IrA(new Nat(etq)),aux2);
                 error1 = !tipo2.getT().equals("boolean") || error3 || error4;
             }
         }
@@ -1508,16 +1510,16 @@ public class Traductor {
                 
             }
             etq += 1;
-            aux = etq;
             cod.appendIns(null);
+            aux=cod.size()-1;
 
             boolean error3 = Instruccion();
 
-            error1 = tipo2.getT().equals("boolean") || error3;
+            error1 = !tipo2.getT().equals("boolean") || error3;
             
             etq += 1;
             cod.appendIns(new IrA(new Nat(etq_while)));
-            cod.insertaCod(new IrFalse(new Nat(etq)), aux-1);
+            cod.insertaCod(new IrFalse(new Nat(etq)), aux);
             
         }
         return error1;
@@ -1579,10 +1581,12 @@ public class Traductor {
             cod.appendIns(new ApilarInd());
             
             //comparamos si son iguales y saltamos si no
-            etq+=2;
+            etq+=1;
             cod.appendIns(new Igual());
+            etq+=1;
             cod.appendIns(null);
-            aux = etq - 1;
+            //aux = etq - 1;
+            aux=cod.size()-1;
 
             boolean error4 = Instruccion();
 
@@ -1908,10 +1912,13 @@ public class Traductor {
 
         boolean parh2 = false;
         if (op == op.OR){
-            aux = etq +1;
-            etq += 3;
+            //aux = etq +1;
+            etq += 1;
             cod.appendIns(new Copia());
+            etq += 1;
             cod.appendIns(null);
+            aux=cod.size()-1;
+            etq +=1;
             cod.appendIns(new Desapilar());
         }
 
@@ -2006,9 +2013,9 @@ public class Traductor {
 
         boolean parh2 = false;
         if (op == op.AND){
-            aux = etq;
             etq += 1;
             cod.appendIns(null);
+            aux=cod.size()-1;
         }
 
         Object[] resExpNiv2 = ExpresionNiv3(parh2);
