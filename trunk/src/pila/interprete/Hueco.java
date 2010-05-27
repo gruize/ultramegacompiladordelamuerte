@@ -24,6 +24,14 @@ public class Hueco implements Comparable<Hueco>
 		return direccion;
 	}
 	
+	public void setDireccion(Integer direccion) {
+		this.direccion = direccion;
+	}
+
+	public void setTamanno(Integer tamanno) {
+		this.tamanno = tamanno;
+	}
+
 	public int getTamanno()
 	{
 		return tamanno;

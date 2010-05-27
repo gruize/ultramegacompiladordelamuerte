@@ -33,8 +33,8 @@ public class Delete extends InstruccionInterprete {
 
 	/**
 	 * Semantica: 
-	 * 1. desapilar la dirección que se desea liberar 
-	 * 1. libera las siguientes t celdas consecutivas a esa dirección.
+	 * 1. desapilar la direcciï¿½n que se desea liberar 
+	 * 1. libera las siguientes t celdas consecutivas a esa direcciï¿½n.
 	 * 
 	 * @return siempre true (nunca modifica el cp del interprete)
 	 */
@@ -42,8 +42,9 @@ public class Delete extends InstruccionInterprete {
 	public boolean ejecutate(Interprete interprete) throws InstruccionExc {
 		try {
 			switch (getDato().getTipoDato()) {
-			case DatoPila.INT_T:
+			case DatoPila.NAT_T:
 				int dir = interprete.getPila().getFirst().toInt();
+				interprete.getPila().removeFirst();
 				interprete.getMemoria().liberar(dir, getDato().toInt());
 				break;
 			default:

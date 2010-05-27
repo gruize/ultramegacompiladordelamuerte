@@ -1,10 +1,10 @@
-int a;
+integer a;
 procedure hola{
-	int b;
+	integer b;
 	&
-	b:=2
+	b:=1100;
 	out(b)
 }
 &
-a:= 5;
+a:= 2030;
 hola

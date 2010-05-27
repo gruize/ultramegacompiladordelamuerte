@@ -31,12 +31,14 @@ public class Traductor {
     protected Codigo cod;
     protected GestorTs ts;
     protected int etq;
-    protected int dir;
+    protected int tam_datos;
     protected int n;
+    protected int anidamiento;
     protected ArrayList<Parametro> parametros;
     protected int i_token;
     protected ArrayList<String> pend;
     protected ArrayList<ErrorTraductor> errores;
+    protected int dir_n[];
 
     protected enum Operaciones {
 
@@ -145,16 +147,17 @@ public class Traductor {
         Codigo res = new Codigo();
         res.appendIns(new ApilarDir(new Nat(0)));
         res.appendIns(new Apilar(new Nat(2)));
+        res.appendIns(new Suma());
         res.appendIns(new ApilarDir(new Nat(1+nivel)));
         res.appendIns(new DesapilaInd());
         res.appendIns(new ApilarDir(new Nat(0)));
-        res.appendIns(new Apilar(new Nat(0)));
+        res.appendIns(new Apilar(new Nat(3)));
         res.appendIns(new Suma());
         res.appendIns(new DesapilarDir(new Nat(1+nivel)));
         res.appendIns(new ApilarDir(new Nat(0)));
         res.appendIns(new Apilar(new Nat(tamLocales+2)));
         res.appendIns(new Suma());
-        res.appendIns(new DesapilarDir(new Nat(1+nivel)));
+        res.appendIns(new DesapilarDir(new Nat(0)));
         return res;
     }
     protected Codigo epilogo(int nivel) throws LectorExc, DatoExc{
@@ -169,7 +172,9 @@ public class Traductor {
         res.appendIns(new Copia());
         res.appendIns(new DesapilarDir(new Nat(0)));
         res.appendIns(new Apilar(new Nat(2)));
+        res.appendIns(new Suma());
         res.appendIns(new ApilarInd());
+        res.appendIns(new DesapilarDir(new Nat(1+nivel)));
         return res;
     }
     protected Codigo accesoVar(InfoTs props) throws LectorExc, DatoExc{
@@ -532,19 +537,30 @@ public class Traductor {
         boolean error1 = false;
 
         etq = longInicio + 1;
-        dir = 0;
-        n = 0;
+        tam_datos = 0;
+        dir_n=new int[50]; //max nivel anid
+        for (int i=0;i<dir_n.length;i++) dir_n[i]=0;
+        n = 0; //nivel actual
+        anidamiento = 0;
         ts = new GestorTs();
         cod = new Codigo();
 
         boolean error2 = Declaraciones();
+        
+        int tam_datos2=0;
+        for (int i=0;i<dir_n.length;i++) tam_datos2+=dir_n[i];
+        assert(tam_datos==tam_datos2);
+        //añadimos por delante del código de declaraciones
+        //la parte del inicio.
+        Codigo ini=inicio(anidamiento,tam_datos);
+        ini.appendIns(new IrA(new Nat(etq)));
+        ini.appendCod(cod);
+        cod=ini;
 
         if (!ampersand()) {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
 
-        cod.appendCod(inicio(n,dir));
-        cod.appendIns(new IrA(new Nat(etq)));
 
         boolean error3 = Instrucciones();
 
@@ -567,7 +583,8 @@ public class Traductor {
         String id2 = (String) decRes[2];
         InfoTs props2 = (InfoTs) decRes[3];
 
-        dir+=tam2;
+        tam_datos+=tam2;
+        dir_n[n]+=tam2;
         errorh3= error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
         GestorTs.inserta(ts,id2,props2);
         if (props2.getClase().equals("tipo"))
@@ -594,7 +611,8 @@ public class Traductor {
             String id2 = (String) decRes[2];
             InfoTs props2 = (InfoTs) decRes[3];
 
-            dir+=tam2;
+            tam_datos+=tam2;
+            dir_n[n]+=tam2;
             errorh3= errorh1 || error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
             if (!error2) GestorTs.inserta(ts,id2,props2);
             if (props2.getClase().equals("tipo"))
@@ -653,7 +671,7 @@ public class Traductor {
             error1 = error2V;
             id1= id2;
             tam1 = props2V.getTipo().getTam();
-            props2V.setDir(dir);
+            props2V.setDir(dir_n[n]);
             props1 = props2V;
         }
         else {
@@ -707,19 +725,15 @@ public class Traductor {
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
-        int dir_aux;
 
         if (procedure()){
             String lex= identificador();
-            GestorTs ts_aux = ts;
-            ts.crearTS();
+            ts.abrirAmbito();
             n += 1;
-            dir_aux=dir;
-            dir=0;
+            anidamiento=Math.max(anidamiento, n);
             boolean error2 = FParametros();
-            dir=dir_aux+dir;
-            parametros.clear();
             GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
+            parametros.clear();
             
             Object[] bloqueRes = Bloque();
             boolean error3= (Boolean) bloqueRes[0];
@@ -729,7 +743,7 @@ public class Traductor {
             id1 = lex;
             props1 = new InfoTs("proc", new TipoTs("proc", parametros), n, inicio3);
             n -= 1;
-            ts = ts_aux;
+            ts.cerrarAmbitoActual();
         }
 
         return new Object[]{error1, id1, props1};
@@ -737,28 +751,25 @@ public class Traductor {
     }
     protected Object[] Bloque() throws Exception{
         boolean error1=false;
+        boolean error2=false;
         int inicio1 = 0;
+        int tam_local=dir_n[n];
 
         if (!abreLlave()){
             throw new Exception("FATAL: Se esperaba abre llave"
                     + textoError());
         }
-        boolean error2=Declaraciones();
-
-        if (!error2){
-            if (! ampersand()){
-                throw new Exception("FATAL: Se esperaba abrir paréntesis"
+        if (!ampersand()) //hay declaraciones
+        	error2=Declaraciones();
+        
+        inicio1 = etq;
+        etq += longPrologo;
+        cod.appendCod(prologo(n,dir_n[n]-tam_local));
+        
+        if (! ampersand()){
+        	throw new Exception("FATAL: Se esperaba ampersand"
                     + textoError());
             }
-            inicio1 = etq;
-            etq += longPrologo;
-            cod.appendCod(prologo(n,dir));
-        }
-        else{
-            inicio1 = etq;
-            etq += longPrologo;
-            cod.appendCod(prologo(n,dir));
-        }
 
         boolean error3 = Instrucciones();
 
@@ -768,9 +779,9 @@ public class Traductor {
         }
 
         error1 = error2 || error3;
-	etq += longEpilogo + 1;
-	cod.appendCod(epilogo(n));
-	cod.appendIns(new IrInd());
+        etq += longEpilogo + 1;
+        cod.appendCod(epilogo(n));
+        cod.appendIns(new IrInd());
 
         return new Object[]{error1, inicio1};
     }
@@ -785,13 +796,11 @@ public class Traductor {
                     + textoError());
             }
         }
-        else{
-            error1 = false;
-        }
+
         return error1;
     }
     protected boolean LFParametros() throws Exception{
-        boolean error1=false;
+    
         boolean errorh3 = false;
 
         Object[] FParamRes = FParametro();
@@ -803,11 +812,11 @@ public class Traductor {
         errorh3 = error2 ||(GestorTs.existe(ts,id2) && (GestorTs.getProps(ts, id2).getNivel() == n));
         props2.setDir(0);
         GestorTs.inserta(ts, id2, props2);
-        dir += tam2;
+        dir_n[n]+=tam2;
+        tam_datos+=tam2;
 
-        boolean error3 = LFParametrosRec(errorh3);
+        return LFParametrosRec(errorh3);
 
-        return error1;
     }
     protected boolean LFParametrosRec(boolean errorh1) throws Exception{
         boolean error1= false;
@@ -820,7 +829,8 @@ public class Traductor {
             InfoTs props2 = (InfoTs) FParamRes[2];
             int tam2 = (Integer) FParamRes[3];
 
-            dir += tam2;
+            dir_n[n]+=tam2;
+            tam_datos+=tam2;
             errorh3 = errorh1 || error2 || (GestorTs.existe(ts,id2)  && GestorTs.getProps(ts, id2).getNivel() == n);
             GestorTs.inserta(ts, id2, props2);
 
@@ -847,14 +857,14 @@ public class Traductor {
 
         if (var()){
             tam1 = 1;
-            parametros.add(new Parametro("variable", tipo2, dir));
+            parametros.add(new Parametro("variable", tipo2, dir_n[n]));
             id1 = lex;
             props1 = new InfoTs("pvar", tipo2, n);
             error1 = error2;
         }
         else{
             tam1 = tipo2.getTam();
-            parametros.add ( new Parametro("valor", tipo2, dir));
+            parametros.add ( new Parametro("valor", tipo2, dir_n[n]));
             id1 = lex;
             props1 = new InfoTs("var", tipo2, n);
             error1 = error2;
@@ -1156,15 +1166,15 @@ public class Traductor {
         boolean error1 = false;
         Token t= sigToken();
         if (t instanceof Identificador){
-            Token t2 = sigToken();
+            String id=t.getLex();
             atrasToken();
-            atrasToken();
-            if (t2 instanceof Parentesis_a){
-                error1 = InsProcedimiento();
+            if (GestorTs.existe(ts, id)){
+            	if (GestorTs.getProps(ts, id).getTipo().getT().equals("proc"))
+            		error1=InsProcedimiento();
+            	else
+            		error1=InsAsignacion();
             }
-            else{
-                error1 = InsAsignacion();
-            }
+            else error1=true;
         }
         else if (t instanceof Token_In){
             atrasToken();
@@ -1210,15 +1220,15 @@ public class Traductor {
         String lex = identificador();
 
         parametros = GestorTs.getProps(ts,lex).getTipo().getParametros();
-        //FIXME: Con que hay que parchear?
-        cod.appendCod(apilaRet(etq));//mal hay que parchear
         etq += longApilaRet;
+        cod.appendCod(apilaRet(0)); //se parchea más adelante
+        int aux = etq-2;
 
         boolean error2 = AParametros();
-
         error1 = error2 || !GestorTs.existe(ts, lex) || !GestorTs.getProps(ts, lex).getClase().equals("proc");
         cod.appendIns(new IrA(new Nat(GestorTs.getProps(ts,lex).getDir())));
         etq += 1;
+        cod.insertaCod(new Apilar(new Nat(etq)), aux);
 
         return error1;
     }
@@ -1598,7 +1608,7 @@ public class Traductor {
             if (tipo2.getBase().getT().equals("ref"))
                 num = GestorTs.getProps(ts,tipo2.getBase().getId()).getTipo().getTam(); //no se si esta bien
             else num = tipo2.getBase().getTam();
-            cod.appendIns(new New(new Entero(num)));
+            cod.appendIns(new New(new Nat(num)));
             cod.appendIns(new DesapilaInd());
         }
         return error1;
@@ -1610,11 +1620,15 @@ public class Traductor {
             TipoTs tipo2 = Mem();
 
             error1 = !tipo2.getT().equals("puntero");
-            etq+=1;
+            if (error1) throw new Exception("FATAL: Se esperaba un puntero "+ textoError());
+            etq+=2;
+          //saca la dirección apuntada
+            cod.appendIns(new ApilarInd());
+            //borramos
             if (tipo2.getBase().getT().equals("ref"))
-                cod.appendIns(new Salida(new Nat(GestorTs.getProps(ts, tipo2.getBase().getId()).getTipo().getTam()))); //tam?? hay tamaño
+                cod.appendIns(new Delete(new Nat(GestorTs.getProps(ts, tipo2.getBase().getId()).getTipo().getTam()))); //tam?? hay tamaño
             else
-            	cod.appendIns(new Salida(new Nat(tipo2.getBase().getTam())));
+            	cod.appendIns(new Delete(new Nat(tipo2.getBase().getTam())));;
         }
 
         return error1;
@@ -2045,7 +2059,7 @@ public class Traductor {
         TipoTs tipo1 = null;
         String modo1 ="";
 
-        Boolean parh2 = parh1;
+        boolean parh2 = parh1;
 
         Object[] resExpNiv4= ExpresionNiv4(parh2);
         TipoTs tipo2 = (TipoTs) resExpNiv4[0];

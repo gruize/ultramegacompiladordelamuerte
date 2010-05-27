@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import pila.interprete.datos.DatoPila;
+import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
 import pila.interprete.instrucciones.InstruccionInterprete;
@@ -118,10 +119,15 @@ public class Interprete {
         while(i >= 0 && memoria.getMemoria()[i] == null)
             i--;
         if(i < 0)
-            sb.append("Vacía\n");
+            sb.append("Vacia\n");
         for(int j = 0; j <= i; j++) {
         	if (memoria.getMemoria()[j]!=null)
-        		sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
+				try {
+					if (memoria.getMemoria()[j].toInt()!= -1)
+					sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
+				} catch (DatoExc e) {
+					sb.append("\t"+j+") "+ memoria.getMemoria()[j]+"\n");
+				}
         }
 
         sb.append("Contenido de la pila:\n");
@@ -133,9 +139,9 @@ public class Interprete {
                 i++;
             }
         else
-            sb.append("Vacía\n");
+            sb.append("Vacia\n");
 
-        sb.append("\nPróxima instrucción: ("+getCp()+") "+programa.get(getCp()).toString()+"\n");
+        sb.append("\nProxima instruccion: ("+getCp()+") "+programa.get(getCp()).toString()+"\n");
         sb.append("**Pulse enviar para continuar**\n");
         
         return new String(sb);

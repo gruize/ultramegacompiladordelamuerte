@@ -3,6 +3,7 @@ package pila.interprete.instrucciones;
 
 import pila.interprete.Interprete;
 import pila.interprete.datos.DatoPila;
+import pila.interprete.datos.Entero;
 import pila.interprete.excepiones.DatoExc;
 import pila.interprete.excepiones.InstruccionExc;
 import pila.interprete.excepiones.LectorExc;
@@ -42,13 +43,17 @@ public class ApilarDir extends InstruccionInterprete {
         try {
             switch (getDato().getTipoDato()) {
                 case DatoPila.NAT_T:
-                    interprete.getPila().addFirst(interprete.getMemoria().getMemoria()[getDato().toNatural()]);
+                	DatoPila d=interprete.getMemoria().getMemoria()[getDato().toNatural()];
+                	if (d==null) //no se saca nada util de memoria. Se pone un valor poco probable
+                		d=new Entero(Integer.MIN_VALUE); 
+                    interprete.getPila().addFirst(d);
                     break;
                 default:
                     throw new InstruccionExc(this, "Tipo inválido (" + getDato().toString() + ")");
             }
             
         } catch (DatoExc ex) {
+        	ex.printStackTrace();
             throw new InstruccionExc(this, ex.getMessage());
         }
         return true;
