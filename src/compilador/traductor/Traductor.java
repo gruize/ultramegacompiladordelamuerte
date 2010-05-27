@@ -183,7 +183,7 @@ public class Traductor {
         res.appendIns(new Apilar(new Nat(props.getDir())));
         res.appendIns(new Suma());
         if (props.getClase().equals("pvar"))
-            cod.appendIns(new ApilarInd());
+            res.appendIns(new ApilarInd());
         return res;
     }
     protected int longAccesoVar(InfoTs props){
@@ -213,7 +213,7 @@ public class Traductor {
     }
     protected Codigo pasoParametro(String modoReal, Parametro pFormal) throws LectorExc, DatoExc{
         Codigo res = new Codigo();
-        if (pFormal.getModo().equals("variable") && modoReal.equals("valor"))
+        if (pFormal.getModo().equals("valor") && modoReal.equals("variable"))
             res.appendIns(new Mueve(new Nat(pFormal.getTipo().getTam())));
         else res.appendIns(new DesapilaInd());
         return res;
@@ -830,11 +830,12 @@ public class Traductor {
             InfoTs props2 = (InfoTs) FParamRes[2];
             int tam2 = (Integer) FParamRes[3];
 
+            
+            errorh3 = errorh1 || error2 || (GestorTs.existe(ts,id2)  && GestorTs.getProps(ts, id2).getNivel() == n);
+            props2.setDir(dir_n[n]); //miralo hector
+            GestorTs.inserta(ts, id2, props2);
             dir_n[n]+=tam2;
             tam_datos+=tam2;
-            errorh3 = errorh1 || error2 || (GestorTs.existe(ts,id2)  && GestorTs.getProps(ts, id2).getNivel() == n);
-            GestorTs.inserta(ts, id2, props2);
-
             boolean error3 = LFParametrosRec(errorh3);
 
             error1 = error3;
@@ -850,23 +851,34 @@ public class Traductor {
         InfoTs props1 = null;
         int tam1 = 0;
 
-        Object[] tipoRes= Tipo();
-        boolean error2= (Boolean) tipoRes[0];
-        TipoTs tipo2 = (TipoTs) tipoRes[1];
-
-        String lex = identificador();
+       
 
         if (var()){
+
+            Object[] tipoResV= Tipo();
+            boolean error2V= (Boolean) tipoResV[0];
+            TipoTs tipo2V = (TipoTs) tipoResV[1];
+
+            String lexV = identificador();
+
             tam1 = 1;
-            parametros.add(new Parametro("variable", tipo2, dir_n[n]));
-            id1 = lex;
-            props1 = new InfoTs("pvar", tipo2, n);
-            error1 = error2;
+            parametros.add(new Parametro("variable", tipo2V, dir_n[n]));
+            id1 = lexV;
+            //habria que meter la direccion no??
+            props1 = new InfoTs("pvar", tipo2V, n);
+            error1 = error2V;
         }
         else{
+             Object[] tipoRes= Tipo();
+            boolean error2= (Boolean) tipoRes[0];
+            TipoTs tipo2 = (TipoTs) tipoRes[1];
+
+            String lex = identificador();
+
             tam1 = tipo2.getTam();
             parametros.add ( new Parametro("valor", tipo2, dir_n[n]));
             id1 = lex;
+            //habria que meter la direccion no??
             props1 = new InfoTs("var", tipo2, n);
             error1 = error2;
         }
@@ -1313,7 +1325,7 @@ public class Traductor {
             errorh3 = errorh1 ||
             	tipo2.getT().equals("error") ||
             	parametros.size() < nparamh1 +1 ||
-            	parametros.get(nparamh1).getModo().equals("variable") ||
+            	(parametros.get(nparamh1).getModo().equals("variable") && modo2.equals("valor"))||
             	! GestorTs.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
 
             return LAParametrosRec(nparamh3,errorh3);
@@ -1650,7 +1662,7 @@ public class Traductor {
         String lex = identificador();
 
         if (GestorTs.existe(ts, lex)){
-            if (GestorTs.getProps(ts, lex).getClase().equals("var"))
+            if (GestorTs.getProps(ts, lex).getClase().equals("var") || GestorTs.getProps(ts, lex).getClase().equals("pvar"))
                 tipo2h = GestorTs.ref(GestorTs.getProps(ts, lex).getTipo(), ts);
             else {
             	tipo2h = new TipoTs();
