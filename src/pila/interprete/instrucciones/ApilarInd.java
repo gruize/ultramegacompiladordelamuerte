@@ -41,6 +41,7 @@ public class ApilarInd  extends InstruccionInterprete {
         try {
             ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila d = pila.removeFirst();
+            //FIXME: lanzar excepcion si se intenta apilar un null
             pila.addFirst(interprete.getMemoria().getMemoria()[d.toNatural()]);
         } catch (DatoExc ex) {
             throw new InstruccionExc(this, ex.getMessage());

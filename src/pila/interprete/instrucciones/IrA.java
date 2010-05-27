@@ -16,7 +16,7 @@ public class IrA extends InstruccionInterprete {
 
 	public IrA() throws LectorExc {
 		super(InstruccionInterprete.CODIGO_IR_A);
-		throw new LectorExc("La instrucción ir-a necesita " + "un parámetro");
+		throw new LectorExc("La instrucción ir-a necesita un parámetro");
 	}
 
 	public IrA(DatoPila d) throws LectorExc {
