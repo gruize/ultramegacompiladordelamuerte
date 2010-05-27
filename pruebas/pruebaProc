@@ -1,0 +1,10 @@
+int a;
+procedure hola{
+	int b;
+	&
+	b:=2
+	out(b)
+}
+&
+a:= 5;
+hola
