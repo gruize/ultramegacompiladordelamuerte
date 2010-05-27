@@ -16,9 +16,10 @@ public class Mueve  extends InstruccionInterprete {
 
     public Mueve(DatoPila d) throws LectorExc {
         super(InstruccionInterprete.CODIGO_MUEVE, d);
-        if (d.getTipoDato() != DatoPila.NAT_T) {
+        if (d.getTipoDato() != DatoPila.NAT_T &&
+        		d.getTipoDato() != DatoPila.INT_T) {
             throw new LectorExc("La instruccion requiere un " +
-                    "argumento entero");
+                    "argumento entero o natural");
         }
     }
 
@@ -38,6 +39,7 @@ public class Mueve  extends InstruccionInterprete {
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
             switch (getDato().getTipoDato()) {
+                case DatoPila.NAT_T:
                 case DatoPila.INT_T:
                     DatoPila o = interprete.getPila().removeFirst();
                     DatoPila d = interprete.getPila().removeFirst();
