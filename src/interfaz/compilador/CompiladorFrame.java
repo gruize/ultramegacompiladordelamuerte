@@ -47,7 +47,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
     PipedReader pReader = new PipedReader();
     JFileChooser selectFich = new JFileChooser();
     JPanel opcionesCompilacionPanel, opcionesEjecucionPanel;
-    JCheckBox checkJVM, checkP, checkDebug;
+    JCheckBox checkP, checkDebug;
 
     /** Creates new form CompiladorFrame */
     public CompiladorFrame() {
@@ -224,27 +224,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_EnviarButtonActionPerformed
 
     private void compilarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compilarButtonActionPerformed
-        if(opcionesCompilacionPanel == null) {
-            checkJVM = new JCheckBox("Compilar a codigo JVM");
-            checkP = new JCheckBox("Compilar a codigo P");
-            opcionesCompilacionPanel = new JPanel();
-            opcionesCompilacionPanel.setLayout(new BoxLayout(opcionesCompilacionPanel, BoxLayout.Y_AXIS));
-            opcionesCompilacionPanel.add(checkP);
-            opcionesCompilacionPanel.add(checkJVM);
-        }
-        int i = JOptionPane.showConfirmDialog(this, opcionesCompilacionPanel,
-                "Opciones de compilación", JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-        if(i == JOptionPane.OK_OPTION) {
-            File f = null;
-            if(checkJVM.isSelected()) {
-                if(selectFich.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
-                    f = selectFich.getSelectedFile();
-                else
-                    return ;
-            }
-            compilar(f, checkP.isSelected());
-        }
+        compilar();
     }//GEN-LAST:event_compilarButtonActionPerformed
 
     private void ejecutarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarButtonActionPerformed
@@ -261,7 +241,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
             ejecutar(checkDebug.isSelected());
     }//GEN-LAST:event_ejecutarButtonActionPerformed
 
-    public boolean compilar(File classFile, boolean compilarP) {
+    public boolean compilar() {
         try {
             this.textAreaEjecucion.setText("");
             textAreaEjecucion.setAutoscrolls(true);
@@ -278,32 +258,12 @@ public class CompiladorFrame extends javax.swing.JFrame {
             imprimirTokens(tokens);
             Traductor tcoddual = new Traductor(tokens);
 
-            if(classFile != null) {
-                String nombreClase = classFile.getName();
-                int i = nombreClase.indexOf('.');
-                if(i != -1) {//tiene un punto
-                    if(!nombreClase.substring(i).equals(".class")) {
-                        JOptionPane.showMessageDialog(this, "El archivo de destino del " +
-                                "programa compilado a JVM debe acabar en .class");
-                        return false;
-                    }
-                    else
-                        nombreClase = nombreClase.substring(0, i);
-                }
-                else {
-                    classFile = new File(classFile.getParent()+File.separator+nombreClase+".class");
-                }
-                //tcoddual.getTraduccionJ(nombreClase).dump(classFile);
-            }
-            if(compilarP) {
-                tcoddual.traducir(codigo);
-                ArrayList<InstruccionInterprete> ai = tcoddual.getCod().getCod();
-                imprimir(ai);
-                File f = new File("./codigo_binario");
-                EscritorPila ep = new EscritorPila();
-                ep.escribirPrograma(ai, f);
-            }
-            
+            tcoddual.traducir(codigo);
+            ArrayList<InstruccionInterprete> ai = tcoddual.getCod().getCod();
+            imprimir(ai);
+            File f = new File("./codigo_binario");
+            EscritorPila ep = new EscritorPila();
+            ep.escribirPrograma(ai, f);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,7 +274,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private void ejecutar(boolean debug) {
     	textAreaEjecucion.setAutoscrolls(true);
-        if (!compilar(null,true)) {
+        if (!compilar()) {
             return;
         }
         if (thread!=null) thread.interrupt();
