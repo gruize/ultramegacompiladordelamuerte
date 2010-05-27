@@ -6,7 +6,7 @@
 package compilador.tablaSimbolos;
 
 
-public class Parametro {
+public class Parametro implements Cloneable {
     private String modo;
     private TipoTs tipo;
     private int dir;
@@ -17,6 +17,11 @@ public class Parametro {
         this.dir=dir;
     }
 
+    public Object clone(){
+    	Parametro p=new Parametro(modo,tipo,dir);
+    	return p;
+    }
+    
     public String getModo(){
         return modo;
     }

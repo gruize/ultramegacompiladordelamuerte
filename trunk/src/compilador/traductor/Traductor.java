@@ -732,7 +732,8 @@ public class Traductor {
             n += 1;
             anidamiento=Math.max(anidamiento, n);
             boolean error2 = FParametros();
-            GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros), n));
+            ArrayList<Parametro> parametros_tabla=(ArrayList<Parametro>)parametros.clone();
+            GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros_tabla), n));
             parametros.clear();
             
             Object[] bloqueRes = Bloque();
@@ -741,7 +742,7 @@ public class Traductor {
 
             error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
             id1 = lex;
-            props1 = new InfoTs("proc", new TipoTs("proc", parametros), n, inicio3);
+            props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
             n -= 1;
             ts.cerrarAmbitoActual();
         }
@@ -761,7 +762,7 @@ public class Traductor {
         }
         if (!ampersand()) //hay declaraciones
         	error2=Declaraciones();
-        
+        else atrasToken();
         inicio1 = etq;
         etq += longPrologo;
         cod.appendCod(prologo(n,dir_n[n]-tam_local));
@@ -1149,7 +1150,7 @@ public class Traductor {
         if (puntoYComa()){
             boolean error2 = Instruccion();
 
-            errorh3 = error1 || errorh1;
+            errorh3 = error2 || errorh1;
 
             boolean error3 = InstruccionesRec(errorh3);
 
@@ -1238,7 +1239,7 @@ public class Traductor {
         if (abrePar()){
             etq += longInicioPaso;
             cod.appendCod(inicioPaso());
-
+            
             boolean error2 = LAParametros();
             if (!cierraPar()){
                 throw new Exception("FATAL: Se esperaba cierra parentesis"
@@ -1258,61 +1259,66 @@ public class Traductor {
         int nparamh3 = 0;
         boolean errorh3 = false;
 
-        etq += 1;
-	cod.appendIns(new Copia());
-	parh2 = parametros.get(0).getModo().equals("var");
 
+        if (parametros.size()==0)
+        	throw new Exception("Se esperaba algun parametro " + textoError());
+        
+        etq += 1;
+        cod.appendIns(new Copia());
+        
+        parh2 = parametros.get(0).getModo().equals("var");
         Object[] expRes = Expresion(parh2);
         TipoTs tipo2 = (TipoTs) expRes[0];
         String modo2 = (String) expRes[1];
+        
+        etq+=longPasoParametro;
+        cod.appendCod(pasoParametro(modo2, parametros.get(0)));
+        
 
         nparamh3 = 1;
-	errorh3 = (tipo2.getT().equals("error")) ||
+        errorh3 = (tipo2.getT().equals("error")) ||
                     (parametros.size() < 1) ||
                     (parametros.get(0).getModo().equals("var") && modo2.equals("val")) ||
                     ! GestorTs.compatibles(parametros.get(0).getTipo(),tipo2,ts);
-        cod.appendCod(pasoParametro(modo2,parametros.get(0)));
-	etq += longPasoParametro;
+       
+        
 
-        boolean error3 = LAParametrosRec(nparamh3,errorh3);
+        return LAParametrosRec(nparamh3,errorh3);
 
-        error1 = error3;
-
-        return error1;
     }
     protected boolean LAParametrosRec(int nparamh1, boolean errorh1) throws LectorExc, DatoExc, Exception{
         boolean error1 = false;
         boolean parh2 = false;
-        int nparamh3 = 0;
+        int nparamh3=nparamh1+1;
         boolean errorh3 = false;
 
         if (coma()){
             etq += longDireccionParFormal + 1;
             cod.appendIns(new Copia());
             cod.appendCod(direccionParFormal(parametros.get(nparamh1)));
+            
             parh2 = parametros.get(nparamh1).getModo().equals("var");
             Object[] expRes = Expresion(parh2);
             TipoTs tipo2 = (TipoTs) expRes[0];
             String modo2 = (String) expRes[1];
-
-            nparamh3 = nparamh1 + 1;
-            errorh3 = errorh1 ||
-                    tipo2.getT().equals("error") ||
-                    parametros.size() < nparamh1 +1 ||
-                    parametros.get(nparamh1).getModo().equals("var") ||
-                    ! GestorTs.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
+            
 
             etq += longPasoParametro;
             cod.appendCod(pasoParametro(modo2,parametros.get(nparamh1)));
+            
+            errorh3 = errorh1 ||
+            	tipo2.getT().equals("error") ||
+            	parametros.size() < nparamh1 +1 ||
+            	parametros.get(nparamh1).getModo().equals("var") ||
+            	! GestorTs.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
 
-            boolean error3 = LAParametrosRec(nparamh3,errorh3);
+            return LAParametrosRec(nparamh3,errorh3);
 
-            error1 = error3;
+            
 
-        }else{
-            error1 = errorh1;
-        }
-        return error1;
+        }else
+            return errorh1;
+        
 
     }
     protected boolean InsLectura() throws LectorExc, DatoExc, Exception{
@@ -1633,7 +1639,7 @@ public class Traductor {
 
         return error1;
     }
-    protected TipoTs Mem() throws LectorExc, LectorExc, DatoExc, Exception{
+    protected TipoTs Mem() throws Exception{
         TipoTs tipo1 = null;
         TipoTs tipo2h = null;
 
@@ -1663,7 +1669,7 @@ public class Traductor {
 
         return tipo1;
     }
-    protected TipoTs MemRec(TipoTs tipoh1) throws LectorExc, DatoExc, Exception{
+    protected TipoTs MemRec(TipoTs tipoh1) throws  Exception{
         TipoTs tipo1 = null;
 
         Token t = sigToken();
@@ -2282,8 +2288,10 @@ public class Traductor {
         if (GestorTs.esCompatibleConTipoBasico(tipo2,ts) && !parh1){
             cod.appendIns(new ApilarInd());
             etq += 1;
+            modo1="val";
         }
-        modo1 = "var";
+        else
+        	modo1 = "var";
         tipo1 = tipo2;
 
         return new Object[]{tipo1,modo1};

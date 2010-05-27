@@ -1,0 +1,8 @@
+integer a;
+procedure hola(integer z){
+&
+out(z)
+}
+&
+a:= 2030;
+hola(a)
