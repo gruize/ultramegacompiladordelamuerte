@@ -26,7 +26,7 @@ public class IrInd  extends InstruccionInterprete {
 
 	@Override
 	public String toString() {
-		return "ir-ind " + getDato();
+		return "ir-ind ";
 	}
 
 	@Override
@@ -35,7 +35,8 @@ public class IrInd  extends InstruccionInterprete {
 		DatoPila direccion = interprete.getPila().pop();
 		try
 		{
-			if (direccion.getTipoDato() == DatoPila.INT_T)
+			if (direccion.getTipoDato() == DatoPila.INT_T ||
+					direccion.getTipoDato() == DatoPila.NAT_T)
 				interprete.setCp(direccion.toInt());
 			else 
 				throw new InstruccionExc(this, "Tipo inválido ("

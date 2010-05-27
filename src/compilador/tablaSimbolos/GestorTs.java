@@ -35,7 +35,7 @@ public class GestorTs {
     /**
      * Crea una nueva Tabla de S�mbolos para un nuevo �mbito
      */
-    public void crearTS() {
+    public void abrirAmbito() {
         this.ts.push(new TablaSimbolos());
         this.ambitoActual++;
     }

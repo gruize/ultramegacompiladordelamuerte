@@ -192,7 +192,7 @@ public class LectorPila {
                 inst = new IrA(leerDato(dis));
                 break;
             case InstruccionInterprete.CODIGO_IR_IND:
-                inst = new IrInd(leerDato(dis));
+                inst = new IrInd();
                 break;
             case InstruccionInterprete.CODIGO_IR_F:
                 inst = new IrFalse(leerDato(dis));

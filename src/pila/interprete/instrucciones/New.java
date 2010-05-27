@@ -26,7 +26,7 @@ public class New extends InstruccionInterprete
     public New(DatoPila d) throws LectorExc 
     {
         super(InstruccionInterprete.CODIGO_NEW, d);
-        if (d.getTipoDato() != DatoPila.INT_T) 
+        if (d.getTipoDato() != DatoPila.NAT_T) 
         {
             throw new LectorExc("La instrucción requiere un argumento entero");
         }
@@ -51,9 +51,10 @@ public class New extends InstruccionInterprete
         {
             switch (getDato().getTipoDato()) 
             {
-                case DatoPila.INT_T:
-                	Nat e = new Nat(interprete.getMemoria().reservar(getDato().toInt()));
-                    interprete.getPila().addFirst(e);
+                case DatoPila.NAT_T:
+                	int res=interprete.getMemoria().reservar(getDato().toInt());
+                	if (res<0) throw new InstruccionExc(this, "Heap overflow");
+                    interprete.getPila().addFirst(new Nat(res));
                     break;
                 default:
                     throw new InstruccionExc(this, "Tipo inválido (" + getDato().toString() + ")");

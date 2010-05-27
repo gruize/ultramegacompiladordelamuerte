@@ -42,6 +42,7 @@ public class CompiladorFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     File inputFile;
+    EjecucionThread thread;
     PipedWriter pWriter = new PipedWriter();
     PipedReader pReader = new PipedReader();
     JFileChooser selectFich = new JFileChooser();
@@ -316,7 +317,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
         if (!compilar(null,true)) {
             return;
         }
-        EjecucionThread thread = new EjecucionThread(pReader, pWriter, debug);
+        if (thread!=null) thread.interrupt();
+        thread = new EjecucionThread(pReader, pWriter, debug);
         thread.start();
     }
 
