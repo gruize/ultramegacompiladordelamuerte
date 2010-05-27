@@ -785,6 +785,7 @@ public class Traductor {
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
+        InfoTs props1F = null;
 
         if (procedure()){
             String lex= identificador();
@@ -795,16 +796,26 @@ public class Traductor {
             ArrayList<Parametro> parametros_tabla=(ArrayList<Parametro>)parametros.clone();
             GestorTs.inserta(ts, lex ,new InfoTs("proc", new TipoTs("proc", parametros_tabla), n));
             parametros.clear();
-            
-            Object[] bloqueRes = Bloque();
-            boolean error3= (Boolean) bloqueRes[0];
-            int inicio3 = (Integer) bloqueRes[1];
 
-            error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
-            id1 = lex;
-            props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
-            n -= 1;
-            ts.cerrarAmbitoActual();
+            if (forward()){
+                error1 = error2 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
+                id1 = lex;
+                //props1F = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
+                n -= 1;
+                ts.cerrarAmbitoActual();
+            }
+            else {
+                Object[] bloqueRes = Bloque();
+                boolean error3= (Boolean) bloqueRes[0];
+                int inicio3 = (Integer) bloqueRes[1];
+
+                error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
+                id1 = lex;
+                props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
+                n -= 1;
+                ts.cerrarAmbitoActual();
+            }
+            
         }
 
         return new Object[]{error1, id1, props1};
