@@ -14,7 +14,7 @@ procedure hola(integer d, var tsecuencia g){
 &
 a:=2;
 secuencia.tope := 0;
-for b=0 to 0 do secuencia.valores[b] := 0;
+for b=0 to 9 do secuencia.valores[b] := 0;
 hola(a,secuencia);
 out(secuencia.tope);
 for b=0 to 9 do out(secuencia.valores[b])
