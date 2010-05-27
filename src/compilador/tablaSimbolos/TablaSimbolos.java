@@ -35,10 +35,11 @@ public class TablaSimbolos {
      * @return La tabla de símbolos resultante de añadir la entrada con id y tipo a ts
      */
     public static TablaSimbolos inserta(TablaSimbolos ts, String id, InfoTs props) {
-    	//if (!existe(ts,id)){
+    	InfoTs actual = ts.getHashtable().get(id);
+        if (!existe(ts,id) || (actual != null && actual.getClase().equals("proc") && props.getClase().equals("proc"))){
     		Hashtable<String,InfoTs> ht= ts.getHashtable();
     		ht.put(id, props);
-    	//}
+    	}
         return ts;
     }
 
