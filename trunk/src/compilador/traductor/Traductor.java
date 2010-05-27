@@ -1456,7 +1456,7 @@ public class Traductor {
             String modo2 = (String) expRes[1];
 
             if (!then()){
-                throw new Exception("FATAL: Se esperaba simbolo la palabra then"
+                throw new Exception("FATAL: Se esperaba la palabra then"
                     + textoError());
             }
 
@@ -1554,7 +1554,7 @@ public class Traductor {
             //asigna a id el valor inicial
             
             if (! to()){
-                throw new Exception("FATAL: Se esperaba simbolo la palabra to"
+                throw new Exception("FATAL: Se esperaba la palabra to"
                     + textoError());
             }
                     
@@ -1563,7 +1563,7 @@ public class Traductor {
             String modo3 = (String) expRes2[1];
                     
             if ( !Do()){
-                throw new Exception("FATAL: Se esperaba simbolo la palabra do"
+                throw new Exception("FATAL: Se esperaba la palabra do"
                     + textoError());
             }
 
