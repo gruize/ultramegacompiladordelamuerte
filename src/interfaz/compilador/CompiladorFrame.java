@@ -336,7 +336,8 @@ public class CompiladorFrame extends javax.swing.JFrame {
         Iterator<InstruccionInterprete> it = ai.iterator();
         int i=0;
         while (it.hasNext()) {
-            textAreaDebug.append(i+": "+it.next().toString() + "\n");
+        	InstruccionInterprete in=it.next();
+            textAreaDebug.append(i+": "+in.toString() + "\n");
             i++;
         }
 

@@ -35,4 +35,8 @@ public class Codigo {
     public void insertaCod(InstruccionInterprete i, int aux) {
         cod.set(aux, i);
     }
+    
+    public int size(){
+    	return cod.size();
+    }
 }
