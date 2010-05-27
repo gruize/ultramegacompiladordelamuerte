@@ -566,6 +566,12 @@ public class Traductor {
 
         cod.appendIns(new Parar());
         error1 = error2 || error3;
+        if (i_token<arrayTokens.size()){
+        	//acabamos pero quedan tokens!
+        	error1=true;
+        	errores.add(new ErrorTraductor("Fin de programa inesperado"+ 
+        								textoError()+" Falta punto y coma?\n"));
+        }
 
         if (error1) {
             errores.add(
