@@ -81,11 +81,22 @@ public class TablaSimbolos {
             return true;
         else visitados.add(par);
 
-        if (tipo1.getT().equals("natural") || tipo2.getT().equals("natural") ||
-                tipo1.getT().equals("integer") || tipo2.getT().equals("integer") ||
-                tipo1.getT().equals("float") || tipo2.getT().equals("float") ||
-                tipo1.getT().equals("boolean") || tipo2.getT().equals("boolean") ||
-                tipo1.getT().equals("character") || tipo2.getT().equals("character"))
+        if (tipo1.getT().equals("natural")){
+        	if (tipo2.getT().equals("natural")) return true;
+        }
+        else if  (tipo1.getT().equals("integer")){
+        	if (tipo2.getT().equals("natural") ||
+        		tipo2.getT().equals("integer")	) 
+        		return true; 
+        }
+        else if  (tipo1.getT().equals("float")){
+        	if (tipo2.getT().equals("natural") ||
+        		tipo2.getT().equals("integer") ||
+        		tipo2.getT().equals("float")) 
+        		return true; 
+        }
+        else if ((tipo1.getT().equals("boolean") && tipo2.getT().equals("boolean")) ||
+                (tipo1.getT().equals("character") && tipo2.getT().equals("character")))
             return true;
         else if (tipo1.getT().equals("ref"))
                 return compatibles(TablaSimbolos.ref(tipo1, ts),tipo2,ts);
