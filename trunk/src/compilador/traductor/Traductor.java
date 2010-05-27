@@ -573,6 +573,15 @@ public class Traductor {
         }
         return !error;
     }
+    protected boolean Null(){
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Null)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
     
 
     //-----------------------------------------

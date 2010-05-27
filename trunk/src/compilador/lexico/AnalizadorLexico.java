@@ -196,7 +196,7 @@ public class AnalizadorLexico {
     private PrintWriter writer;
     private boolean errorLexico;
 
-	public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
+    public AnalizadorLexico(String src) throws FileNotFoundException, IOException{
 		reader = new StringReader(src);
 		lex="";
 		estado = 0;
