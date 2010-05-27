@@ -213,7 +213,7 @@ public class Traductor {
     }
     protected Codigo pasoParametro(String modoReal, Parametro pFormal) throws LectorExc, DatoExc{
         Codigo res = new Codigo();
-        if (pFormal.getModo().equals("valor") && modoReal.equals("var"))
+        if (pFormal.getModo().equals("variable") && modoReal.equals("valor"))
             res.appendIns(new Mueve(new Nat(pFormal.getTipo().getTam())));
         else res.appendIns(new DesapilaInd());
         return res;
@@ -765,7 +765,7 @@ public class Traductor {
         else atrasToken();
         inicio1 = etq;
         etq += longPrologo;
-        cod.appendCod(prologo(n,dir_n[n]-tam_local));
+        cod.appendCod(prologo(n,dir_n[n]));//ponia dir_n[n]-tam_local
         
         if (! ampersand()){
         	throw new Exception("FATAL: Se esperaba ampersand"
@@ -1262,11 +1262,15 @@ public class Traductor {
 
         if (parametros.size()==0)
         	throw new Exception("Se esperaba algun parametro " + textoError());
-        
-        etq += 1;
+
+
+        etq += longDireccionParFormal + 1;
         cod.appendIns(new Copia());
+        cod.appendCod(direccionParFormal(parametros.get(0)));
+        //etq += 1;
+        //cod.appendIns(new Copia());
         
-        parh2 = parametros.get(0).getModo().equals("var");
+        parh2 = parametros.get(0).getModo().equals("variable");
         Object[] expRes = Expresion(parh2);
         TipoTs tipo2 = (TipoTs) expRes[0];
         String modo2 = (String) expRes[1];
@@ -1278,7 +1282,7 @@ public class Traductor {
         nparamh3 = 1;
         errorh3 = (tipo2.getT().equals("error")) ||
                     (parametros.size() < 1) ||
-                    (parametros.get(0).getModo().equals("var") && modo2.equals("val")) ||
+                    (parametros.get(0).getModo().equals("variable") && modo2.equals("valor")) ||
                     ! GestorTs.compatibles(parametros.get(0).getTipo(),tipo2,ts);
        
         
@@ -1297,7 +1301,7 @@ public class Traductor {
             cod.appendIns(new Copia());
             cod.appendCod(direccionParFormal(parametros.get(nparamh1)));
             
-            parh2 = parametros.get(nparamh1).getModo().equals("var");
+            parh2 = parametros.get(nparamh1).getModo().equals("variable");
             Object[] expRes = Expresion(parh2);
             TipoTs tipo2 = (TipoTs) expRes[0];
             String modo2 = (String) expRes[1];
@@ -1309,7 +1313,7 @@ public class Traductor {
             errorh3 = errorh1 ||
             	tipo2.getT().equals("error") ||
             	parametros.size() < nparamh1 +1 ||
-            	parametros.get(nparamh1).getModo().equals("var") ||
+            	parametros.get(nparamh1).getModo().equals("variable") ||
             	! GestorTs.compatibles(parametros.get(nparamh1).getTipo(),tipo2, ts);
 
             return LAParametrosRec(nparamh3,errorh3);
@@ -1832,7 +1836,7 @@ public class Traductor {
             tipo1 = new TipoTs("error");
         else tipo1 = new TipoTs("boolean");
 
-	modo1 = "val";
+	modo1 = "valor";
 	etq += 1;
         switch(op){
             case MENOR:
@@ -1929,7 +1933,7 @@ public class Traductor {
                      else tipoh3 = new TipoTs ("error");
                      break;
             }
-        modoh3 = "val";
+        modoh3 = "valor";
         if (op == op.OR)
             cod.insertaCod(new IrTrue(new Nat(etq)), aux);
         else{
@@ -2029,7 +2033,7 @@ public class Traductor {
                      else tipoh3 = new TipoTs ("error");
                      break;
             }
-        String modoh3 = "val";
+        String modoh3 = "valor";
         if (op == op.AND){
              cod.insertaCod(new IrFalse(new Nat(etq+1)), aux);
              cod.appendIns(new IrA(new Nat(etq+2)));
@@ -2099,7 +2103,7 @@ public class Traductor {
         TipoTs tipo2 = (TipoTs) resExpNiv3[0];
         String modo2 = (String) resExpNiv3[1];
 
-        modo1 = "val";
+        modo1 = "valor";
         if (tipoh1.getT().equals("error") ||
                 tipo2.getT().equals("error") ||
                 !tipoh1.getT().equals("natural") ||
@@ -2153,7 +2157,7 @@ public class Traductor {
         TipoTs tipo2 = (TipoTs) resExpNiv4[0];
         String modo2 = (String) resExpNiv4[1];
 
-        modo1 = "val";
+        modo1 = "valor";
         if (tipo2.getT().equals("error"))
             tipo1 = new TipoTs("error");
         else
@@ -2241,7 +2245,7 @@ public class Traductor {
             else tipo1 = new TipoTs("error");
 
             cod.appendIns(new Abs());
-            modo1 = "var";
+            modo1 = "variable";
         }
 
         return new Object[]{tipo1,modo1};
@@ -2274,7 +2278,7 @@ public class Traductor {
 
         TipoTs tipo2 = Literal();
 
-        modo1 = "var";
+        modo1 = "variable";
         tipo1 = tipo2;
 
         return new Object[]{tipo1,modo1};
@@ -2288,10 +2292,10 @@ public class Traductor {
         if (GestorTs.esCompatibleConTipoBasico(tipo2,ts) && !parh1){
             cod.appendIns(new ApilarInd());
             etq += 1;
-            modo1="val";
+            modo1="valor";
         }
         else
-        	modo1 = "var";
+        	modo1 = "variable";
         tipo1 = tipo2;
 
         return new Object[]{tipo1,modo1};
