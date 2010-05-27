@@ -44,7 +44,8 @@ public class ApilarDir extends InstruccionInterprete {
             switch (getDato().getTipoDato()) {
                 case DatoPila.NAT_T:
                 	DatoPila d=interprete.getMemoria().getMemoria()[getDato().toNatural()];
-                	if (d==null) //no se saca nada util de memoria. Se pone un valor poco probable
+                	//FIXME: Hacer que aqui lance excepcion
+                        if (d==null) //no se saca nada util de memoria. Se pone un valor poco probable
                 		d=new Entero(Integer.MIN_VALUE); 
                     interprete.getPila().addFirst(d);
                     break;

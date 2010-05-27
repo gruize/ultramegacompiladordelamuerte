@@ -32,7 +32,7 @@ public class Mueve  extends InstruccionInterprete {
      * Semantica:
      * o = desapila()
      * d = desapila()
-     * mueve t celdas de o a d y libera t celdas desde o
+     * mueve t celdas de o a d
      * @return siempre true (nunca modifica el cp del interprete)
      */
     @Override

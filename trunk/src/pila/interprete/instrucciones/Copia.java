@@ -14,7 +14,7 @@ public class Copia extends InstruccionInterprete {
 
 	public Copia(DatoPila d) throws LectorExc {
 		super(InstruccionInterprete.CODIGO_COPIA);
-		throw new LectorExc("La instrucción no " + "acepta argumentos");
+		throw new LectorExc("La instrucción no acepta argumentos");
 	}
 
 	@Override

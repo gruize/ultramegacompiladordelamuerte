@@ -39,7 +39,7 @@ public class DesapilaInd extends InstruccionInterprete {
     @Override
     public boolean ejecutate(Interprete interprete) throws InstruccionExc {
         try {
-            ArrayDeque<DatoPila> pila = interprete.getPila();
+                ArrayDeque<DatoPila> pila = interprete.getPila();
             DatoPila v = pila.removeFirst();
             DatoPila d = pila.removeFirst();
             interprete.getMemoria().getMemoria()[d.toNatural()] = v;
