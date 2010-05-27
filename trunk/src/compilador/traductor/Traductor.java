@@ -11,6 +11,7 @@ import compilador.lexico.Tokens.*;
 import compilador.tablaSimbolos.*;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 
 /**
@@ -75,7 +76,6 @@ public class Traductor {
      * @param dir direccion del codigo que se parcheara conocer la direccion de comienzo del procedimiento
      */
     private void añadirEtiquetaProcForward(String idProc, int dir) {
-        idProc = idProc + n;
         LinkedList<Integer> list = etiquetasProcForward.get(idProc);
         if(list == null) {
             list = new LinkedList<Integer>();
@@ -90,8 +90,8 @@ public class Traductor {
      * @param dir direccion donde se saltara al hacer la llamada
      */
     private void parchearEtiquetaProcForward(String idProc, int dir) throws DatoExc, LectorExc {
-        idProc = idProc + n;
         LinkedList<Integer> list = etiquetasProcForward.get(idProc);
+        forward.remove(idProc);
         if(list == null) //nada que parchear
             return ;
         for(Integer i : list)
@@ -611,6 +611,20 @@ public class Traductor {
         ini.appendCod(cod);
         cod=ini;
 
+        if(!forward.isEmpty()) {
+            StringBuilder nombres = new StringBuilder();
+            Set<String> set = forward.keySet();
+            Iterator it = set.iterator();
+            nombres.append(it.next());
+            while(it.hasNext())
+                nombres.append(", "+it.next());
+            if(set.size() > 1)
+                nombres.append(" y "+it.next());
+            errores.add(new ErrorTraductor("Error: los procedimientos "+nombres+
+                    " se han declarado forward pero no se les ha declarado cuerpo" +
+                    " posteriormente"));
+        }
+        
         if (!ampersand()) {
             throw new Exception("FATAL: & no encontrado" + textoError());
         }
@@ -785,8 +799,7 @@ public class Traductor {
         boolean error1 = false;
         String id1 = "";
         InfoTs props1 = null;
-        InfoTs props1F = null;
-
+    
         if (procedure()){
             String lex= identificador();
             ts.abrirAmbito();
@@ -800,7 +813,8 @@ public class Traductor {
             if (forward()){
                 error1 = error2 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
                 id1 = lex;
-                //props1F = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
+                props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, 0);
+                forward.put(lex,true);
                 n -= 1;
                 ts.cerrarAmbitoActual();
             }
@@ -812,6 +826,7 @@ public class Traductor {
                 error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
                 id1 = lex;
                 props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
+                parchearEtiquetaProcForward(lex, inicio3);
                 n -= 1;
                 ts.cerrarAmbitoActual();
             }

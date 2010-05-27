@@ -101,8 +101,6 @@ public class GestorTs {
 
    //------------------IMPLEMENTACION RUBEN------------------------------
 
-
-
     public static void inserta(GestorTs gestor, String id, InfoTs props){
         TablaSimbolos actual = gestor.getTs().lastElement();
         TablaSimbolos.inserta(actual, id, props);
