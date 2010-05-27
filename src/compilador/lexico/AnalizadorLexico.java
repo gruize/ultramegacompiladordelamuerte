@@ -166,24 +166,24 @@ public class AnalizadorLexico {
 		palabrasReservadas.put("not",new Not());
 		palabrasReservadas.put("in",new Token_In());
 		palabrasReservadas.put("out",new Token_Out());
-                palabrasReservadas.put("if",new If());
-                palabrasReservadas.put("then",new Then());
-                palabrasReservadas.put("else",new Else());
-                palabrasReservadas.put("while",new While());
-                palabrasReservadas.put("do",new Do());
-                palabrasReservadas.put("for",new For());
-                palabrasReservadas.put("to",new To());
-                palabrasReservadas.put("array",new MiArray());
-                palabrasReservadas.put("of",new Of());
-                palabrasReservadas.put("record",new Record());
-                palabrasReservadas.put("pointer",new Pointer());
-                palabrasReservadas.put("null",new Null());
-                palabrasReservadas.put("new",new Token_New());
-                palabrasReservadas.put("dispose",new Token_Dispose());
-                palabrasReservadas.put("procedure",new Procedure());
-                palabrasReservadas.put("var",new Var());
-                palabrasReservadas.put("forward",new Forward());
-                palabrasReservadas.put("tipo",new Tipo());
+		palabrasReservadas.put("if",new If());
+		palabrasReservadas.put("then",new Then());
+		palabrasReservadas.put("else",new Else());
+		palabrasReservadas.put("while",new While());
+		palabrasReservadas.put("do",new Do());
+		palabrasReservadas.put("for",new For());
+		palabrasReservadas.put("to",new To());
+		palabrasReservadas.put("array",new MiArray());
+		palabrasReservadas.put("of",new Of());
+		palabrasReservadas.put("record",new Record());
+		palabrasReservadas.put("pointer",new Pointer());
+		palabrasReservadas.put("null",new Null());
+		palabrasReservadas.put("new",new Token_New());
+		palabrasReservadas.put("dispose",new Token_Dispose());
+		palabrasReservadas.put("procedure",new Procedure());
+		palabrasReservadas.put("var",new Var());
+		palabrasReservadas.put("forward",new Forward());
+		palabrasReservadas.put("tipo",new Tipo());
 	}
 
 
@@ -371,7 +371,7 @@ public class AnalizadorLexico {
 				case 'n': transita(CASTING_NAT1); break;
 				case 'f': transita(CASTING_FLOAT1); break;
 				case 'c': transita(CASTING_CHAR1); break;
-                                case ' ': transita(PARENTESIS_A); break;
+                case ' ': transita(PARENTESIS_A); break;
 				default: arrayTokens.add(new Parentesis_a(numLinea)); terminaEstado();
 				}
 				break;
@@ -562,7 +562,7 @@ public class AnalizadorLexico {
 				case ')': transita(CAST_FLOAT); break;
                                 case ' ': transita(CASTING_FLOAT6); break;
 				default:
-                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')'){
+                                    if(Character.isLetter(buff) || Character.isDigit(buff) || buff == ')' ){
                                         arrayTokens.add(new Parentesis_a(numLinea));
                                         lex=lex.substring(1);
                                         estado=CADENA;
@@ -726,7 +726,7 @@ public class AnalizadorLexico {
 				terminaEstado();
 				break;
 //No se si estara bien
-                        case SIGNO_MENOS :
+            case SIGNO_MENOS :
 				switch(buff){
 				case '>': transita(FLECHA); break;
 				default: arrayTokens.add(new Signo_menos(numLinea)); terminaEstado();
@@ -933,38 +933,38 @@ public class AnalizadorLexico {
 				arrayTokens.add(new Signo_menos(numLinea));
 				terminaEstado();
 				break;*/
-                        case LLAVE_A :
-                                arrayTokens.add(new Llave_a(numLinea));
-                                terminaEstado();
-                                break;
-                        case LLAVE_C :
-                                arrayTokens.add(new Llave_c(numLinea));
-                                terminaEstado();
-                                break;
-                        case CIRCUNFLEJO :
-                                arrayTokens.add(new Circunflejo(numLinea));
-                                terminaEstado();
-                                break;
-                        case PUNTO :
-                                arrayTokens.add(new Punto(numLinea));
-                                terminaEstado();
-                                break;
-                        case CORCHETE_A :
-                                arrayTokens.add(new Corchete_a(numLinea));
-                                terminaEstado();
-                                break;
-                        case CORCHETE_C :
-                                arrayTokens.add(new Corchete_c(numLinea));
-                                terminaEstado();
-                                break;
-                        case FLECHA :
-                                arrayTokens.add(new Flecha(numLinea));
-                                terminaEstado();
-                                break;
-                        case COMA :
-                                arrayTokens.add(new Coma(numLinea));
-                                terminaEstado();
-                                break;
+			case LLAVE_A :
+				arrayTokens.add(new Llave_a(numLinea));
+				terminaEstado();
+				break;
+			case LLAVE_C :
+				arrayTokens.add(new Llave_c(numLinea));
+				terminaEstado();
+				break;
+			case CIRCUNFLEJO :
+				arrayTokens.add(new Circunflejo(numLinea));
+				terminaEstado();
+				break;
+			case PUNTO :
+				arrayTokens.add(new Punto(numLinea));
+				terminaEstado();
+				break;
+			case CORCHETE_A :
+				arrayTokens.add(new Corchete_a(numLinea));
+				terminaEstado();
+				break;
+			case CORCHETE_C :
+				arrayTokens.add(new Corchete_c(numLinea));
+				terminaEstado();
+				break;
+			case FLECHA :
+				arrayTokens.add(new Flecha(numLinea));
+				terminaEstado();
+				break;
+			case COMA :
+				arrayTokens.add(new Coma(numLinea));
+				terminaEstado();
+				break;
 
 			}
 		}
