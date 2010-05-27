@@ -9,6 +9,8 @@ import pila.interprete.instrucciones.*;
 import pila.interprete.datos.*;
 import compilador.lexico.Tokens.*;
 import compilador.tablaSimbolos.*;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 /**
@@ -40,6 +42,9 @@ public class Traductor {
     protected ArrayList<ErrorTraductor> errores;
     protected int dir_n[];
 
+    private HashMap<String, Boolean> forward;
+    private HashMap<String,LinkedList<Integer>> etiquetasProcForward;
+
     protected enum Operaciones {
 
         SUMA, RESTA, MULT, DIV, MENOR, MAYOR, MENORIG, MAYORIG, IGUAL,
@@ -60,6 +65,38 @@ public class Traductor {
         errores = new ArrayList<ErrorTraductor>();
         parametros = new ArrayList<Parametro>();
         ts = new GestorTs();
+        forward = new HashMap<String, Boolean>();
+        etiquetasProcForward = new HashMap<String, LinkedList<Integer>>();
+    }
+
+    /**
+     *
+     * @param idProc nombre del procedimiento forward del que se conoce la direccion
+     * @param dir direccion del codigo que se parcheara conocer la direccion de comienzo del procedimiento
+     */
+    private void añadirEtiquetaProcForward(String idProc, int dir) {
+        idProc = idProc + n;
+        LinkedList<Integer> list = etiquetasProcForward.get(idProc);
+        if(list == null) {
+            list = new LinkedList<Integer>();
+            etiquetasProcForward.put(idProc,list);
+        }
+        list.add(dir);
+    }
+
+    /**
+     * 
+     * @param idProc nombre del procedimiento que parchea
+     * @param dir direccion donde se saltara al hacer la llamada
+     */
+    private void parchearEtiquetaProcForward(String idProc, int dir) throws DatoExc, LectorExc {
+        idProc = idProc + n;
+        LinkedList<Integer> list = etiquetasProcForward.get(idProc);
+        if(list == null) //nada que parchear
+            return ;
+        for(Integer i : list)
+            cod.insertaCod(new IrA(new Nat(dir)),i);
+        etiquetasProcForward.put(idProc,null);
     }
 
     //****FUNCIONES PRINCIPALES
@@ -329,6 +366,15 @@ public class Traductor {
         }
         return !error;
     }
+    protected boolean forward() {
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Forward)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
     protected boolean procedure() {
         Token t = sigToken();
         boolean error = false;
@@ -527,18 +573,7 @@ public class Traductor {
         }
         return !error;
     }
-    protected boolean forward(){
-        Token t = sigToken();
-        boolean error = false;
-        if (!(t instanceof Forward)){
-            atrasToken();
-            error = true;
-        }
-        return !error;
-    }
-
-
-
+    
 
     //-----------------------------------------
     //-------implementación--------------------
@@ -1256,10 +1291,14 @@ public class Traductor {
 
         boolean error2 = AParametros();
         error1 = error2 || !GestorTs.existe(ts, lex) || !GestorTs.getProps(ts, lex).getClase().equals("proc");
-        cod.appendIns(new IrA(new Nat(GestorTs.getProps(ts,lex).getDir())));
+        if(forward.containsKey(lex)) {
+            añadirEtiquetaProcForward(lex, cod.size());
+            cod.appendIns(new IrA(new Nat(0))); //se parchea luego
+        }
+        else
+            cod.appendIns(new IrA(new Nat(GestorTs.getProps(ts,lex).getDir())));
         etq += 1;
         cod.insertaCod(new Apilar(new Nat(etq)), aux);
-
         return error1;
     }
     protected boolean AParametros() throws DatoExc, LectorExc, Exception{
