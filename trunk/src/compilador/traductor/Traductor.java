@@ -527,6 +527,16 @@ public class Traductor {
         }
         return !error;
     }
+    protected boolean forward(){
+        Token t = sigToken();
+        boolean error = false;
+        if (!(t instanceof Forward)){
+            atrasToken();
+            error = true;
+        }
+        return !error;
+    }
+
 
 
 
