@@ -1,0 +1,20 @@
+tipo tsecuencia = record {
+	integer tope;
+	array[10] of float valores
+	};
+integer a;
+integer b;
+tsecuencia secuencia;
+procedure hola(integer d, var tsecuencia g){
+	integer i;
+	&
+	g.tope := 5;
+	g.valores[2] := d
+}
+&
+a:=2;
+secuencia.tope := 0;
+for b=0 to 9 do secuencia.valores[b] := 0;
+hola(a,secuencia);
+out(secuencia.tope);
+for b=0 to 9 do out(secuencia.valores[b])
