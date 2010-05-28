@@ -111,9 +111,9 @@ public class Traductor {
             throw new Exception("Traducción acabada con errores fatales");
         }
         if (!errores.isEmpty()) {
-            System.out.println("Traducción acabada con errores no fatales:");
+            System.out.println("Traducción acabada con errores:");
             imprimirErrores();
-            throw new Exception("Traducción acabada con errores no fatales:\n"+dameErrores());
+            throw new Exception("Traducción acabada con errores:\n"+dameErrores());
         }
         /*
          * Calcular la altura maxima de la pila es algo complejo, pero al no
@@ -2231,8 +2231,6 @@ public class Traductor {
         return new Object[]{tipo1,modo1};
     }
     protected Object[] ExpresionNiv4(boolean parh1) throws LectorExc, Exception{
-        TipoTs tipo1 = null;
-        String modo1 = "";
 
         Token t = sigToken();
         atrasToken();
@@ -2252,7 +2250,8 @@ public class Traductor {
         else if (t instanceof Identificador){
             return ExpresionNiv4_mem(parh1);
         }
-        return new Object[]{tipo1,modo1};
+        else 
+        	throw new Exception("Error: expresion incorrecta"+textoError());
     }
     protected Object[] ExpresionNiv4_conOp(boolean parh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
@@ -2354,7 +2353,7 @@ public class Traductor {
             else tipo1 = new TipoTs("error");
 
             cod.appendIns(new Abs());
-            modo1 = "variable";
+            modo1 = "valor";
         }
 
         return new Object[]{tipo1,modo1};
@@ -2364,9 +2363,9 @@ public class Traductor {
         String modo1 = "";
 
         if(abrePar()){
-            boolean parh2 = false;
+            //boolean parh2 = false;
 
-            Object[] resExp = Expresion(parh2);
+            Object[] resExp = Expresion(parh1);
             TipoTs tipo2 = (TipoTs) resExp[0];
             String modo2 = (String) resExp[1];
 
@@ -2387,7 +2386,7 @@ public class Traductor {
 
         TipoTs tipo2 = Literal();
 
-        modo1 = "variable";
+        modo1 = "valor";
         tipo1 = tipo2;
 
         return new Object[]{tipo1,modo1};
