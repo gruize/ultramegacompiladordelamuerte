@@ -1,0 +1,14 @@
+natural ini;
+natural fact;
+procedure factorial(natural ini, var natural fact){
+&
+fact:=ini;
+while ini > 1 do {
+ini := ini-1;
+fact:=ini*fact
+}
+}
+&
+ini:=5;
+factorial(ini,fact);
+out(fact)

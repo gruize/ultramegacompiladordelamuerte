@@ -1,0 +1,12 @@
+integer i;
+integer j;
+natural v
+
+&
+j:=5;
+v:=15;
+for i=0 to j do{
+	v := v + 1;
+	out(v)
+};
+out(i)

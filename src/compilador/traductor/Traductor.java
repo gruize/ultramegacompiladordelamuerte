@@ -693,8 +693,13 @@ public class Traductor {
             dir_n[n]+=tam2;
             errorh3= errorh1 || error2 || (GestorTs.existe(ts, id2) && (GestorTs.getProps(ts,id2).getNivel() == n));
             if (!error2) GestorTs.inserta(ts,id2,props2);
-            if (props2.getClase().equals("tipo"))
-                pend.remove(id2);
+            if (props2.getClase().equals("tipo")){
+            	if (pend.contains(id2)){
+            		pend.remove(id2);
+            	
+            	}
+                
+            }
 
             boolean error3 = DeclaracionesRec(errorh3);
 
@@ -1021,16 +1026,18 @@ public class Traductor {
         TipoTs tipo1 = null;
         String lex= t.getLex();
 
-        tipo1 = new TipoTs("ref", lex, GestorTs.getProps(ts, lex).getTipo().getTam());
-	if (GestorTs.existe(ts,lex))
+       
+	if (GestorTs.existe(ts,lex)){
+		 	tipo1 = new TipoTs("ref", lex, GestorTs.getProps(ts, lex).getTipo().getTam());
             error1 = ! GestorTs.getProps(ts, lex).getClase().equals("tipo");
-        else
-            error1= false;
+	}
+	else {
+		pend.add(lex);
+		tipo1 = new TipoTs("ref", lex, 1);
+	}
 
-	if ( ! GestorTs.existe(ts,lex))
-            pend.add(lex);
 
-        return new Object[]{error1, tipo1};
+    return new Object[]{error1, tipo1};
     }
     protected Object[] Tipo_Boolean(){
         boolean error1 =false;
