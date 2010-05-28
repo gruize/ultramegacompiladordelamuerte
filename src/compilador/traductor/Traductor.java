@@ -634,7 +634,7 @@ public class Traductor {
 
         cod.appendIns(new Parar());
         error1 = error2 || error3;
-        if (i_token<arrayTokens.size()){
+        if (!error1 && i_token<arrayTokens.size()){
         	//acabamos pero quedan tokens!
         	error1=true;
         	errores.add(new ErrorTraductor("Fin de programa inesperado"+ 
@@ -1917,6 +1917,7 @@ public class Traductor {
 
         tipo1 = tipo3;
         modo1 = modo3;
+        if (tipo1.getT().equals("error")) errores.add(new ErrorTraductor("Error de tipos"+textoError()+"\n"));
 
         return new Object[]{tipo1,modo1};
     }
@@ -2246,14 +2247,13 @@ public class Traductor {
         else if (t instanceof Parentesis_a){
             return ExpresionNiv4_abrePar(parh1);
         }
-        else if (t instanceof LitNat || t instanceof LitFlo || t instanceof LitTrue || t instanceof LitFalse || t instanceof LitCha) {
+        else if (t instanceof LitNat || t instanceof LitFlo || t instanceof LitTrue || t instanceof LitFalse || t instanceof LitCha || t instanceof Null) {
             return ExpresionNiv4_literal(parh1);
         }
         else if (t instanceof Identificador){
             return ExpresionNiv4_mem(parh1);
         }
-        else 
-        	throw new Exception("Error: expresion incorrecta"+textoError());
+        return new Object[]{null,""};
     }
     protected Object[] ExpresionNiv4_conOp(boolean parh1) throws LectorExc, Exception{
         TipoTs tipo1 = null;
@@ -2286,22 +2286,22 @@ public class Traductor {
                         tipo1 = new TipoTs("error");
                     break;
                 case CASTREAL:
-                    if (tipo2.getT().equals("boolean"))
+                    if (!tipo2.getT().equals("boolean"))
                         tipo1 = new TipoTs("float");
                     else tipo1 = new TipoTs("error");
                     break;
                 case CASTENT:
-                    if (tipo2.getT().equals("boolean"))
+                	if (!tipo2.getT().equals("boolean"))
                         tipo1 = new TipoTs("integer");
                     else tipo1 = new TipoTs("error");
                     break;
                 case CASTNAT:
-                    if  (tipo2.getT().equals("natural") && tipo2.getT().equals("character"))
+                	if (tipo2.getT().equals("natural")||tipo2.getT().equals("character"))
                         tipo1 = new TipoTs("natural");
                     else tipo1 = new TipoTs("error");
                     break;
                 case CASTCHAR:
-                    if  (tipo2.getT().equals("natural") && tipo2.getT().equals("character"))
+                    if  (tipo2.getT().equals("natural") || tipo2.getT().equals("character"))
                         tipo1 = new TipoTs("character");
                     else tipo1 = new TipoTs("error");
                     break;
@@ -2421,8 +2421,12 @@ public class Traductor {
         } else if (t instanceof LitFalse) {
             return Literal_LitFalse();
         } else if (t instanceof LitCha) {
-            return Literal_LitCha(t);
-        } else {
+            return Literal_LitCha(t);  
+        } else if (t instanceof Null){
+        	return Literal_Null();
+        }
+        
+        else {
             throw new Exception("Error: se esperaba un literal" + textoError());
         }
         //estamos en el nivel más bajo, esta es la última comprobación de lo que algo puede ser
@@ -2438,6 +2442,14 @@ public class Traductor {
 
         return tipo;
     }
+    
+    protected TipoTs Literal_Null() throws Exception {
+    	TipoTs tipo;
+    	cod.appendIns(new Apilar(new Entero(Integer.MIN_VALUE)));
+    	tipo=new TipoTs("integer");
+    	return tipo;
+    }
+    
     protected TipoTs Literal_LitFalse() throws Exception {
         TipoTs tipo =null;
 
