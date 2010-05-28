@@ -1,0 +1,18 @@
+tipo tsecuencia = record {
+integer tope;
+array[10] of float valores
+};
+tipo psec = ^tsecuencia;
+psec punt1;
+psec punt2;
+&
+new punt1;
+new punt2;
+punt1^.tope :=-5;
+punt2^.tope := 10;
+out(punt1 = punt2);
+dispose punt1;
+dispose punt2;
+punt1:=null;
+punt2:=null;
+out(punt1 = punt2)

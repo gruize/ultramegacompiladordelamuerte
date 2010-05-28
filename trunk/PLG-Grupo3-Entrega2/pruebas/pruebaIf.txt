@@ -1,0 +1,16 @@
+integer a;
+integer b;
+integer c
+
+&
+
+a:=4;
+b:=2;
+if a < b then
+	out(a)
+else 
+	out(b);
+if a > b then
+	out(a)
+else
+	out(b)

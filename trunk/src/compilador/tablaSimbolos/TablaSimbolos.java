@@ -106,10 +106,16 @@ public class TablaSimbolos {
                 return compatibles(TablaSimbolos.ref(tipo1, ts),tipo2,ts);
         else if (tipo2.getT().equals("ref"))
                 return compatibles(tipo1,TablaSimbolos.ref(tipo2, ts),ts);
-        else if (tipo1.getT().equals("puntero"))
-                return compatibles(TablaSimbolos.getProps(ts,tipo1.getBase().getId()).getTipo(),tipo2,ts);
-        else if (tipo2.getT().equals("puntero"))
-                return compatibles(tipo1,TablaSimbolos.getProps(ts,tipo2.getBase().getId()).getTipo(),ts);
+        else if (tipo1.getT().equals("puntero")){
+        	InfoTs t=TablaSimbolos.getProps(ts, tipo1.getBase().getId());
+        	if (t!=null) return compatibles(t.getTipo(),tipo2,ts);
+        	return false;
+        }
+        else if (tipo2.getT().equals("puntero")){
+        	InfoTs t2=TablaSimbolos.getProps(ts, tipo2.getBase().getId());
+    		if (t2!=null) return compatibles(tipo2,t2.getTipo(),ts);
+    		return false;
+        }
         else if (tipo1.getT().equals("array") && tipo2.getT().equals("array"))
                 return compatibles(tipo1.getBase(),tipo2.getBase(),ts);
         else if ((tipo1.getT().equals("record") && tipo2.getT().equals("record")) &&
