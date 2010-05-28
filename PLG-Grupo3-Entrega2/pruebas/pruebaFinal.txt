@@ -45,7 +45,7 @@ procedure libera(var tarbol arbol) {
 
 procedure recolecta(var tarbol arbol) {
    float valor;
-   boolean fin;
+   boolean fin
    &
    libera(arbol);
    fin := false;
