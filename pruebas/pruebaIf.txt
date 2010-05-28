@@ -4,9 +4,13 @@ integer c
 
 &
 
-a:=1;
+a:=4;
 b:=2;
 if a < b then
-	b:=-1
+	out(a)
 else 
-	a:=-1
+	out(b);
+if a > b then
+	out(a)
+else
+	out(b)

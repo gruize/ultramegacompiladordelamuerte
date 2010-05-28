@@ -12,7 +12,9 @@ public class TipoTs {
     private final static TipoTs tipoInteger;
     private final static TipoTs tipoFloat;
     private final static TipoTs tipoBoolean;
+    private final static TipoTs tipoNull;
     private final static TipoTs tipoCharacter;
+    
 
     private String t;
     private int tam;
@@ -116,6 +118,9 @@ public class TipoTs {
     public static TipoTs getTipoTsCharacter() {
         return tipoCharacter;
     }
+    public static TipoTs getTipoTsNull(){
+    	return tipoNull;
+    }
 
     static {
         tipoInteger = new TipoTs("integer");
@@ -123,5 +128,6 @@ public class TipoTs {
         tipoBoolean = new TipoTs("boolean");
         tipoCharacter = new TipoTs("character");
         tipoNatural = new TipoTs("natural");
+        tipoNull = new TipoTs("null");
     }
 }

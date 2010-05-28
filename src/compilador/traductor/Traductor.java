@@ -589,6 +589,7 @@ public class Traductor {
 
     protected boolean Programa() throws Exception {
         boolean error1 = false;
+        boolean error2 = false;
 
         etq = longInicio + 1;
         tam_datos = 0;
@@ -599,7 +600,10 @@ public class Traductor {
         ts = new GestorTs();
         cod = new Codigo();
 
-        boolean error2 = Declaraciones();
+        if (ampersand()){
+        	atrasToken();
+        }
+        else error2 = Declaraciones();
         
         int tam_datos2=0;
         for (int i=0;i<dir_n.length;i++) tam_datos2+=dir_n[i];
@@ -1512,7 +1516,9 @@ public class Traductor {
 
         etq += 1;
         error1 = ! GestorTs.compatibles(tipo2, tipo3,ts);
-        if (GestorTs.esCompatibleConTipoBasico(tipo2, ts))
+        if (tipo2.getT().equals("puntero") && tipo3.getT().equals("null"))
+        	cod.appendIns(new DesapilaInd());        	
+        else if (GestorTs.esCompatibleConTipoBasico(tipo2, ts))
             cod.appendIns(new DesapilaInd());
         else
             cod.appendIns(new Mueve(new Nat(tipo2.getTam())));
@@ -1924,26 +1930,43 @@ public class Traductor {
     protected Object[] ExpresionFact(TipoTs tipoh1, String modoh1) throws LectorExc, DatoExc, Exception{
         TipoTs tipo1 = null;
         String modo1 = "";
-
+        boolean saltaComprTipos=false;
         Operaciones op=OpNiv0();
 
         if (op==null){//->lamda
             return new Object[]{tipoh1,modoh1};
         }
+        
+        if ((op == Operaciones.IGUAL || op == Operaciones.DISTINTO)
+        		&& tipoh1.getT().equals("puntero")){
+        	etq++;
+        	cod.appendIns(new ApilarInd());
+        	saltaComprTipos=true;
+        }
+        
         boolean parh2 = false;
 
         Object[] resExpNiv1 = ExpresionNiv1(parh2);
         TipoTs tipo2 = (TipoTs) resExpNiv1[0];
         String modo2 = (String) resExpNiv1[1];
 
-        if (tipoh1.getT().equals("error") ||
-                tipo2.getT().equals("error") ||
-                (tipoh1.getT().equals("character") && !tipo2.getT().equals("character")) ||
-                (!tipoh1.getT().equals("character") && tipo2.getT().equals("character")) ||
-                (tipoh1.getT().equals("boolean") && !tipo2.getT().equals("boolean")) ||
-                (!tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean")))
-            tipo1 = new TipoTs("error");
-        else tipo1 = new TipoTs("boolean");
+        if ((op == Operaciones.IGUAL || op == Operaciones.DISTINTO)
+        		&& tipo2.getT().equals("puntero")){
+        	etq++;
+        	cod.appendIns(new ApilarInd());
+        }
+        
+        if (!saltaComprTipos){
+        	if (tipoh1.getT().equals("error") ||
+        			tipo2.getT().equals("error") ||
+        			(tipoh1.getT().equals("character") && !tipo2.getT().equals("character")) ||
+        			(!tipoh1.getT().equals("character") && tipo2.getT().equals("character")) ||
+        			(tipoh1.getT().equals("boolean") && !tipo2.getT().equals("boolean")) ||
+        			(!tipoh1.getT().equals("boolean") && tipo2.getT().equals("boolean")))
+        		tipo1 = new TipoTs("error");
+        	else tipo1 = new TipoTs("boolean");
+        }
+        else tipo1= new TipoTs("boolean");
 
 	modo1 = "valor";
 	etq += 1;
@@ -2280,7 +2303,7 @@ public class Traductor {
                 case NEG:
                     if (tipo2.getT().equals ("float"))
                         tipo1 = new TipoTs("float");
-                    else if (tipo2.getT().equals("integer") && tipo2.getT().equals("natural"))
+                    else if (tipo2.getT().equals("integer") || tipo2.getT().equals("natural"))
                         tipo1 = new TipoTs("integer");
                     else
                         tipo1 = new TipoTs("error");
@@ -2446,7 +2469,7 @@ public class Traductor {
     protected TipoTs Literal_Null() throws Exception {
     	TipoTs tipo;
     	cod.appendIns(new Apilar(new Entero(Integer.MIN_VALUE)));
-    	tipo=new TipoTs("integer");
+    	tipo=new TipoTs("null");
     	return tipo;
     }
     
