@@ -36,10 +36,10 @@ public class TablaSimbolos {
      */
     public static TablaSimbolos inserta(TablaSimbolos ts, String id, InfoTs props) {
     	InfoTs actual = ts.getHashtable().get(id);
-        if (!existe(ts,id) || (actual != null && actual.getClase().equals("proc") && props.getClase().equals("proc"))){
-    		Hashtable<String,InfoTs> ht= ts.getHashtable();
-    		ht.put(id, props);
-    	}
+        //if (!existe(ts,id) || (actual != null && actual.getClase().equals("proc") && props.getClase().equals("proc"))){
+    	if (existe(ts,id)) ts.getHashtable().remove(id);
+    	Hashtable<String,InfoTs> ht= ts.getHashtable();
+    	ht.put(id, props);
         return ts;
     }
 

@@ -644,7 +644,7 @@ public class Traductor {
         if (error1) {
             errores.add(
                     new ErrorTraductor("Info: Se han detectado errores en el programa. "
-                    + "El código generado puede no ser válido."));
+                    + "No se ha acabado de generar codigo."));
         }
         return error1;
     }
@@ -804,6 +804,7 @@ public class Traductor {
             String lex= identificador();
             ts.abrirAmbito();
             n += 1;
+            int dir_aux=dir_n[n]; //para restaurar en caso de forward
             anidamiento=Math.max(anidamiento, n);
             boolean error2 = FParametros();
             ArrayList<Parametro> parametros_tabla=(ArrayList<Parametro>)parametros.clone();
@@ -815,6 +816,7 @@ public class Traductor {
                 id1 = lex;
                 props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, 0);
                 forward.put(lex,true);
+                dir_n[n]=dir_aux; //descartamos el espacio ocupado por estas declaraciones.
                 n -= 1;
                 ts.cerrarAmbitoActual();
             }
@@ -822,7 +824,7 @@ public class Traductor {
                 Object[] bloqueRes = Bloque();
                 boolean error3= (Boolean) bloqueRes[0];
                 int inicio3 = (Integer) bloqueRes[1];
-
+                
                 error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
                 id1 = lex;
                 props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
