@@ -1,9 +1,10 @@
 integer i;
 integer j;
-integer v
+natural v
 
 &
 j:=5;
+v:=15;
 for i=0 to j do{
 	v := v + 1;
 	out(v)

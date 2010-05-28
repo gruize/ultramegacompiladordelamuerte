@@ -8,12 +8,14 @@ procedure inserta(float valor){
 	integer i
 	&
 	i:=0;
-	secuencia.valores[i]:=valor+5;
-	res := secuencia.valores[0]
-}
-
+	secuencia.valores[i]:=valor+5.0;
+	res := 4
+};
+integer i
 
 &
 
-res := 2;
-inserta(res)
+res := 2.0;
+inserta(res);
+out(secuencia.valores[0]);
+out(res)
