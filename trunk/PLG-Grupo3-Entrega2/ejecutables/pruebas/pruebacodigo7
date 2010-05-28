@@ -1,0 +1,14 @@
+tipo tsecuencia = record {
+integer tope;
+array[10] of float valores
+};
+tipo psec = ^tsecuencia;
+psec punt;
+tsecuencia secuencia;
+natural i;
+&
+new punt;
+punt^.tope :=-5;
+for i=0 to 9 do punt^.valores[i]:=13+i;
+for i=0 to 9 do out(punt^.valores[i]);
+out(punt^.tope)
