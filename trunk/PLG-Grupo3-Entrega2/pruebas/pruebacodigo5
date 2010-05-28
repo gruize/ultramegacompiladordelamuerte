@@ -1,0 +1,11 @@
+integer i;
+integer j;
+integer v
+
+&
+j:=5;
+for i=0 to j do{
+	v := v + 1;
+	out(v)
+};
+out(i)
