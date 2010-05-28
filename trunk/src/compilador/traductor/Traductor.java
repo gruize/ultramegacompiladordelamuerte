@@ -830,10 +830,9 @@ public class Traductor {
                 ts.cerrarAmbitoActual();
             }
             else {
-                Object[] bloqueRes = Bloque();
+                Object[] bloqueRes = Bloque(lex);
                 boolean error3= (Boolean) bloqueRes[0];
                 int inicio3 = (Integer) bloqueRes[1];
-                
                 error1 = error2 || error3 || (GestorTs.existe(ts, lex) && (GestorTs.getProps(ts,lex).getNivel() == n+1));
                 id1 = lex;
                 props1 = new InfoTs("proc", new TipoTs("proc", parametros_tabla), n, inicio3);
@@ -847,7 +846,7 @@ public class Traductor {
         return new Object[]{error1, id1, props1};
 
     }
-    protected Object[] Bloque() throws Exception{
+    protected Object[] Bloque(String idproc) throws Exception{
         boolean error1=false;
         boolean error2=false;
         int inicio1 = 0;
@@ -861,6 +860,8 @@ public class Traductor {
         	error2=Declaraciones();
         else atrasToken();
         inicio1 = etq;
+        InfoTs t=GestorTs.getProps(ts, idproc);
+        t.setDir(inicio1);
         etq += longPrologo;
         cod.appendCod(prologo(n,dir_n[n]));//ponia dir_n[n]-tam_local
         
@@ -2034,7 +2035,7 @@ public class Traductor {
         }
 
         boolean parh2 = false;
-        if (op == op.OR){
+        if (op == Operaciones.OR){
             //aux = etq +1;
             etq += 1;
             cod.appendIns(new Copia());

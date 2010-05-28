@@ -1,0 +1,14 @@
+natural ini;
+natural res;
+procedure factorial(natural ini, var natural res){
+   &
+   if ini>1 then{
+      res:=ini*res;
+      ini:=ini-1;
+      factorial(ini,res)}
+}
+&
+ini:=3;
+res:=1;
+factorial(ini,res);
+out(res)
